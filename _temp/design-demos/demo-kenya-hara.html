@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>能量页 - 成长树</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #060e08;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    font-family: Georgia, 'Noto Serif SC', 'Source Han Serif SC', serif;
+    color: rgba(200, 220, 200, 0.85);
+  }
+
+  .phone-frame {
+    width: 390px;
+    min-height: 844px;
+    background: #0a1f0e;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* -- 背景装饰藤蔓 SVG -- */
+  .vine-deco {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.12;
+  }
+  .vine-top-right {
+    top: -10px;
+    right: -20px;
+    width: 200px;
+    height: 300px;
+  }
+  .vine-bottom-left {
+    bottom: 60px;
+    left: -30px;
+    width: 220px;
+    height: 280px;
+    transform: scaleX(-1);
+  }
+  .vine-mid-left {
+    top: 280px;
+    left: -15px;
+    width: 120px;
+    height: 200px;
+    opacity: 0.08;
+  }
+
+  /* -- 内容区 -- */
+  .content {
+    position: relative;
+    z-index: 1;
+    padding: 60px 32px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* -- 页面标题 -- */
+  .page-title {
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: rgba(160, 190, 160, 0.5);
+    margin-bottom: 48px;
+    font-weight: 400;
+  }
+
+  /* -- 能量球 -- */
+  .energy-orb-wrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .energy-glow {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(34, 139, 80, 0.15) 0%, rgba(10, 31, 14, 0) 70%);
+    animation: glowPulse 4s ease-in-out infinite;
+  }
+
+  .energy-orb {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%,
+      #2ecc71 0%,
+      #1a8a4a 25%,
+      #0f5e32 50%,
+      #0a3d20 75%,
+      #072a16 100%
+    );
+    box-shadow:
+      0 0 40px rgba(46, 204, 113, 0.12),
+      0 0 80px rgba(46, 204, 113, 0.06),
+      inset 0 -20px 40px rgba(0, 0, 0, 0.3),
+      inset 0 10px 30px rgba(46, 204, 113, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: orbBreathe 5s ease-in-out infinite;
+  }
+
+  .energy-orb::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 25%;
+    width: 35%;
+    height: 20%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%);
+  }
+
+  .energy-percent {
+    font-size: 38px;
+    font-weight: 300;
+    color: rgba(220, 245, 220, 0.9);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .energy-label {
+    font-size: 11px;
+    color: rgba(160, 200, 160, 0.5);
+    margin-top: 8px;
+    letter-spacing: 3px;
+  }
+
+  /* -- 能量球周围的叶子装饰 -- */
+  .orb-leaves {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  @keyframes orbBreathe {
+    0%, 100% { transform: scale(1.0); }
+    50% { transform: scale(1.02); }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { transform: scale(1.0); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.7; }
+  }
+
+  /* -- 承诺区域 -- */
+  .commitments {
+    width: 100%;
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: rgba(140, 175, 140, 0.45);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .commitment-item {
+    margin-bottom: 22px;
+  }
+
+  .commitment-text {
+    font-size: 14px;
+    color: rgba(200, 225, 200, 0.75);
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .progress-bar-wrap {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  .fill-60 {
+    width: 60%;
+    background: linear-gradient(90deg, rgba(46, 180, 100, 0.3), rgba(46, 204, 113, 0.6));
+  }
+  .fill-40 {
+    width: 40%;
+    background: linear-gradient(90deg, rgba(46, 180, 100, 0.25), rgba(46, 204, 113, 0.5));
+  }
+  .fill-3of5 {
+    width: 60%;
+    background: linear-gradient(90deg, rgba(46, 180, 100, 0.3), rgba(46, 204, 113, 0.6));
+  }
+
+  .commitment-meta {
+    font-size: 11px;
+    color: rgba(140, 175, 140, 0.35);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  /* -- 分隔线 -- */
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(140, 175, 140, 0.15);
+    margin: 8px 0 40px;
+    align-self: center;
+  }
+
+  /* -- 今日推进度 -- */
+  .daily-section {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .daily-title {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: rgba(140, 175, 140, 0.45);
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+
+  .slider-wrap {
+    width: 100%;
+    position: relative;
+    padding: 8px 0;
+  }
+
+  .slider-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1px;
+    position: relative;
+  }
+
+  .slider-fill {
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(46, 180, 100, 0.2), rgba(46, 204, 113, 0.55));
+    border-radius: 1px;
+  }
+
+  .slider-thumb {
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #3ddc84, #1a8a4a);
+    box-shadow: 0 0 12px rgba(46, 204, 113, 0.25);
+  }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 10px;
+    color: rgba(140, 175, 140, 0.3);
+    letter-spacing: 1px;
+  }
+
+  .slider-value {
+    text-align: center;
+    font-size: 22px;
+    color: rgba(200, 230, 200, 0.7);
+    margin-top: 16px;
+    font-weight: 300;
+    letter-spacing: 2px;
+  }
+
+  /* -- 底部 Tab 导航 -- */
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: linear-gradient(180deg, transparent 0%, rgba(6, 14, 8, 0.95) 30%);
+    padding-bottom: 16px;
+  }
+
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+
+  .tab-icon {
+    width: 22px;
+    height: 22px;
+    opacity: 0.3;
+  }
+
+  .tab-item.active .tab-icon {
+    opacity: 0.85;
+  }
+
+  .tab-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(140, 175, 140, 0.3);
+    font-weight: 400;
+  }
+
+  .tab-item.active .tab-label {
+    color: rgba(46, 204, 113, 0.8);
+  }
+
+  .tab-item.active .tab-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(46, 204, 113, 0.6);
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <!-- 右上角藤蔓装饰 -->
+  <svg class="vine-deco vine-top-right" viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M180 0 C170 40, 140 60, 120 90 C100 120, 110 150, 90 180 C70 210, 50 200, 40 240 C30 270, 45 290, 35 300"
+      stroke="rgba(80,160,100,1)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M120 90 C100 80, 85 95, 70 85" stroke="rgba(80,160,100,1)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <path d="M90 180 C110 170, 120 185, 140 175" stroke="rgba(80,160,100,1)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <path d="M40 240 C20 230, 10 245, -5 235" stroke="rgba(80,160,100,1)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <!-- 叶子 -->
+    <path d="M120 90 C115 75, 100 70, 105 85 C108 78, 118 82, 120 90Z" fill="rgba(60,140,80,0.6)"/>
+    <path d="M90 180 C95 165, 110 162, 105 175 C102 168, 92 172, 90 180Z" fill="rgba(60,140,80,0.5)"/>
+    <path d="M40 240 C35 225, 22 220, 27 235 C30 228, 38 232, 40 240Z" fill="rgba(60,140,80,0.5)"/>
+    <path d="M150 50 C145 35, 132 30, 137 45 C140 38, 148 42, 150 50Z" fill="rgba(60,140,80,0.4)"/>
+    <!-- 小圆点装饰 -->
+    <circle cx="70" cy="85" r="2" fill="rgba(80,160,100,0.4)"/>
+    <circle cx="140" cy="175" r="2" fill="rgba(80,160,100,0.3)"/>
+    <circle cx="-5" cy="235" r="1.5" fill="rgba(80,160,100,0.3)"/>
+  </svg>
+
+  <!-- 左下角藤蔓装饰 -->
+  <svg class="vine-deco vine-bottom-left" viewBox="0 0 220 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M200 0 C185 35, 160 55, 140 85 C120 115, 130 140, 110 170 C90 200, 70 195, 55 230 C40 260, 50 275, 40 280"
+      stroke="rgba(70,150,90,1)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M140 85 C120 75, 105 88, 90 80" stroke="rgba(70,150,90,1)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <path d="M110 170 C130 160, 142 172, 158 165" stroke="rgba(70,150,90,1)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <path d="M55 230 C35 220, 25 232, 10 225" stroke="rgba(70,150,90,1)" stroke-width="1" fill="none" stroke-linecap="round"/>
+    <path d="M140 85 C135 70, 122 65, 127 80Z" fill="rgba(55,135,75,0.5)"/>
+    <path d="M110 170 C115 155, 128 150, 123 165Z" fill="rgba(55,135,75,0.45)"/>
+    <path d="M55 230 C50 215, 38 210, 43 225Z" fill="rgba(55,135,75,0.45)"/>
+    <circle cx="90" cy="80" r="2" fill="rgba(70,150,90,0.35)"/>
+    <circle cx="158" cy="165" r="1.5" fill="rgba(70,150,90,0.3)"/>
+  </svg>
+
+  <!-- 左中藤蔓 -->
+  <svg class="vine-deco vine-mid-left" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M100 0 C90 30, 70 50, 55 80 C40 110, 50 130, 35 160 C20 185, 15 195, 10 200"
+      stroke="rgba(70,140,85,1)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <path d="M55 80 C40 72, 30 82, 20 76" stroke="rgba(70,140,85,1)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+    <path d="M55 80 C52 68, 42 64, 46 76Z" fill="rgba(55,130,70,0.5)"/>
+    <circle cx="20" cy="76" r="1.5" fill="rgba(70,140,85,0.35)"/>
+  </svg>
+
+  <div class="content">
+    <div class="page-title">本周能量</div>
+
+    <!-- 能量球 -->
+    <div class="energy-orb-wrap">
+      <div class="energy-glow"></div>
+      <!-- 能量球周围叶子 -->
+      <svg class="orb-leaves" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 120 C25 110, 15 108, 18 118 C20 113, 28 115, 30 120Z" fill="rgba(60,140,80,0.2)"/>
+        <path d="M210 120 C215 110, 225 108, 222 118 C220 113, 212 115, 210 120Z" fill="rgba(60,140,80,0.2)"/>
+        <path d="M120 25 C110 20, 108 10, 118 14 C113 16, 115 23, 120 25Z" fill="rgba(60,140,80,0.15)"/>
+        <path d="M120 215 C110 220, 108 230, 118 226 C113 224, 115 217, 120 215Z" fill="rgba(60,140,80,0.15)"/>
+        <path d="M55 55 C48 48, 40 50, 45 56 C43 52, 52 52, 55 55Z" fill="rgba(60,140,80,0.12)"/>
+        <path d="M185 185 C192 192, 200 190, 195 184 C197 188, 188 188, 185 185Z" fill="rgba(60,140,80,0.12)"/>
+      </svg>
+      <div class="energy-orb">
+        <span class="energy-percent">68%</span>
+        <span class="energy-label">能量</span>
+      </div>
+    </div>
+
+    <!-- 承诺区域 -->
+    <div class="commitments">
+      <div class="section-title">本周承诺</div>
+
+      <div class="commitment-item">
+        <div class="commitment-text">完成登录模块前端</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill fill-60"></div>
+        </div>
+        <div class="commitment-meta">60%</div>
+      </div>
+
+      <div class="commitment-item">
+        <div class="commitment-text">读完《人类简史》第 3-5 章</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill fill-40"></div>
+        </div>
+        <div class="commitment-meta">40%</div>
+      </div>
+
+      <div class="commitment-item">
+        <div class="commitment-text">晨跑 5 次</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill fill-3of5"></div>
+        </div>
+        <div class="commitment-meta">3 / 5</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 今日推进度 -->
+    <div class="daily-section">
+      <div class="daily-title">今日推进</div>
+      <div class="slider-wrap">
+        <div class="slider-track">
+          <div class="slider-fill"></div>
+          <div class="slider-thumb"></div>
+        </div>
+        <div class="slider-labels">
+          <span>0</span>
+          <span>100</span>
+        </div>
+      </div>
+      <div class="slider-value">60%</div>
+    </div>
+  </div>
+
+  <!-- 底部 Tab 导航 -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(46,204,113,0.85)" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M16.9 16.9l2.1 2.1M4.9 19.1l2.1-2.1M16.9 7.1l2.1-2.1"/>
+      </svg>
+      <span class="tab-label">能量</span>
+      <div class="tab-dot"></div>
+    </div>
+    <div class="tab-item">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(140,175,140,0.5)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+      </svg>
+      <span class="tab-label">清单</span>
+    </div>
+    <div class="tab-item">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(140,175,140,0.5)" stroke-width="1.5" stroke-linecap="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <path d="M16 2v4M8 2v4M3 10h18"/>
+      </svg>
+      <span class="tab-label">计划</span>
+    </div>
+    <div class="tab-item">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(140,175,140,0.5)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M12 22c0 0 0-4 0-8M12 14c-3-2-5-5-5-8a5 5 0 0110 0c0 3-2 6-5 8z"/>
+        <path d="M8 22h8"/>
+        <path d="M7 14c-2 1-4 1-4 1M17 14c2 1 4 1 4 1"/>
+      </svg>
+      <span class="tab-label">成长树</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
