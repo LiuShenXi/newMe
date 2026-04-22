@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>个人成长管理 App - 原型</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a12; --card: #14142a; --card2: #1c1c3a;
+  --text: #e8e8f0; --text2: #8888aa; --accent: #7c5cfc;
+  --accent2: #a78bfa; --green: #34d399; --orange: #f59e0b;
+  --glow: rgba(124,92,252,0.3); --radius: 16px;
+}
+body { font-family: -apple-system, 'SF Pro', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); max-width: 393px; margin: 0 auto; height: 100vh; overflow: hidden; position: relative; }
+.screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 90px; }
+.screen.active { display: flex; }
+.screen.no-tab { padding-bottom: 0; }
+
+/* Tab Bar */
+.tab-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 393px; height: 80px; background: rgba(10,10,18,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-around; z-index: 100; padding-bottom: 16px; }
+.tab-bar.hidden { display: none; }
+.tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.5; transition: all 0.2s; }
+.tab-item.active { opacity: 1; }
+.tab-item svg { width: 24px; height: 24px; }
+.tab-item span { font-size: 10px; color: var(--text2); }
+.tab-item.active span { color: var(--accent2); }
+.tab-item.active svg { fill: var(--accent2); stroke: var(--accent2); }
+
+/* Common */
+.page-header { padding: 56px 24px 16px; }
+.page-header h1 { font-size: 28px; font-weight: 700; }
+.page-header p { font-size: 14px; color: var(--text2); margin-top: 4px; }
+.card { background: var(--card); border-radius: var(--radius); padding: 20px; margin: 8px 16px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-primary { background: var(--accent); color: #fff; width: 100%; }
+.btn-primary:hover { background: #6a4ae0; }
+.btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--text); }
+.btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 8px; }
+
+/* Onboarding */
+#onboarding { background: var(--bg); z-index: 200; }
+.onboard-step { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 40px 32px; text-align: center; }
+.onboard-step.active { display: flex; }
+.tree-seedling { width: 120px; height: 160px; margin-bottom: 32px; position: relative; }
+.tree-seedling .trunk { width: 6px; height: 60px; background: linear-gradient(to top, #5a3e1b, #7a5c2b); border-radius: 3px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
+.tree-seedling .leaf1, .tree-seedling .leaf2 { width: 30px; height: 40px; background: radial-gradient(ellipse, #34d399, #059669); border-radius: 50% 50% 50% 0; position: absolute; }
+.tree-seedling .leaf1 { top: 40px; left: 28px; transform: rotate(-30deg); }
+.tree-seedling .leaf2 { top: 30px; right: 28px; transform: rotate(30deg) scaleX(-1); }
+.tree-seedling .pot { width: 50px; height: 30px; background: linear-gradient(to bottom, #8b6f47, #6b4f2f); border-radius: 0 0 8px 8px; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); }
+.onboard-step h2 { font-size: 22px; font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
+.onboard-step p { font-size: 15px; color: var(--text2); line-height: 1.6; margin-bottom: 32px; }
+.onboard-input { width: 100%; background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; color: var(--text); font-size: 16px; outline: none; resize: none; min-height: 100px; margin-bottom: 20px; }
+.onboard-input:focus { border-color: var(--accent); }
+.onboard-input::placeholder { color: var(--text2); }
+
+/* Energy Page */
+.energy-orb-wrap { display: flex; flex-direction: column; align-items: center; padding: 24px 0 16px; }
+.energy-orb { width: 180px; height: 180px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.energy-orb-bg { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 40% 35%, rgba(124,92,252,0.4), rgba(10,10,18,0.8)); border: 2px solid rgba(124,92,252,0.3); transition: all 0.5s; }
+.energy-orb .pct { font-size: 42px; font-weight: 700; z-index: 1; }
+.energy-orb .pct-label { position: absolute; bottom: 38px; font-size: 12px; color: var(--text2); z-index: 1; }
+.energy-orb-glow { position: absolute; inset: -20px; border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 70%); opacity: 0.5; animation: pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.08); opacity: 0.8; } }
+.week-label { font-size: 13px; color: var(--text2); margin-top: 12px; }
+
+.commitment-overview { margin: 0 16px; }
+.commitment-overview h3 { font-size: 14px; color: var(--text2); margin-bottom: 12px; padding: 0 4px; }
+.commit-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--card); border-radius: 12px; margin-bottom: 8px; }
+.commit-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.commit-item .commit-text { flex: 1; font-size: 14px; }
+.commit-item .commit-pct { font-size: 13px; color: var(--accent2); font-weight: 600; }
+
+.slider-section { margin: 16px 16px 0; padding: 20px; background: var(--card); border-radius: var(--radius); }
+.slider-section label { font-size: 14px; color: var(--text2); display: block; margin-bottom: 16px; }
+.slider-wrap { position: relative; }
+.slider-wrap input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--val, 50%), rgba(255,255,255,0.08) var(--val, 50%)); outline: none; }
+.slider-wrap input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); border: 3px solid #fff; cursor: pointer; box-shadow: 0 0 12px var(--glow); }
+.slider-val { text-align: center; font-size: 28px; font-weight: 700; margin-top: 12px; color: var(--accent2); }
+.confirm-btn-wrap { padding: 16px; }
+
+/* Checklist Page */
+.commitment-card { background: var(--card); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; cursor: pointer; }
+.commit-header { display: flex; align-items: center; gap: 12px; padding: 16px; }
+.commit-expand-icon { transition: transform 0.2s; color: var(--text2); flex-shrink: 0; }
+.commitment-card.open .commit-expand-icon { transform: rotate(180deg); }
+.commit-info { flex: 1; }
+.commit-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.commit-progress { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+.commit-progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+.commit-pct-badge { font-size: 13px; color: var(--accent2); font-weight: 600; flex-shrink: 0; }
+.commit-tasks { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 16px; }
+.commitment-card.open .commit-tasks { max-height: 400px; padding: 0 16px 16px; }
+.task-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; }
+.task-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.task-check.checked { background: var(--accent); border-color: var(--accent); }
+.task-check.checked::after { content: '✓'; color: #fff; font-size: 12px; }
+.task-item.done span { text-decoration: line-through; color: var(--text2); }
+
+/* Plan Page */
+.timeline { padding: 0 16px 0 40px; position: relative; }
+.tl-node { position: relative; padding: 0 0 24px 24px; border-left: 2px solid rgba(255,255,255,0.06); }
+.tl-node:last-child { border-left-color: transparent; }
+.tl-dot { width: 12px; height: 12px; border-radius: 50%; position: absolute; left: -7px; top: 4px; }
+.done-dot { background: var(--green); box-shadow: 0 0 8px rgba(52,211,153,0.4); }
+.current-dot { background: var(--accent); box-shadow: 0 0 12px var(--glow); animation: pulse 2s infinite; }
+.future-dot { background: rgba(255,255,255,0.15); }
+.tl-content { background: var(--card); border-radius: 12px; padding: 14px 16px; }
+.tl-week { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.tl-date { font-size: 12px; color: var(--text2); font-weight: 400; }
+.tl-badge { font-size: 11px; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 4px; margin-left: 6px; }
+.tl-commits { font-size: 13px; color: var(--text2); line-height: 1.8; }
+.tl-result { font-size: 13px; color: var(--green); margin-top: 6px; font-weight: 600; }
+.tl-progress { font-size: 13px; color: var(--accent2); margin-top: 6px; font-weight: 600; }
+.tl-node.past .tl-content { opacity: 0.7; }
+.tl-node.future .tl-content { opacity: 0.5; border: 1px dashed rgba(255,255,255,0.08); background: transparent; }
+
+/* Tree Page */
+.tree-scene { display: flex; flex-direction: column; align-items: center; padding: 20px 0; position: relative; height: 320px; }
+.tree-container { position: relative; width: 200px; height: 260px; }
+.tree-trunk { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 16px; height: 120px; background: linear-gradient(to top, #5a3e1b, #7a5c2b); border-radius: 4px; }
+.tree-branch { position: absolute; height: 6px; border-radius: 3px; background: #6b4f2f; }
+.branch-l1 { width: 50px; bottom: 80px; left: 42px; transform: rotate(-25deg); }
+.branch-r1 { width: 55px; bottom: 90px; right: 38px; transform: rotate(20deg); }
+.branch-l2 { width: 40px; bottom: 110px; left: 50px; transform: rotate(-35deg); }
+.branch-r2 { width: 45px; bottom: 120px; right: 45px; transform: rotate(30deg); }
+.tree-canopy { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 140px; height: 120px; background: radial-gradient(ellipse, rgba(52,211,153,0.6), rgba(5,150,105,0.3)); border-radius: 50%; filter: blur(8px); }
+.canopy2 { top: 40px; width: 120px; height: 100px; background: radial-gradient(ellipse, rgba(52,211,153,0.4), transparent); }
+.tree-ground { width: 100%; height: 40px; background: linear-gradient(to top, rgba(30,20,10,0.5), transparent); }
+.tree-fruit { position: absolute; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
+.tree-fruit:hover { transform: scale(1.3); }
+.tree-fruit { background: radial-gradient(circle at 35% 35%, rgba(255,255,255,calc(var(--brightness)*0.5)), rgba(124,92,252,var(--brightness))); box-shadow: 0 0 calc(var(--brightness)*12px) rgba(124,92,252,calc(var(--brightness)*0.6)); }
+.fruit1 { top: 80px; left: 45px; }
+.fruit2 { top: 65px; right: 50px; }
+.fruit3 { top: 95px; right: 65px; }
+.fruit-q1-1 { top: 110px; left: 55px; width: 12px; height: 12px; }
+.fruit-q1-2 { top: 100px; right: 55px; width: 12px; height: 12px; }
+.fruit-q1-3 { top: 125px; left: 75px; width: 12px; height: 12px; }
+.tree-stats { display: flex; gap: 12px; padding: 0 16px; margin-top: -20px; }
+.stat-card { flex: 1; background: var(--card); border-radius: 12px; padding: 16px; text-align: center; }
+.stat-val { font-size: 24px; font-weight: 700; }
+.stat-label { font-size: 11px; color: var(--text2); margin-top: 4px; }
+.glow-text { color: var(--accent2); text-shadow: 0 0 12px var(--glow); font-size: 16px; }
+.quarter-timeline { display: flex; align-items: center; justify-content: center; padding: 24px 16px; gap: 0; }
+.qt-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.qt-item span { font-size: 11px; color: var(--text2); }
+.qt-item.active span { color: var(--text); }
+.qt-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+.qt-done { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.4); }
+.qt-current { background: var(--accent); box-shadow: 0 0 8px var(--glow); }
+.qt-line { width: 40px; height: 2px; background: rgba(255,255,255,0.06); margin-bottom: 20px; }
+.qt-line-done { background: var(--green); }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 300; }
+.modal-overlay.show { display: flex; }
+.modal-card { background: var(--card); border-radius: 20px; padding: 24px; width: 320px; max-width: 90%; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 15px; font-weight: 600; }
+.modal-close { background: none; border: none; color: var(--text2); font-size: 18px; cursor: pointer; }
+
+/* Settlement */
+.settlement-screen { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.settle-step { display: none; flex-direction: column; align-items: center; text-align: center; padding: 32px; width: 100%; }
+.settle-step.active { display: flex; }
+.settle-step h2 { font-size: 22px; font-weight: 600; }
+.settle-step p { color: var(--text2); margin-top: 8px; }
+.energy-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding: 0 20px; }
+.chart-bar { width: 32px; background: linear-gradient(to top, var(--accent), var(--accent2)); border-radius: 6px 6px 0 0; height: var(--h); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0; position: relative; }
+.chart-bar span { position: absolute; bottom: -20px; font-size: 11px; color: var(--text2); }
+.settle-commit { padding: 10px 0; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 8px; }
+.settle-check { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.settle-check.done { background: var(--green); color: #fff; }
+.settle-check.partial { background: var(--orange); color: #fff; }
+.fruit-anim { width: 80px; height: 80px; border-radius: 50%; position: relative; animation: fruitAppear 1s ease-out; }
+.fruit-body { width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4), var(--accent)); }
+.fruit-glow { position: absolute; inset: -20px; border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 70%); animation: pulse 2s infinite; }
+@keyframes fruitAppear { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+<!-- Onboarding -->
+<div id="onboarding" class="screen no-tab active">
+  <div class="onboard-step active" id="ob-step1">
+    <div class="tree-seedling">
+      <div class="leaf1"></div><div class="leaf2"></div>
+      <div class="trunk"></div><div class="pot"></div>
+    </div>
+    <h2>这是你今年的成长树</h2>
+    <p>它会陪你走过四个季节，<br>记录你每一周的努力与收获。</p>
+    <button class="btn btn-primary" onclick="nextOb(2)">开始我的旅程</button>
+  </div>
+  <div class="onboard-step" id="ob-step2">
+    <h2>这个季度，<br>你最想推进的一件事是什么？</h2>
+    <p>不用想太多，写下最重要的那一件就好。</p>
+    <textarea class="onboard-input" id="goal-input" placeholder="比如：完成个人 App 的 MVP 开发..."></textarea>
+    <button class="btn btn-primary" onclick="nextOb(3)">就是这件事</button>
+  </div>
+  <div class="onboard-step" id="ob-step3">
+    <div style="margin-bottom:24px;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7c5cfc" stroke-width="1.5"><path d="M12 2a7 7 0 017 7c0 5-7 11-7 11S5 14 5 9a7 7 0 017-7z"/><circle cx="12" cy="9" r="2.5" fill="#7c5cfc" opacity="0.3"/></svg>
+    </div>
+    <h2>AI 正在帮你拆解...</h2>
+    <p>根据你的目标，生成本周承诺和任务建议。</p>
+    <div style="margin-top:20px;" id="ai-loading">
+      <div style="display:flex;gap:6px;justify-content:center;">
+        <div class="dot-anim" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotPulse 1.2s infinite;"></div>
+        <div class="dot-anim" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotPulse 1.2s 0.2s infinite;"></div>
+        <div class="dot-anim" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotPulse 1.2s 0.4s infinite;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="onboard-step" id="ob-step4">
+    <h2>你的本周计划已就绪 ✨</h2>
+    <div style="width:100%;text-align:left;margin:20px 0;">
+      <div class="card" style="margin:0 0 8px;">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:8px;">本周承诺</div>
+        <div style="font-size:15px;margin-bottom:6px;">📌 完成核心功能原型设计</div>
+        <div style="font-size:15px;margin-bottom:6px;">📌 搭建项目基础框架</div>
+        <div style="font-size:15px;">📌 完成数据模型设计</div>
+      </div>
+    </div>
+    <p>现在，记录一下今天的推进吧。</p>
+    <button class="btn btn-primary" onclick="finishOnboarding()" style="margin-top:16px;">记录今日能量</button>
+  </div>
+</div>
+<style>
+@keyframes dotPulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
+</style>
+
+<!-- Energy Page -->
+<div id="energy" class="screen">
+  <div class="page-header">
+    <h1>能量</h1>
+    <p>第 16 周 · 2026 Q2</p>
+  </div>
+  <div class="energy-orb-wrap">
+    <div class="energy-orb" id="energyOrb">
+      <div class="energy-orb-glow"></div>
+      <div class="energy-orb-bg" id="orbBg"></div>
+      <span class="pct" id="orbPct">42%</span>
+      <span class="pct-label">本周累计</span>
+    </div>
+    <div class="week-label">本周已记录 3 / 7 天</div>
+  </div>
+  <div class="commitment-overview">
+    <h3>本周承诺完成概览</h3>
+    <div class="commit-item">
+      <div class="commit-dot" style="background:var(--green)"></div>
+      <span class="commit-text">完成核心功能原型设计</span>
+      <span class="commit-pct">60%</span>
+    </div>
+    <div class="commit-item">
+      <div class="commit-dot" style="background:var(--orange)"></div>
+      <span class="commit-text">搭建项目基础框架</span>
+      <span class="commit-pct">40%</span>
+    </div>
+    <div class="commit-item">
+      <div class="commit-dot" style="background:var(--accent)"></div>
+      <span class="commit-text">完成数据模型设计</span>
+      <span class="commit-pct">25%</span>
+    </div>
+  </div>
+  <div class="slider-section">
+    <label>今日推进度</label>
+    <div class="slider-wrap">
+      <input type="range" min="0" max="100" value="50" id="energySlider" oninput="updateSlider(this)">
+    </div>
+    <div class="slider-val" id="sliderVal">50%</div>
+  </div>
+  <div class="confirm-btn-wrap">
+    <button class="btn btn-primary" onclick="confirmEnergy()">确认今日能量</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="showSettlement()">体验周结算流程</button>
+  </div>
+</div>
+
+<!-- Checklist Page -->
+<div id="checklist" class="screen">
+  <div class="page-header">
+    <h1>清单</h1>
+    <p>本周承诺 · 3 项</p>
+  </div>
+  <div style="padding:0 16px;">
+    <!-- Commitment 1 -->
+    <div class="commitment-card" onclick="toggleCommit(this)">
+      <div class="commit-header">
+        <div class="commit-expand-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="commit-info">
+          <div class="commit-title">完成核心功能原型设计</div>
+          <div class="commit-progress"><div class="commit-progress-bar" style="width:60%"></div></div>
+        </div>
+        <span class="commit-pct-badge">60%</span>
+      </div>
+      <div class="commit-tasks">
+        <div class="task-item done"><div class="task-check checked"></div><span>梳理页面信息架构</span></div>
+        <div class="task-item done"><div class="task-check checked"></div><span>设计能量页交互流程</span></div>
+        <div class="task-item done"><div class="task-check checked"></div><span>设计清单页层级结构</span></div>
+        <div class="task-item"><div class="task-check"></div><span>设计计划页时间轴</span></div>
+        <div class="task-item"><div class="task-check"></div><span>设计成长树视觉方案</span></div>
+      </div>
+    </div>
+    <!-- Commitment 2 -->
+    <div class="commitment-card" onclick="toggleCommit(this)">
+      <div class="commit-header">
+        <div class="commit-expand-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="commit-info">
+          <div class="commit-title">搭建项目基础框架</div>
+          <div class="commit-progress"><div class="commit-progress-bar" style="width:40%"></div></div>
+        </div>
+        <span class="commit-pct-badge">40%</span>
+      </div>
+      <div class="commit-tasks">
+        <div class="task-item done"><div class="task-check checked"></div><span>初始化 React Native 项目</span></div>
+        <div class="task-item done"><div class="task-check checked"></div><span>配置导航和路由</span></div>
+        <div class="task-item"><div class="task-check"></div><span>搭建状态管理</span></div>
+        <div class="task-item"><div class="task-check"></div><span>实现本地数据持久化</span></div>
+        <div class="task-item"><div class="task-check"></div><span>接入 AI API</span></div>
+      </div>
+    </div>
+    <!-- Commitment 3 -->
+    <div class="commitment-card" onclick="toggleCommit(this)">
+      <div class="commit-header">
+        <div class="commit-expand-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="commit-info">
+          <div class="commit-title">完成数据模型设计</div>
+          <div class="commit-progress"><div class="commit-progress-bar" style="width:25%"></div></div>
+        </div>
+        <span class="commit-pct-badge">25%</span>
+      </div>
+      <div class="commit-tasks">
+        <div class="task-item done"><div class="task-check checked"></div><span>定义核心实体关系</span></div>
+        <div class="task-item"><div class="task-check"></div><span>设计 API 接口规范</span></div>
+        <div class="task-item"><div class="task-check"></div><span>编写数据库 Schema</span></div>
+        <div class="task-item"><div class="task-check"></div><span>设计缓存策略</span></div>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:12px;" onclick="showAiRePlan()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" style="margin-right:6px;"><path d="M12 2a7 7 0 017 7c0 5-7 11-7 11S5 14 5 9a7 7 0 017-7z"/></svg>
+      AI 帮我重新拆解
+    </button>
+  </div>
+</div>
+
+<!-- Plan Page -->
+<div id="plan" class="screen">
+  <div class="page-header">
+    <h1>计划</h1>
+    <p>2026 Q2 · 第 14-17 周</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-node past">
+      <div class="tl-dot done-dot"></div>
+      <div class="tl-content">
+        <div class="tl-week">第 14 周 <span class="tl-date">4/1 - 4/7</span></div>
+        <div class="tl-commits">
+          <div>✅ 完成产品需求文档</div>
+          <div>✅ 确定技术选型</div>
+        </div>
+        <div class="tl-result">周结果：85%</div>
+      </div>
+    </div>
+    <div class="tl-node past">
+      <div class="tl-dot done-dot"></div>
+      <div class="tl-content">
+        <div class="tl-week">第 15 周 <span class="tl-date">4/8 - 4/14</span></div>
+        <div class="tl-commits">
+          <div>✅ 完成 UI 设计稿</div>
+          <div>✅ 搭建开发环境</div>
+        </div>
+        <div class="tl-result">周结果：72%</div>
+      </div>
+    </div>
+    <div class="tl-node current">
+      <div class="tl-dot current-dot"></div>
+      <div class="tl-content">
+        <div class="tl-week">第 16 周 <span class="tl-date">4/15 - 4/21</span> <span class="tl-badge">本周</span></div>
+        <div class="tl-commits">
+          <div>🔵 完成核心功能原型设计</div>
+          <div>🔵 搭建项目基础框架</div>
+          <div>🔵 完成数据模型设计</div>
+        </div>
+        <div class="tl-progress">进行中 · 42%</div>
+      </div>
+    </div>
+    <div class="tl-node future">
+      <div class="tl-dot future-dot"></div>
+      <div class="tl-content">
+        <div class="tl-week">第 17 周 <span class="tl-date">4/22 - 4/28</span></div>
+        <div class="tl-commits">
+          <div>⬜ 实现能量页核心交互</div>
+          <div>⬜ 实现清单页 CRUD</div>
+          <div>⬜ 接入 AI 拆解功能</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:16px;">
+    <button class="btn btn-ghost btn-sm" style="width:100%;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" style="margin-right:6px;"><path d="M12 2a7 7 0 017 7c0 5-7 11-7 11S5 14 5 9a7 7 0 017-7z"/></svg>
+      AI 协作调整计划
+    </button>
+  </div>
+</div>
+
+<!-- Growth Tree Page -->
+<div id="tree" class="screen">
+  <div class="page-header">
+    <h1>成长树</h1>
+    <p>2026 年度 · Q2 成长阶段</p>
+  </div>
+  <div class="tree-scene">
+    <div class="tree-container">
+      <!-- Tree trunk -->
+      <div class="tree-trunk"></div>
+      <!-- Branches -->
+      <div class="tree-branch branch-l1"></div>
+      <div class="tree-branch branch-r1"></div>
+      <div class="tree-branch branch-l2"></div>
+      <div class="tree-branch branch-r2"></div>
+      <!-- Canopy -->
+      <div class="tree-canopy"></div>
+      <div class="tree-canopy canopy2"></div>
+      <!-- Fruits -->
+      <div class="tree-fruit fruit1" style="--brightness:0.85" onclick="showFruitCard(14)"></div>
+      <div class="tree-fruit fruit2" style="--brightness:0.72" onclick="showFruitCard(15)"></div>
+      <div class="tree-fruit fruit3" style="--brightness:0.42;opacity:0.6" onclick="showFruitCard(16)"></div>
+      <!-- Q1 fruits (dimmer, past quarter) -->
+      <div class="tree-fruit fruit-q1-1" style="--brightness:0.9" onclick="showFruitCard(1)"></div>
+      <div class="tree-fruit fruit-q1-2" style="--brightness:0.65" onclick="showFruitCard(2)"></div>
+      <div class="tree-fruit fruit-q1-3" style="--brightness:0.78" onclick="showFruitCard(3)"></div>
+    </div>
+    <div class="tree-ground"></div>
+  </div>
+  <div class="tree-stats">
+    <div class="stat-card">
+      <div class="stat-val">15</div>
+      <div class="stat-label">累计果实</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">1</div>
+      <div class="stat-label">季度达标</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val glow-text">发光</div>
+      <div class="stat-label">荣誉层</div>
+    </div>
+  </div>
+  <div class="quarter-timeline">
+    <div class="qt-item active"><div class="qt-dot qt-done"></div><span>Q1 起始</span></div>
+    <div class="qt-line qt-line-done"></div>
+    <div class="qt-item active"><div class="qt-dot qt-current"></div><span>Q2 成长</span></div>
+    <div class="qt-line"></div>
+    <div class="qt-item"><div class="qt-dot"></div><span>Q3 丰茂</span></div>
+    <div class="qt-line"></div>
+    <div class="qt-item"><div class="qt-dot"></div><span>Q4 完成</span></div>
+  </div>
+</div>
+
+<!-- Fruit Card Modal -->
+<div class="modal-overlay" id="fruitModal" onclick="closeFruitCard()">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span id="fruitWeekTitle">第 14 周（2026-04-07）</span>
+      <button class="modal-close" onclick="closeFruitCard()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:8px;">本周承诺</div>
+      <div id="fruitCommits" style="font-size:14px;line-height:1.8;">
+        • 完成产品需求文档<br>• 确定技术选型
+      </div>
+      <div style="margin-top:16px;display:flex;gap:16px;">
+        <div>
+          <div style="font-size:13px;color:var(--text2);">周结果</div>
+          <div id="fruitResult" style="font-size:24px;font-weight:700;color:var(--accent2);margin-top:4px;">85%</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:4px;">本周感悟</div>
+        <div id="fruitNote" style="font-size:14px;color:var(--text);line-height:1.6;font-style:italic;">"第一周节奏不错，需求文档比预期完成得更快。"</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Week Settlement Modal -->
+<div class="modal-overlay" id="settlementModal">
+  <div class="settlement-screen">
+    <div class="settle-step active" id="settle1">
+      <h2>这一周辛苦了</h2>
+      <p>我们一起看看这周的收获吧。</p>
+      <button class="btn btn-primary" style="margin-top:24px;width:auto;padding:12px 32px;" onclick="nextSettle(2)">开始回顾</button>
+    </div>
+    <div class="settle-step" id="settle2">
+      <h3 style="color:var(--text2);margin-bottom:16px;">每日能量回顾</h3>
+      <div class="energy-chart">
+        <div class="chart-bar" style="--h:40%"><span>一</span></div>
+        <div class="chart-bar" style="--h:55%"><span>二</span></div>
+        <div class="chart-bar" style="--h:70%"><span>三</span></div>
+        <div class="chart-bar" style="--h:45%"><span>四</span></div>
+        <div class="chart-bar" style="--h:60%"><span>五</span></div>
+        <div class="chart-bar" style="--h:80%"><span>六</span></div>
+        <div class="chart-bar" style="--h:50%"><span>日</span></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:24px;width:auto;padding:12px 32px;" onclick="nextSettle(3)">继续</button>
+    </div>
+    <div class="settle-step" id="settle3">
+      <h3 style="color:var(--text2);margin-bottom:16px;">本周承诺完成情况</h3>
+      <div style="text-align:left;width:100%;max-width:300px;">
+        <div class="settle-commit"><span class="settle-check done">✓</span>完成核心功能原型设计 <span style="color:var(--green)">60%</span></div>
+        <div class="settle-commit"><span class="settle-check partial">~</span>搭建项目基础框架 <span style="color:var(--orange)">40%</span></div>
+        <div class="settle-commit"><span class="settle-check partial">~</span>完成数据模型设计 <span style="color:var(--text2)">25%</span></div>
+      </div>
+      <div style="margin-top:20px;font-size:15px;color:var(--text2);">建议周结果</div>
+      <div style="font-size:36px;font-weight:700;color:var(--accent2);margin:8px 0;">42%</div>
+      <div class="slider-section" style="margin:12px 0;background:var(--card2);max-width:300px;">
+        <label>调整最终周结果</label>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="100" value="42" id="settleSlider" oninput="updateSettleSlider(this)">
+        </div>
+        <div class="slider-val" id="settleVal" style="font-size:20px;">42%</div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:16px;width:auto;padding:12px 32px;" onclick="nextSettle(4)">确认周结果</button>
+    </div>
+    <div class="settle-step" id="settle4">
+      <div class="fruit-anim" id="fruitAnim">
+        <div class="fruit-glow"></div>
+        <div class="fruit-body"></div>
+      </div>
+      <h2 style="margin-top:24px;">新果实长出来了</h2>
+      <p style="color:var(--text2);margin-top:8px;">这颗果实记录了你这一周的努力。</p>
+      <textarea class="onboard-input" placeholder="写下这周的感悟（可选）..." style="max-width:300px;min-height:60px;margin-top:16px;"></textarea>
+      <button class="btn btn-primary" style="margin-top:12px;width:auto;padding:12px 32px;" onclick="closeSettlement()">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tab Bar -->
+<div class="tab-bar hidden" id="tabBar">
+  <div class="tab-item active" data-tab="energy" onclick="switchTab('energy')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <span>能量</span>
+  </div>
+  <div class="tab-item" data-tab="checklist" onclick="switchTab('checklist')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+    <span>清单</span>
+  </div>
+  <div class="tab-item" data-tab="plan" onclick="switchTab('plan')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+    <span>计划</span>
+  </div>
+  <div class="tab-item" data-tab="tree" onclick="switchTab('tree')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V8"/><path d="M5 12l7-8 7 8"/><path d="M3 17l9-6 9 6"/></svg>
+    <span>成长树</span>
+  </div>
+</div>
+
+<script>
+// Onboarding
+function nextOb(step) {
+  document.querySelectorAll('.onboard-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('ob-step' + step).classList.add('active');
+  if (step === 3) {
+    setTimeout(() => nextOb(4), 2000);
+  }
+}
+
+function finishOnboarding() {
+  document.getElementById('onboarding').classList.remove('active');
+  document.getElementById('energy').classList.add('active');
+  document.getElementById('tabBar').classList.remove('hidden');
+}
+
+// Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.screen:not(#onboarding):not(.no-tab)').forEach(s => s.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+}
+
+// Energy slider
+function updateSlider(el) {
+  const val = el.value;
+  el.style.setProperty('--val', val + '%');
+  document.getElementById('sliderVal').textContent = val + '%';
+}
+
+// Confirm energy with animation
+function confirmEnergy() {
+  const val = document.getElementById('energySlider').value;
+  const orb = document.getElementById('energyOrb');
+  const pct = document.getElementById('orbPct');
+  const bg = document.getElementById('orbBg');
+
+  // Charging animation
+  orb.style.transition = 'transform 0.3s';
+  orb.style.transform = 'scale(1.1)';
+
+  const hue = 250 + (parseInt(val) / 100) * 30;
+  const sat = 40 + (parseInt(val) / 100) * 30;
+  const light = 20 + (parseInt(val) / 100) * 25;
+  bg.style.background = 'radial-gradient(circle at 40% 35%, hsla(' + hue + ',' + sat + '%,' + light + '%,0.6), rgba(10,10,18,0.8))';
+
+  let current = parseInt(pct.textContent);
+  const target = parseInt(val);
+  const step = current < target ? 1 : -1;
+  const interval = setInterval(() => {
+    current += step;
+    pct.textContent = current + '%';
+    if (current === target) clearInterval(interval);
+  }, 20);
+
+  setTimeout(() => { orb.style.transform = 'scale(1)'; }, 500);
+}
+
+// Checklist toggle
+function toggleCommit(el) {
+  el.classList.toggle('open');
+}
+
+// Fruit card
+const fruitData = {
+  1: { week: '第 1 周（2026-01-05）', commits: '• 制定年度成长方向\n• 设定 Q1 目标', result: '90%', note: '"新年第一周，充满干劲。"' },
+  2: { week: '第 2 周（2026-01-12）', commits: '• 开始阅读计划\n• 建立晨跑习惯', result: '65%', note: '"有点忙，但坚持住了。"' },
+  3: { week: '第 3 周（2026-01-19）', commits: '• 完成第一本书\n• 晨跑 4/5 次', result: '78%', note: '"阅读进度超预期。"' },
+  14: { week: '第 14 周（2026-04-07）', commits: '• 完成产品需求文档\n• 确定技术选型', result: '85%', note: '"第一周节奏不错，需求文档比预期完成得更快。"' },
+  15: { week: '第 15 周（2026-04-14）', commits: '• 完成 UI 设计稿\n• 搭建开发环境', result: '72%', note: '"设计稿花了比预期更多的时间。"' },
+  16: { week: '第 16 周（2026-04-21）', commits: '• 完成核心功能原型设计\n• 搭建项目基础框架\n• 完成数据模型设计', result: '42%', note: '（进行中）' }
+};
+
+function showFruitCard(week) {
+  const data = fruitData[week];
+  if (!data) return;
+  document.getElementById('fruitWeekTitle').textContent = data.week;
+  document.getElementById('fruitCommits').innerHTML = data.commits.replace(/\n/g, '<br>');
+  document.getElementById('fruitResult').textContent = data.result;
+  document.getElementById('fruitNote').textContent = data.note;
+  document.getElementById('fruitModal').classList.add('show');
+}
+
+function closeFruitCard() {
+  document.getElementById('fruitModal').classList.remove('show');
+}
+
+// Settlement
+function showSettlement() {
+  document.getElementById('settlementModal').classList.add('show');
+}
+
+function nextSettle(step) {
+  document.querySelectorAll('.settle-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('settle' + step).classList.add('active');
+}
+
+function updateSettleSlider(el) {
+  const val = el.value;
+  el.style.setProperty('--val', val + '%');
+  document.getElementById('settleVal').textContent = val + '%';
+}
+
+function closeSettlement() {
+  document.getElementById('settlementModal').classList.remove('show');
+}
+
+function showAiRePlan() {
+  alert('AI 正在根据你的最新承诺重新拆解任务...');
+}
+
+// Init sliders
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('input[type=range]').forEach(el => {
+    el.style.setProperty('--val', el.value + '%');
+  });
+});
+</script>
+</body>
+</html>
