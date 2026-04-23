@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>newMe 线稿原型</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e8e8e8;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 24px 16px;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .phone {
+    width: 375px;
+    min-height: 812px;
+    background: #fff;
+    border: 2px solid #333;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 4px 0 #999;
+  }
+  .phone-label {
+    text-align: center;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 12px;
+    color: #333;
+    flex-shrink: 0;
+  }
+  .screen {
+    flex: 1;
+    overflow-y: auto;
+    background: #fff;
+    display: none;
+    flex-direction: column;
+  }
+  .screen.active { display: flex; }
+  .tab-bar {
+    height: 56px;
+    border-top: 2px solid #333;
+    display: flex;
+    flex-shrink: 0;
+    background: #fff;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    color: #999;
+    border-right: 1px solid #ddd;
+  }
+  .tab-item:last-child { border-right: none; }
+  .tab-item.active { color: #333; font-weight: 700; }
+  .tab-icon {
+    width: 22px; height: 22px;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  .tab-item.active .tab-icon { background: #333; color: #fff; }
+  .page-header { padding: 16px 20px 12px; border-bottom: 1px solid #eee; }
+  .page-title { font-size: 20px; font-weight: 700; color: #111; }
+  .page-subtitle { font-size: 12px; color: #999; margin-top: 2px; }
+  .section { padding: 16px 20px; border-bottom: 1px solid #eee; }
+  .section-label {
+    font-size: 11px; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 10px 20px; border: 2px solid #333;
+    border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; background: #fff; color: #333; width: 100%;
+  }
+  .btn-primary { background: #333; color: #fff; }
+  .btn-ghost { border-style: dashed; color: #999; border-color: #ccc; }
+  .input-field {
+    width: 100%; border: 2px solid #ccc; border-radius: 8px;
+    padding: 10px 14px; font-size: 14px; color: #333; outline: none; resize: none;
+  }
+  .input-field:focus { border-color: #333; }
+  .tag {
+    display: inline-block; padding: 2px 8px; border: 1px solid #ccc;
+    border-radius: 4px; font-size: 10px; color: #666;
+  }
+  .onboard-step {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 32px 24px; gap: 24px; text-align: center;
+  }
+  .tree-sketch { width: 120px; height: 140px; }
+  .onboard-title { font-size: 18px; font-weight: 700; color: #111; line-height: 1.4; }
+  .onboard-body { font-size: 14px; color: #666; line-height: 1.6; }
+  .step-dots { display: flex; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #ccc; }
+  .dot.active { background: #333; }
+  .ai-loading { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px; }
+  .loading-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .loading-fill { height: 100%; background: #333; border-radius: 4px; width: 70%; }
+
+  /* ── 能量页 ── */
+  .energy-ball-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 28px 20px 20px; gap: 8px;
+  }
+  .energy-ball {
+    width: 140px; height: 140px; border: 3px solid #333; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; background: #fff; overflow: hidden;
+  }
+  .energy-ball-fill {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 55%;
+    background: #e0e0e0; border-bottom-left-radius: 70px; border-bottom-right-radius: 70px;
+  }
+  .energy-pct { font-size: 32px; font-weight: 700; color: #111; position: relative; z-index: 1; }
+  .energy-label { font-size: 11px; color: #666; position: relative; z-index: 1; }
+  .energy-week-label { font-size: 12px; color: #999; }
+  .commitment-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+  .commitment-row:last-child { border-bottom: none; }
+  .commit-check { width: 16px; height: 16px; border: 2px solid #ccc; border-radius: 3px; flex-shrink: 0; }
+  .commit-check.done { background: #333; border-color: #333; }
+  .commit-text { flex: 1; font-size: 13px; color: #333; }
+  .commit-pct { font-size: 12px; color: #999; font-weight: 600; }
+  .progress-bar-wrap { width: 100%; height: 6px; background: #eee; border-radius: 3px; margin-top: 4px; }
+  .progress-bar-fill { height: 100%; background: #333; border-radius: 3px; }
+  .slider-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .slider-track { width: 100%; height: 6px; background: #eee; border-radius: 3px; position: relative; }
+  .slider-fill { height: 100%; background: #333; border-radius: 3px; width: 40%; }
+  .slider-thumb {
+    width: 20px; height: 20px; border: 3px solid #333; border-radius: 50%;
+    background: #fff; position: absolute; top: 50%; left: 40%; transform: translate(-50%, -50%);
+  }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: #999; }
+
+  /* ── 清单页 ── */
+  .commitment-card { border: 1.5px solid #ddd; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .commitment-header {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    cursor: pointer; background: #fafafa;
+  }
+  .commitment-header.expanded { background: #f0f0f0; }
+  .commit-title { flex: 1; font-size: 14px; font-weight: 600; color: #222; }
+  .chevron { font-size: 12px; color: #999; }
+  .task-list { padding: 8px 14px 12px; }
+  .task-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #f5f5f5; }
+  .task-item:last-child { border-bottom: none; }
+  .task-check { width: 16px; height: 16px; border: 2px solid #ccc; border-radius: 50%; flex-shrink: 0; }
+  .task-check.done { background: #333; border-color: #333; }
+  .task-text { flex: 1; font-size: 13px; color: #444; }
+  .task-text.done { text-decoration: line-through; color: #bbb; }
+  .task-add { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 12px; color: #bbb; cursor: pointer; }
+
+  /* ── 计划页 ── */
+  .timeline { padding: 16px 20px; position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 36px; top: 0; bottom: 0; width: 2px; background: #ddd; }
+  .week-node { display: flex; gap: 14px; margin-bottom: 20px; position: relative; }
+  .week-dot {
+    width: 14px; height: 14px; border: 2px solid #ccc; border-radius: 50%;
+    background: #fff; flex-shrink: 0; margin-top: 3px; position: relative; z-index: 1;
+  }
+  .week-dot.current { border-color: #333; background: #333; }
+  .week-dot.past { background: #ccc; border-color: #ccc; }
+  .week-content { flex: 1; }
+  .week-label { font-size: 11px; font-weight: 700; color: #999; margin-bottom: 4px; }
+  .week-label.current { color: #333; }
+  .week-card { border: 1.5px solid #ddd; border-radius: 8px; padding: 10px 12px; background: #fafafa; }
+  .week-card.current { border-color: #333; background: #fff; }
+  .week-card.future { border-style: dashed; background: #fff; }
+  .week-commit-item { font-size: 12px; color: #555; padding: 2px 0; display: flex; align-items: center; gap: 6px; }
+  .week-result-badge {
+    display: inline-block; padding: 2px 8px; background: #333; color: #fff;
+    border-radius: 4px; font-size: 11px; font-weight: 700; margin-top: 6px;
+  }
+
+  /* ── 成长树页 ── */
+  .tree-canvas { display: flex; flex-direction: column; align-items: center; padding: 20px; background: #fafafa; border-bottom: 1px solid #eee; }
+  .tree-stage-label { font-size: 11px; color: #999; margin-bottom: 12px; font-weight: 600; }
+  .quarter-bar { display: flex; width: 100%; gap: 4px; margin-top: 12px; }
+  .q-seg { flex: 1; height: 6px; background: #eee; border-radius: 3px; }
+  .q-seg.done { background: #333; }
+  .q-seg.current { background: #999; }
+  .stats-row { display: flex; gap: 10px; padding: 16px 20px; }
+  .stat-card { flex: 1; border: 1.5px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: #111; }
+  .stat-label { font-size: 10px; color: #999; margin-top: 2px; }
+  .fruit-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; padding: 0 20px 16px; }
+  .fruit-dot {
+    width: 28px; height: 28px; border: 2px solid #ccc; border-radius: 50%;
+    background: #fff; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; font-size: 9px; color: #ccc;
+  }
+  .fruit-dot.bright { background: #333; border-color: #333; color: #fff; }
+  .fruit-dot.mid { background: #999; border-color: #999; color: #fff; }
+  .fruit-dot.dim { background: #ddd; border-color: #ddd; }
+
+  /* ── 弹窗 ── */
+  .modal-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+    display: none; align-items: flex-end; z-index: 100;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-sheet {
+    width: 100%; background: #fff; border-radius: 20px 20px 0 0;
+    padding: 20px; max-height: 85%; overflow-y: auto;
+  }
+  .modal-handle { width: 36px; height: 4px; background: #ddd; border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 16px; }
+  .settle-step { display: none; }
+  .settle-step.active { display: block; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0 4px; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+  .bar-fill { width: 100%; background: #333; border-radius: 3px 3px 0 0; min-height: 4px; }
+  .bar-day { font-size: 9px; color: #999; }
+  .fruit-anim { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 24px 0; }
+  .fruit-big {
+    width: 80px; height: 80px; border: 3px solid #333; border-radius: 50%;
+    background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 28px;
+  }
+  .review-card { border: 1.5px solid #ddd; border-radius: 10px; padding: 14px; background: #fafafa; }
+  .review-week { font-size: 12px; color: #999; margin-bottom: 8px; }
+  .review-commit { font-size: 13px; color: #444; padding: 3px 0; }
+  .review-result { margin-top: 10px; font-size: 14px; font-weight: 700; color: #111; }
+  .review-note { margin-top: 8px; font-size: 12px; color: #888; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- ══════ 冷启动 · 第1步 ══════ -->
+<div>
+<div class="phone-label">冷启动 · 第1步</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="justify-content:center;">
+    <div class="onboard-step">
+      <svg class="tree-sketch" viewBox="0 0 120 140" fill="none" stroke="#333" stroke-width="2">
+        <line x1="60" y1="140" x2="60" y2="80"/>
+        <line x1="60" y1="110" x2="40" y2="90"/>
+        <line x1="60" y1="100" x2="80" y2="82"/>
+        <ellipse cx="60" cy="65" rx="30" ry="28"/>
+        <ellipse cx="38" cy="72" rx="18" ry="16"/>
+        <ellipse cx="82" cy="70" rx="18" ry="16"/>
+      </svg>
+      <div class="onboard-title">这是你今年的成长树<br>它会陪你走过四个季节</div>
+      <div class="onboard-body">每一周的努力，都会在树上留下一颗果实。</div>
+      <div class="step-dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <button class="btn btn-primary">开始 →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 冷启动 · 第2步 ══════ -->
+<div>
+<div class="phone-label">冷启动 · 第2步</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="justify-content:center;">
+    <div class="onboard-step">
+      <div class="onboard-title">这个季度，你最想推进的一件事是什么？</div>
+      <div style="width:100%">
+        <textarea class="input-field" rows="3" placeholder="比如：做完第一个 App 的 MVP…"></textarea>
+        <div style="font-size:11px;color:#bbb;margin-top:6px;">不用想太多，写下脑海里第一个念头就好</div>
+      </div>
+      <div class="step-dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+      <button class="btn btn-primary">AI 帮我拆解 →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 冷启动 · AI拆解中 ══════ -->
+<div>
+<div class="phone-label">冷启动 · AI拆解中</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="justify-content:center;">
+    <div class="onboard-step">
+      <div class="onboard-title">正在为你生成本周承诺…</div>
+      <div class="ai-loading" style="width:100%">
+        <div style="font-size:12px;color:#999">识别目标类型：项目型目标</div>
+        <div class="loading-bar"><div class="loading-fill"></div></div>
+        <div style="font-size:12px;color:#999">按里程碑拆解中…</div>
+        <div class="loading-bar"><div class="loading-fill" style="width:45%"></div></div>
+      </div>
+      <div class="step-dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 冷启动 · 生成完成 ══════ -->
+<div>
+<div class="phone-label">冷启动 · 生成完成</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="overflow-y:auto;">
+    <div style="padding:24px 20px 16px;text-align:center;">
+      <div class="onboard-title" style="font-size:16px;">好的，这是本周的承诺建议</div>
+      <div style="font-size:12px;color:#999;margin-top:4px;">你可以直接用，也可以修改</div>
+    </div>
+    <div style="padding:0 20px;">
+      <div class="commitment-card">
+        <div class="commitment-header"><div class="commit-check done"></div><div class="commit-title">完成登录模块前后端</div><span class="tag">项目型</span></div>
+      </div>
+      <div class="commitment-card">
+        <div class="commitment-header"><div class="commit-check done"></div><div class="commit-title">完成首页 UI 框架搭建</div><span class="tag">项目型</span></div>
+      </div>
+      <div class="commitment-card">
+        <div class="commitment-header"><div class="commit-check"></div><div class="commit-title">+ 添加承诺</div></div>
+      </div>
+    </div>
+    <div style="padding:16px 20px;">
+      <div class="step-dots" style="justify-content:center;margin-bottom:16px;">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div>
+      </div>
+      <button class="btn btn-primary">开始第一天 →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 能量页（首页） ══════ -->
+<div>
+<div class="phone-label">能量页（首页）</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="overflow-y:auto;">
+    <div class="energy-ball-wrap">
+      <div class="energy-ball">
+        <div class="energy-ball-fill"></div>
+        <div class="energy-pct">55%</div>
+        <div class="energy-label">本周能量</div>
+      </div>
+      <div class="energy-week-label">第16周 · 已记录 4 天</div>
+    </div>
+    <div class="section">
+      <div class="section-label">本周承诺完成概览</div>
+      <div class="commitment-row">
+        <div class="commit-check done"></div>
+        <div style="flex:1"><div class="commit-text">完成登录模块前后端</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%"></div></div></div>
+        <div class="commit-pct">60%</div>
+      </div>
+      <div class="commitment-row">
+        <div class="commit-check"></div>
+        <div style="flex:1"><div class="commit-text">读完《人类简史》第3-5章</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:40%"></div></div></div>
+        <div class="commit-pct">40%</div>
+      </div>
+      <div class="commitment-row">
+        <div class="commit-check"></div>
+        <div style="flex:1"><div class="commit-text">晨跑 5 次</div><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%"></div></div></div>
+        <div class="commit-pct">3/5</div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-label">今日推进度</div>
+      <div style="font-size:12px;color:#999;margin-bottom:12px;">今天在本周承诺上，你推进了多少？</div>
+      <div class="slider-wrap">
+        <div class="slider-track"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
+        <div class="slider-labels"><span>0%</span><span>今日：40%</span><span>100%</span></div>
+      </div>
+      <div style="margin-top:14px;"><button class="btn btn-primary">确认今日能量</button></div>
+      <div style="font-size:11px;color:#bbb;text-align:center;margin-top:8px;">今天的清单还没看过，要不要先看看再打分？</div>
+    </div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item active"><div class="tab-icon">E</div><span>能量</span></div>
+    <div class="tab-item"><div class="tab-icon">L</div><span>清单</span></div>
+    <div class="tab-item"><div class="tab-icon">P</div><span>计划</span></div>
+    <div class="tab-item"><div class="tab-icon">T</div><span>成长树</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 清单页 ══════ -->
+<div>
+<div class="phone-label">清单页</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="overflow-y:auto;">
+    <div class="page-header"><div class="page-title">本周清单</div><div class="page-subtitle">第16周 · 3条承诺</div></div>
+    <div style="padding:14px 20px;">
+      <div class="commitment-card">
+        <div class="commitment-header expanded">
+          <div class="commit-check done"></div>
+          <div class="commit-title">完成登录模块前后端</div>
+          <span style="font-size:11px;color:#999">60%</span>
+          <span class="chevron">▲</span>
+        </div>
+        <div class="task-list">
+          <div class="task-item"><div class="task-check done"></div><div class="task-text done">设计登录页 UI</div></div>
+          <div class="task-item"><div class="task-check done"></div><div class="task-text done">实现 JWT 鉴权接口</div></div>
+          <div class="task-item"><div class="task-check"></div><div class="task-text">前后端联调测试</div></div>
+          <div class="task-add">＋ 添加任务</div>
+        </div>
+      </div>
+      <div class="commitment-card">
+        <div class="commitment-header">
+          <div class="commit-check"></div>
+          <div class="commit-title">读完《人类简史》第3-5章</div>
+          <span style="font-size:11px;color:#999">40%</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="commitment-card">
+        <div class="commitment-header">
+          <div class="commit-check"></div>
+          <div class="commit-title">晨跑 5 次</div>
+          <span style="font-size:11px;color:#999">3/5</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="commitment-card" style="border-style:dashed;border-color:#ccc;">
+        <div class="commitment-header" style="background:#fff;"><div style="font-size:13px;color:#bbb;">＋ 添加本周承诺</div></div>
+      </div>
+    </div>
+    <div style="padding:0 20px 20px;"><button class="btn btn-ghost">AI 重新拆解本周任务</button></div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item"><div class="tab-icon">E</div><span>能量</span></div>
+    <div class="tab-item active"><div class="tab-icon">L</div><span>清单</span></div>
+    <div class="tab-item"><div class="tab-icon">P</div><span>计划</span></div>
+    <div class="tab-item"><div class="tab-icon">T</div><span>成长树</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 计划页 ══════ -->
+<div>
+<div class="phone-label">计划页</div>
+<div class="phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="overflow-y:auto;">
+    <div class="page-header"><div class="page-title">季度计划</div><div class="page-subtitle">Q2 2026 · 第13-16周</div></div>
+    <div class="timeline">
+      <div class="week-node">
+        <div class="week-dot past"></div>
+        <div class="week-content">
+          <div class="week-label">第13周 · 4月1日</div>
+          <div class="week-card"><div class="week-commit-item">✓ 完成需求文档</div><div class="week-commit-item">✓ 搭建项目脚手架</div><div class="week-result-badge">82%</div></div>
+        </div>
+      </div>
+      <div class="week-node">
+        <div class="week-dot past"></div>
+        <div class="week-content">
+          <div class="week-label">第14周 · 4月8日</div>
+          <div class="week-card"><div class="week-commit-item">✓ 数据库设计</div><div class="week-commit-item">✓ 基础 API 框架</div><div class="week-result-badge">75%</div></div>
+        </div>
+      </div>
+      <div class="week-node">
+        <div class="week-dot past"></div>
+        <div class="week-content">
+          <div class="week-label">第15周 · 4月15日</div>
+          <div class="week-card"><div class="week-commit-item">✓ 用户模块</div><div class="week-commit-item">— 支付模块（未完成）</div><div class="week-result-badge" style="background:#999;">60%</div></div>
+        </div>
+      </div>
+      <div class="week-node">
+        <div class="week-dot current"></div>
+        <div class="week-content">
+          <div class="week-label current">第16周 · 4月22日 ← 本周</div>
+          <div class="week-card current">
+            <div class="week-commit-item">→ 完成登录模块前后端</div>
+            <div class="week-commit-item">→ 读完第3-5章</div>
+            <div class="week-commit-item">→ 晨跑5次</div>
+            <div style="margin-top:6px;font-size:11px;color:#999;">进行中…</div>
+          </div>
+        </div>
+      </div>
+      <div class="week-node">
+        <div class="week-dot"></div>
+        <div class="week-content">
+          <div class="week-label">第17周 · 4月29日</div>
+          <div class="week-card future"><div class="week-commit-item" style="color:#bbb;">○ 完成首页核心功能</div><div class="week-commit-item" style="color:#bbb;">○ 读完第6-8章</div></div>
+        </div>
+      </div>
+      <div class="week-node">
+        <div class="week-dot"></div>
+        <div class="week-content">
+          <div class="week-label">第18周 · 5月6日</div>
+          <div class="week-card future"><div class="week-commit-item" style="color:#bbb;">○ 内测版本发布</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 20px;"><button class="btn btn-ghost">AI 协作调整后续计划</button></div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item"><div class="tab-icon">E</div><span>能量</span></div>
+    <div class="tab-item"><div class="tab-icon">L</div><span>清单</span></div>
+    <div class="tab-item active"><div class="tab-icon">P</div><span>计划</span></div>
+    <div class="tab-item"><div class="tab-icon">T</div><span>成长树</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ 成长树页 ══════ -->
+<div>
+<div class="phone-label">成长树页</div>
+<div class="phone" id="tree-phone">
+  <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+  <div class="screen active" style="overflow-y:auto;">
+    <div class="tree-canvas">
+      <div class="tree-stage-label">Q2 · 成长阶段 · 1次季度达标</div>
+      <svg width="200" height="180" viewBox="0 0 200 180" fill="none" stroke="#333" stroke-width="2">
+        <line x1="100" y1="180" x2="100" y2="110"/>
+        <line x1="100" y1="140" x2="60" y2="110"/>
+        <line x1="100" y1="130" x2="140" y2="100"/>
+        <line x1="100" y1="120" x2="70" y2="90"/>
+        <line x1="100" y1="115" x2="130" y2="85"/>
+        <ellipse cx="100" cy="75" rx="45" ry="40"/>
+        <ellipse cx="65" cy="88" rx="28" ry="24"/>
+        <ellipse cx="135" cy="85" rx="28" ry="24"/>
+        <ellipse cx="100" cy="75" rx="52" ry="47" stroke-dasharray="4 3" stroke="#999" stroke-width="1.5"/>
+        <circle cx="78" cy="58" r="6" fill="#333"/>
+        <circle cx="95" cy="48" r="6" fill="#333"/>
+        <circle cx="115" cy="55" r="6" fill="#999"/>
+        <circle cx="130" cy="68" r="6" fill="#999"/>
+        <circle cx="68" cy="75" r="6" fill="#ddd" stroke="#ccc"/>
+        <circle cx="120" cy="82" r="6" fill="#ddd" stroke="#ccc"/>
+        <circle cx="88" cy="82" r="5" fill="#eee" stroke="#ddd"/>
+      </svg>
+      <div class="quarter-bar">
+        <div class="q-seg done"></div><div class="q-seg current"></div>
+        <div class="q-seg"></div><div class="q-seg"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;width:100%;font-size:10px;color:#999;margin-top:4px;">
+        <span>Q1 ✓</span><span>Q2 进行中</span><span>Q3</span><span>Q4</span>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">7</div><div class="stat-label">累计果实</div></div>
+      <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">季度达标</div></div>
+      <div class="stat-card"><div class="stat-num">1层</div><div class="stat-label">荣誉层</div></div>
+    </div>
+    <div class="section"><div class="section-label">每周果实（点击查看回顾）</div></div>
+    <div class="fruit-grid">
+      <div class="fruit-dot bright" onclick="openReview()">82</div>
+      <div class="fruit-dot bright" onclick="openReview()">75</div>
+      <div class="fruit-dot mid" onclick="openReview()">60</div>
+      <div class="fruit-dot mid">55</div>
+      <div class="fruit-dot dim">—</div><div class="fruit-dot dim">—</div>
+      <div class="fruit-dot dim">—</div><div class="fruit-dot dim">—</div>
+    </div>
+    <div style="padding:8px 20px 20px;"><button class="btn" onclick="openSettle()">进行本周结算</button></div>
+  </div>
+  <div class="tab-bar">
+    <div class="tab-item"><div class="tab-icon">E</div><span>能量</span></div>
+    <div class="tab-item"><div class="tab-icon">L</div><span>清单</span></div>
+    <div class="tab-item"><div class="tab-icon">P</div><span>计划</span></div>
+    <div class="tab-item active"><div class="tab-icon">T</div><span>成长树</span></div>
+  </div>
+
+  <!-- 果实回顾弹窗 -->
+  <div class="modal-overlay" id="review-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">第13周回顾</div>
+      <div class="review-card">
+        <div class="review-week">2026-04-01 ~ 2026-04-07</div>
+        <div class="review-commit">• 完成需求文档</div>
+        <div class="review-commit">• 搭建项目脚手架</div>
+        <div class="review-result">本周结果：82%</div>
+        <div class="review-note">"这周状态不错，把之前拖着的文档一口气写完了。"</div>
+      </div>
+      <button class="btn" style="margin-top:14px;" onclick="closeReview()">关闭</button>
+    </div>
+  </div>
+
+  <!-- 周结算弹窗 -->
+  <div class="modal-overlay" id="settle-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="settle-step active" id="settle-1">
+        <div class="modal-title">这一周辛苦了</div>
+        <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px;">我们一起看看这周的收获吧。</div>
+        <button class="btn btn-primary" onclick="nextSettle(2)">看看这周 →</button>
+      </div>
+      <div class="settle-step" id="settle-2">
+        <div class="modal-title">这周每天的推进</div>
+        <div class="bar-chart">
+          <div class="bar-col"><div class="bar-fill" style="height:60%"></div><div class="bar-day">一</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:80%"></div><div class="bar-day">二</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:40%"></div><div class="bar-day">三</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:70%"></div><div class="bar-day">四</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:55%"></div><div class="bar-day">五</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:30%"></div><div class="bar-day">六</div></div>
+          <div class="bar-col"><div class="bar-fill" style="height:0%"></div><div class="bar-day">日</div></div>
+        </div>
+        <div style="font-size:12px;color:#999;margin:12px 0;">承诺完成情况</div>
+        <div class="commitment-row"><div class="commit-check done"></div><div class="commit-text">完成登录模块前后端</div><div class="commit-pct">60%</div></div>
+        <div class="commitment-row"><div class="commit-check"></div><div class="commit-text">读完第3-5章</div><div class="commit-pct">40%</div></div>
+        <div class="commitment-row"><div class="commit-check"></div><div class="commit-text">晨跑5次</div><div class="commit-pct">3/5</div></div>
+        <button class="btn btn-primary" style="margin-top:14px;" onclick="nextSettle(3)">确认本周结果 →</button>
+      </div>
+      <div class="settle-step" id="settle-3">
+        <div class="modal-title">本周结果</div>
+        <div style="font-size:13px;color:#666;margin-bottom:12px;">系统建议：<strong>55%</strong>（基于每日能量均值）</div>
+        <div class="slider-wrap">
+          <div class="slider-track"><div class="slider-fill" style="width:55%"></div><div class="slider-thumb" style="left:55%"></div></div>
+          <div class="slider-labels"><span>0%</span><span>55%</span><span>100%</span></div>
+        </div>
+        <textarea class="input-field" rows="2" placeholder="这周有什么感悟？（可选）" style="margin-top:14px;"></textarea>
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="nextSettle(4)">生成果实 →</button>
+      </div>
+      <div class="settle-step" id="settle-4">
+        <div class="modal-title">第16周的果实</div>
+        <div class="fruit-anim">
+          <div class="fruit-big">○</div>
+          <div style="font-size:14px;color:#555;">本周结果 55%</div>
+          <div style="font-size:12px;color:#999;">果实已长在你的成长树上</div>
+        </div>
+        <button class="btn btn-primary" onclick="closeSettle()">看看我的树 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function openReview(){document.getElementById('review-modal').classList.add('open')}
+function closeReview(){document.getElementById('review-modal').classList.remove('open')}
+function openSettle(){document.getElementById('settle-modal').classList.add('open');showSettle(1)}
+function closeSettle(){document.getElementById('settle-modal').classList.remove('open')}
+function nextSettle(n){showSettle(n)}
+function showSettle(n){
+  document.querySelectorAll('.settle-step').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('settle-'+n).classList.add('active');
+}
+</script>
+
+</body>
+</html>

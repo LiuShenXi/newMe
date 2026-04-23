@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>个人成长管理 App - 线稿原型</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f2f1ed;
+  --paper: #ffffff;
+  --ink: #1c1c1c;
+  --muted: #777;
+  --soft: #d4d1ca;
+  --line: #202020;
+  --radius: 18px;
+}
+body {
+  background: linear-gradient(180deg, #eceae4 0%, #dedbd3 100%);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.app-shell {
+  width: 393px;
+  height: 852px;
+  border: 2px solid var(--line);
+  border-radius: 32px;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.12);
+}
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 94px;
+}
+.screen.active { display: flex; }
+.screen.no-tab { padding-bottom: 0; }
+.page-header {
+  padding: 56px 20px 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.page-subtitle {
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.shell-button,
+.btn {
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.shell-button { padding: 10px 14px; white-space: nowrap; }
+.btn {
+  width: 100%;
+  padding: 14px 16px;
+}
+.btn + .btn { margin-top: 10px; }
+.btn.secondary {
+  background: transparent;
+}
+.card {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 0 16px 12px;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.muted { color: var(--muted); }
+.tiny { font-size: 12px; }
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  background: #f8f6f2;
+}
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--soft);
+}
+.progress-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  flex-shrink: 0;
+}
+.progress-copy {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.progress-value {
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.orb-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.orb {
+  width: 178px;
+  height: 178px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.03) 0,
+      rgba(0, 0, 0, 0.03) 10px,
+      rgba(255, 255, 255, 0.2) 10px,
+      rgba(255, 255, 255, 0.2) 20px
+    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px dashed var(--soft);
+  border-radius: 50%;
+}
+.orb-value {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.orb-value strong {
+  display: block;
+  font-size: 42px;
+  line-height: 1;
+}
+.orb-value span {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.inline-stats {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.mini-card {
+  flex: 1;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fbfaf7;
+}
+.mini-card strong {
+  display: block;
+  font-size: 22px;
+}
+.mini-card span {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.slider-block label,
+.settle-slider label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--ink);
+}
+.slider-value {
+  margin-top: 10px;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+.todo-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.day-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  background: #f8f6f2;
+}
+.day-chip.is-past {
+  opacity: 0.45;
+}
+.list-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  padding: 10px 12px;
+  border: 1px dashed var(--soft);
+  border-radius: 12px;
+  background: #fbfaf7;
+  margin-bottom: 12px;
+}
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.todo-item.past-day {
+  opacity: 0.55;
+  background: #f1efea;
+}
+.todo-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+.todo-item.done .todo-check {
+  background: var(--ink);
+  color: #fff;
+}
+.todo-copy {
+  flex: 1;
+}
+.todo-copy strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.todo-copy span {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.todo-item.done .todo-copy strong {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.todo-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.text-btn {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+.add-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.add-row input {
+  flex: 1;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fff;
+  font-size: 14px;
+}
+.add-row button {
+  width: 88px;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft), transparent);
+  margin: 10px 0 16px;
+}
+.timeline {
+  padding: 0 16px 16px 38px;
+}
+.timeline-node {
+  position: relative;
+  padding: 0 0 18px 22px;
+  border-left: 2px solid var(--soft);
+}
+.timeline-node:last-child { border-left-color: transparent; }
+.timeline-dot {
+  position: absolute;
+  left: -8px;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--paper);
+}
+.timeline-node.current .timeline-dot {
+  background: var(--ink);
+}
+.timeline-node.future .timeline-dot {
+  background: #f2f1ed;
+}
+.timeline-card {
+  width: 100%;
+  text-align: left;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  cursor: pointer;
+}
+.timeline-week {
+  font-size: 15px;
+  font-weight: 700;
+}
+.timeline-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.timeline-list {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.tree-wrap {
+  padding: 8px 20px 0;
+}
+.tree-board {
+  position: relative;
+  height: 308px;
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, #fdfcf9 0%, #f3f0e9 100%);
+  overflow: hidden;
+}
+.tree-board::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 42px;
+  border-bottom: 1px dashed var(--soft);
+}
+.tree-trunk {
+  position: absolute;
+  left: 50%;
+  bottom: 42px;
+  width: 18px;
+  height: 132px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  transform: translateX(-50%);
+  background: #f9f7f2;
+}
+.tree-branch {
+  position: absolute;
+  height: 2px;
+  background: var(--line);
+  transform-origin: left center;
+}
+.branch-l1 { width: 76px; left: 122px; bottom: 152px; transform: rotate(-26deg); }
+.branch-r1 { width: 84px; left: 188px; bottom: 160px; transform: rotate(24deg); }
+.branch-l2 { width: 58px; left: 126px; bottom: 186px; transform: rotate(-40deg); }
+.branch-r2 { width: 62px; left: 194px; bottom: 194px; transform: rotate(36deg); }
+.tree-canopy {
+  position: absolute;
+  left: 50%;
+  top: 34px;
+  width: 174px;
+  height: 144px;
+  border: 2px dashed var(--soft);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+.fruit {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--paper);
+  cursor: pointer;
+}
+.fruit.small {
+  width: 16px;
+  height: 16px;
+}
+.fruit.faint { opacity: 0.45; }
+.fruit.current {
+  box-shadow: inset 0 0 0 4px var(--ink);
+}
+.stat-grid {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+.quarter-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 16px 8px;
+}
+.quarter-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.quarter-step i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+}
+.quarter-step.active i,
+.quarter-step.done i { background: var(--ink); }
+.quarter-line {
+  width: 34px;
+  height: 2px;
+  background: var(--soft);
+  margin-bottom: 18px;
+}
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(20, 20, 20, 0.28);
+  backdrop-filter: blur(3px);
+  z-index: 40;
+}
+.modal-overlay.show { display: flex; }
+.modal-card {
+  width: 100%;
+  max-width: 332px;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  padding: 18px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.modal-subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.close-btn {
+  border: 0;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--muted);
+}
+.week-grid {
+  display: grid;
+  gap: 10px;
+}
+.week-card {
+  width: 100%;
+  text-align: left;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+.week-card.past { opacity: 0.45; background: #f1efea; }
+.week-card.today { background: #f8f6f2; }
+.week-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.week-card strong {
+  display: block;
+  font-size: 14px;
+}
+.week-card span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.week-card em {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 11px;
+}
+.settle-step { display: none; }
+.settle-step.active { display: block; }
+.step-actions { margin-top: 18px; }
+.step-actions .btn + .btn { margin-top: 8px; }
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  height: 160px;
+  margin-top: 14px;
+}
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.bar {
+  width: 100%;
+  border: 1.5px solid var(--line);
+  border-radius: 10px 10px 0 0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.04) 0,
+      rgba(0, 0, 0, 0.04) 8px,
+      rgba(255, 255, 255, 0.5) 8px,
+      rgba(255, 255, 255, 0.5) 16px
+    );
+}
+.bar-col span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.result-badge {
+  text-align: center;
+  padding: 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: #fbfaf7;
+  margin-top: 16px;
+}
+.result-badge strong {
+  display: block;
+  font-size: 36px;
+}
+.fruit-badge {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  margin: 18px auto 0;
+  border: 2px solid var(--line);
+  background:
+    radial-gradient(circle at 40% 35%, rgba(255, 255, 255, 0.9) 0, rgba(255, 255, 255, 0.7) 18%, rgba(0, 0, 0, 0.02) 19%, rgba(0, 0, 0, 0.02) 100%);
+  position: relative;
+}
+.fruit-badge::after {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px dashed var(--soft);
+  border-radius: 50%;
+}
+textarea.note-input {
+  width: 100%;
+  min-height: 92px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  margin-top: 16px;
+}
+.tab-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 82px;
+  padding: 8px 10px 18px;
+  display: flex;
+  gap: 8px;
+  background: rgba(246, 244, 239, 0.96);
+  border-top: 1.5px solid var(--line);
+  z-index: 20;
+}
+.tab-bar.hidden { display: none; }
+.tab-item {
+  flex: 1;
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.tab-item.active {
+  color: var(--ink);
+  border-color: var(--line);
+  background: #fff;
+}
+.tab-item strong {
+  font-size: 13px;
+}
+.tab-item span {
+  font-size: 11px;
+}
+.wire-tree {
+  width: 120px;
+  height: 160px;
+  position: relative;
+  margin-bottom: 30px;
+}
+.wire-tree .pot {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 52px;
+  height: 28px;
+  border: 2px solid var(--line);
+  border-top-width: 1.5px;
+  border-radius: 0 0 10px 10px;
+  transform: translateX(-50%);
+}
+.wire-tree .trunk {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  width: 8px;
+  height: 62px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  transform: translateX(-50%);
+}
+.wire-tree .leaf {
+  position: absolute;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+}
+.wire-tree .leaf.left {
+  left: 20px;
+  top: 28px;
+  width: 38px;
+  height: 50px;
+}
+.wire-tree .leaf.right {
+  right: 18px;
+  top: 22px;
+  width: 42px;
+  height: 56px;
+}
+.onboard-step {
+  display: none;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 34px 26px;
+}
+.onboard-step.active { display: flex; }
+.onboard-panel {
+  width: 100%;
+  border: 1.5px solid var(--line);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 28px 20px;
+}
+.onboard-panel h2 {
+  font-size: 24px;
+  line-height: 1.35;
+}
+.onboard-panel p {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.goal-input {
+  width: 100%;
+  min-height: 116px;
+  margin-top: 20px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 15px;
+  resize: none;
+  background: #fff;
+  font-family: inherit;
+}
+.sketch-loading {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+.sketch-line {
+  height: 16px;
+  border: 1.5px dashed var(--soft);
+  border-radius: 999px;
+}
+.sketch-line.short { width: 54%; margin: 0 auto; }
+.preview-stack {
+  margin-top: 20px;
+  text-align: left;
+}
+.preview-stack .card { margin: 0 0 10px; }
+@media (max-width: 460px) {
+  body {
+    padding: 0;
+    background: var(--bg);
+  }
+  .app-shell {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    border-width: 0;
+    box-shadow: none;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="onboarding" class="screen active no-tab">
+    <div class="onboard-step active" id="obStep1">
+      <div class="onboard-panel">
+        <div class="wire-tree">
+          <div class="leaf left"></div>
+          <div class="leaf right"></div>
+          <div class="trunk"></div>
+          <div class="pot"></div>
+        </div>
+        <h2>这是你今年的成长树</h2>
+        <p>它会陪你走过四个季节。<br>这一版先用线稿把功能和交互跑顺。</p>
+        <div class="step-actions">
+          <button class="btn" onclick="nextOb(2)">开始这周安排</button>
+        </div>
+      </div>
+    </div>
+    <div class="onboard-step" id="obStep2">
+      <div class="onboard-panel">
+        <h2>这个季度，<br>你最想推进的一件事是什么？</h2>
+        <p>先写一件最重要的事就够了，后面我们再把它落到本周和今天。</p>
+        <textarea id="goalInput" class="goal-input" placeholder="比如：把个人成长 App 的主线原型跑通"></textarea>
+        <div class="step-actions">
+          <button class="btn" onclick="nextOb(3)">交给 AI 整理</button>
+        </div>
+      </div>
+    </div>
+    <div class="onboard-step" id="obStep3">
+      <div class="onboard-panel">
+        <h2>AI 正在整理这一周</h2>
+        <p>这一步只做两件事：提炼本周重点，生成今天的建议待办。</p>
+        <div class="sketch-loading">
+          <div class="sketch-line"></div>
+          <div class="sketch-line"></div>
+          <div class="sketch-line short"></div>
+        </div>
+      </div>
+    </div>
+    <div class="onboard-step" id="obStep4">
+      <div class="onboard-panel">
+        <h2>本周框架已经搭好</h2>
+        <p>你可以先去看今天的清单，也可以直接回首页记录今天的推进。</p>
+        <div class="preview-stack">
+          <div class="card">
+            <div class="section-title">本周重点</div>
+            <div id="onboardFocusPreview" class="tag-row"></div>
+          </div>
+          <div class="card">
+            <div class="section-title">今天建议待办</div>
+            <div id="onboardTodoPreview" class="todo-list"></div>
+          </div>
+        </div>
+        <div class="step-actions">
+          <button class="btn" onclick="finishOnboarding('checklist')">先看今天清单</button>
+          <button class="btn secondary" onclick="finishOnboarding('energy')">先看能量页</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="energy" class="screen">
+    <div class="page-header">
+      <div>
+        <div class="page-title">能量</div>
+        <div class="page-subtitle">第 16 周 · 2026 Q2 · 用今天清单做参照再打分</div>
+      </div>
+    </div>
+    <div class="card orb-card">
+      <div class="orb">
+        <div class="orb-value">
+          <strong id="orbValue">0%</strong>
+          <span id="orbMeta">本周累计</span>
+        </div>
+      </div>
+      <div class="inline-stats">
+        <div class="mini-card">
+          <strong id="recordedDays">0 / 7</strong>
+          <span>本周已记录天数</span>
+        </div>
+        <div class="mini-card">
+          <strong id="todayChecklistStat">0 / 0</strong>
+          <span>今日清单完成数</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">本周重点推进概览</div>
+      <div id="energyFocusList"></div>
+    </div>
+    <div class="card">
+      <div class="section-title">今日打分前参照</div>
+      <div id="energyEvidence" class="list-note"></div>
+      <div class="step-actions">
+        <button class="shell-button" onclick="switchTab('checklist')">去今天清单</button>
+      </div>
+    </div>
+    <div class="card slider-block">
+      <label for="energySlider">今天在这件事上，你推进了多少？</label>
+      <input id="energySlider" type="range" min="0" max="100" value="46" oninput="updateEnergySlider(this.value)">
+      <div id="energySliderValue" class="slider-value">46%</div>
+    </div>
+    <div class="card">
+      <button class="btn" onclick="maybePromptChecklist()">确认今日能量</button>
+      <button class="btn secondary" onclick="showSettlement()">进入周结算流程</button>
+    </div>
+  </div>
+
+  <div id="checklist" class="screen">
+    <div class="page-header">
+      <div>
+        <div class="page-title">清单</div>
+        <div id="checklistSubtitle" class="page-subtitle">今天，4 月 23 日，周四</div>
+      </div>
+      <button class="shell-button" onclick="openWeekView()">本周</button>
+    </div>
+    <div class="card">
+      <div class="section-title">本周重点</div>
+      <div id="checklistFocusTags" class="tag-row"></div>
+    </div>
+    <div class="card">
+      <div class="todo-topbar">
+        <div>
+          <div id="selectedDayTitle" style="font-size:18px;font-weight:700;">今天的待办</div>
+          <div id="selectedDayMeta" class="page-subtitle" style="margin-top:6px;">第 16 周 · 当前执行日</div>
+        </div>
+        <div id="selectedDayBadge" class="day-chip">今天</div>
+      </div>
+      <div id="checklistHint" class="list-note"></div>
+      <div id="todoList" class="todo-list"></div>
+      <div class="divider"></div>
+      <div class="add-row">
+        <input id="todoInput" type="text" placeholder="新增一个今天要做的待办">
+        <button class="shell-button" id="addTodoBtn" onclick="addTodo()">新增</button>
+      </div>
+      <div class="step-actions">
+        <button class="btn secondary" onclick="rerunAiDraft()">AI 重新整理今天</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="plan" class="screen">
+    <div class="page-header">
+      <div>
+        <div class="page-title">计划</div>
+        <div class="page-subtitle">先看 4 周节奏，再跳去这一周每天的清单</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">视图说明</div>
+      <div class="list-note">计划页只看周级重点，不展开到任务。点某个周节点，会跳去清单页的本周视图。</div>
+    </div>
+    <div id="planTimeline" class="timeline"></div>
+    <div class="card">
+      <button class="btn secondary" onclick="planReframe()">AI 协作调整后续 4 周</button>
+    </div>
+  </div>
+
+  <div id="tree" class="screen">
+    <div class="page-header">
+      <div>
+        <div class="page-title">成长树</div>
+        <div class="page-subtitle">树记录的是每周结果，不是某一天完成了几条 todo</div>
+      </div>
+    </div>
+    <div class="tree-wrap">
+      <div class="tree-board">
+        <div class="tree-canopy"></div>
+        <div class="tree-trunk"></div>
+        <div class="tree-branch branch-l1"></div>
+        <div class="tree-branch branch-r1"></div>
+        <div class="tree-branch branch-l2"></div>
+        <div class="tree-branch branch-r2"></div>
+        <button class="fruit small faint" style="left:92px;top:122px;" onclick="showFruit(1)"></button>
+        <button class="fruit small faint" style="right:94px;top:108px;" onclick="showFruit(2)"></button>
+        <button class="fruit small faint" style="left:124px;top:152px;" onclick="showFruit(3)"></button>
+        <button class="fruit" style="left:108px;top:88px;" onclick="showFruit(14)"></button>
+        <button class="fruit" style="right:106px;top:74px;" onclick="showFruit(15)"></button>
+        <button id="currentFruit" class="fruit current" style="right:126px;top:132px;" onclick="showFruit(16)"></button>
+      </div>
+      <div class="stat-grid">
+        <div class="mini-card">
+          <strong>15</strong>
+          <span>累计果实</span>
+        </div>
+        <div class="mini-card">
+          <strong>1</strong>
+          <span>季度达标</span>
+        </div>
+        <div class="mini-card">
+          <strong>发光</strong>
+          <span>荣誉层</span>
+        </div>
+      </div>
+    </div>
+    <div class="quarter-row">
+      <div class="quarter-step done"><i></i><span>Q1</span></div>
+      <div class="quarter-line"></div>
+      <div class="quarter-step active"><i></i><span>Q2</span></div>
+      <div class="quarter-line"></div>
+      <div class="quarter-step"><i></i><span>Q3</span></div>
+      <div class="quarter-line"></div>
+      <div class="quarter-step"><i></i><span>Q4</span></div>
+    </div>
+  </div>
+
+  <div id="weekViewModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">本周清单</div>
+          <div class="modal-subtitle">第 16 周 · 4/20 - 4/26 · 过去的日期会灰掉</div>
+        </div>
+        <button class="close-btn" onclick="closeWeekView()">×</button>
+      </div>
+      <div id="weekGrid" class="week-grid"></div>
+    </div>
+  </div>
+
+  <div id="checklistReminder" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">先看一眼今天清单？</div>
+          <div class="modal-subtitle">看起来今天的清单还没看过。你可以先看看，再回来记录推进。</div>
+        </div>
+        <button class="close-btn" onclick="closeReminder()">×</button>
+      </div>
+      <div class="step-actions">
+        <button class="btn" onclick="goChecklistFromReminder()">先看清单</button>
+        <button class="btn secondary" onclick="confirmEnergy(true)">继续记录</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="fruitModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div id="fruitTitle" class="modal-title">第 16 周</div>
+          <div class="modal-subtitle">这一周你主要在推进什么</div>
+        </div>
+        <button class="close-btn" onclick="closeFruit()">×</button>
+      </div>
+      <div id="fruitBody"></div>
+    </div>
+  </div>
+
+  <div id="settlementModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">周结算</div>
+          <div class="modal-subtitle">线稿里先把 4 步流程跑顺</div>
+        </div>
+        <button class="close-btn" onclick="closeSettlement()">×</button>
+      </div>
+      <div id="settle1" class="settle-step active">
+        <div class="list-note">这一周辛苦了，我们一起看看这周的收获吧。</div>
+        <div class="step-actions">
+          <button class="btn" onclick="nextSettle(2)">开始回顾</button>
+        </div>
+      </div>
+      <div id="settle2" class="settle-step">
+        <div class="section-title">每日能量回顾</div>
+        <div id="energyBars" class="bar-chart"></div>
+        <div class="step-actions">
+          <button class="btn" onclick="nextSettle(3)">继续</button>
+        </div>
+      </div>
+      <div id="settle3" class="settle-step">
+        <div class="section-title">本周重点推进情况</div>
+        <div id="settleFocusList"></div>
+        <div class="result-badge">
+          <span class="tiny muted">建议周结果</span>
+          <strong id="settleSuggested">0%</strong>
+        </div>
+        <div class="settle-slider" style="margin-top:16px;">
+          <label for="settleSlider">你也可以手动微调最终结果</label>
+          <input id="settleSlider" type="range" min="0" max="100" value="0" oninput="updateSettleSlider(this.value)">
+          <div id="settleSliderValue" class="slider-value">0%</div>
+        </div>
+        <div class="step-actions">
+          <button class="btn" onclick="nextSettle(4)">确认周结果</button>
+        </div>
+      </div>
+      <div id="settle4" class="settle-step">
+        <div class="fruit-badge"></div>
+        <div class="result-badge">
+          <span class="tiny muted">新的本周果实</span>
+          <strong id="finalWeekResult">0%</strong>
+        </div>
+        <textarea id="weekNoteInput" class="note-input" placeholder="写一句这周的感悟（可选）"></textarea>
+        <div class="step-actions">
+          <button class="btn" onclick="finishSettlement()">完成结算</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tabBar" class="tab-bar hidden">
+    <button class="tab-item active" data-tab="energy" onclick="switchTab('energy')">
+      <strong>能量</strong>
+      <span>反馈</span>
+    </button>
+    <button class="tab-item" data-tab="checklist" onclick="switchTab('checklist')">
+      <strong>清单</strong>
+      <span>今天</span>
+    </button>
+    <button class="tab-item" data-tab="plan" onclick="switchTab('plan')">
+      <strong>计划</strong>
+      <span>这 4 周</span>
+    </button>
+    <button class="tab-item" data-tab="tree" onclick="switchTab('tree')">
+      <strong>成长树</strong>
+      <span>回看</span>
+    </button>
+  </div>
+</div>
+
+<script>
+const dayOrder = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const dayMeta = {
+  mon: { label: "周一", date: "4/20", note: "已过", relative: "past" },
+  tue: { label: "周二", date: "4/21", note: "已过", relative: "past" },
+  wed: { label: "周三", date: "4/22", note: "已过", relative: "past" },
+  thu: { label: "周四", date: "4/23", note: "今天", relative: "today" },
+  fri: { label: "周五", date: "4/24", note: "未来", relative: "future" },
+  sat: { label: "周六", date: "4/25", note: "未来", relative: "future" },
+  sun: { label: "周日", date: "4/26", note: "未来", relative: "future" }
+};
+
+let todoId = 100;
+
+const state = {
+  activeScreen: "onboarding",
+  onboardingStep: 1,
+  todayKey: "thu",
+  selectedDay: "thu",
+  viewedTodayChecklist: false,
+  energySlider: 46,
+  settleSlider: 0,
+  currentSettleStep: 1,
+  goal: "把个人成长 App 的主线线稿原型跑通",
+  notice: "",
+  weekFocuses: [
+    { id: "focus-1", title: "跑通 4 个 Tab 的线稿主流程" },
+    { id: "focus-2", title: "把清单改成今日优先的 todolist" },
+    { id: "focus-3", title: "保留周结算和成长树回看体验" }
+  ],
+  todos: {
+    mon: [
+      { id: 1, focusId: "focus-1", text: "梳理能量 / 清单 / 计划 / 树 4 个页面骨架", done: true, source: "AI 建议" },
+      { id: 2, focusId: "focus-2", text: "确认清单页改成日粒度执行台", done: true, source: "手动添加" }
+    ],
+    tue: [
+      { id: 3, focusId: "focus-2", text: "把本周入口放到清单页右上角", done: true, source: "AI 建议" },
+      { id: 4, focusId: "focus-1", text: "梳理计划页跳转到清单周视图的路径", done: true, source: "AI 建议" }
+    ],
+    wed: [
+      { id: 5, focusId: "focus-3", text: "保留周结算 4 步结构，不做精细动效", done: true, source: "手动添加" },
+      { id: 6, focusId: "focus-2", text: "确定过去日期灰化、今天高亮、未来可安排", done: false, source: "AI 建议" }
+    ],
+    thu: [
+      { id: 7, focusId: "focus-1", text: "新建 wireframe.html 单文件原型", done: false, source: "AI 建议" },
+      { id: 8, focusId: "focus-2", text: "接通今日清单的新增 / 编辑 / 删除 / 勾选", done: false, source: "AI 建议" },
+      { id: 9, focusId: "focus-3", text: "接上打分提醒、周结算和果实回顾弹层", done: false, source: "AI 建议" }
+    ],
+    fri: [
+      { id: 10, focusId: "focus-2", text: "试着提前安排明天要做的两件事", done: false, source: "建议待办" }
+    ],
+    sat: [
+      { id: 11, focusId: "focus-3", text: "进入周结算，确认这一周的结果", done: false, source: "建议待办" }
+    ],
+    sun: [
+      { id: 12, focusId: "focus-3", text: "回看树上的新果实，写一句周感悟", done: false, source: "建议待办" }
+    ]
+  },
+  energyHistory: {
+    mon: 36,
+    tue: 58,
+    wed: 72,
+    thu: 46,
+    fri: null,
+    sat: null,
+    sun: null
+  },
+  fruits: {
+    1: {
+      title: "第 1 周（2026-01-05）",
+      focus: ["设定年度方向", "写下 Q1 目标"],
+      result: 90,
+      note: "开年的第一周，节奏很清爽。"
+    },
+    2: {
+      title: "第 2 周（2026-01-12）",
+      focus: ["建立晨跑节奏", "恢复阅读输入"],
+      result: 66,
+      note: "工作有点满，但还是把节奏续上了。"
+    },
+    3: {
+      title: "第 3 周（2026-01-19）",
+      focus: ["读完第一本书的一半", "晨跑 4 次"],
+      result: 78,
+      note: "这周开始重新感到自己在往前走。"
+    },
+    14: {
+      title: "第 14 周（2026-04-07）",
+      focus: ["定产品主线", "写清楚功能边界"],
+      result: 86,
+      note: "产品主舞台终于清晰了。"
+    },
+    15: {
+      title: "第 15 周（2026-04-14）",
+      focus: ["完成彩色演示稿", "确认年度成长树结构"],
+      result: 73,
+      note: "视觉表达很完整，但还需要一版更适合走逻辑的线稿。"
+    },
+    16: {
+      title: "第 16 周（2026-04-21）",
+      focus: ["跑通 4 个 Tab 的线稿主流程", "把清单改成今日优先的 todolist", "保留周结算和成长树回看体验"],
+      result: 53,
+      note: "这周还在进行中。"
+    }
+  }
+};
+
+function getDayStatus(dayKey) {
+  return dayMeta[dayKey].relative;
+}
+
+function formatDayTitle(dayKey) {
+  const meta = dayMeta[dayKey];
+  return `${meta.label} · ${meta.date}`;
+}
+
+function getRecordedValues() {
+  return Object.values(state.energyHistory).filter((value) => typeof value === "number");
+}
+
+function calculateWeekResult() {
+  const values = getRecordedValues();
+  if (!values.length) return 0;
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function getDayTodoStats(dayKey) {
+  const list = state.todos[dayKey] || [];
+  const done = list.filter((item) => item.done).length;
+  return { done, total: list.length };
+}
+
+function getFocusProgress(focusId) {
+  let total = 0;
+  let done = 0;
+  dayOrder.forEach((dayKey) => {
+    (state.todos[dayKey] || []).forEach((todo) => {
+      if (todo.focusId === focusId) {
+        total += 1;
+        if (todo.done) done += 1;
+      }
+    });
+  });
+  return total ? Math.round((done / total) * 100) : 0;
+}
+
+function setActiveScreen(screen) {
+  state.activeScreen = screen;
+  document.querySelectorAll(".screen").forEach((item) => item.classList.remove("active"));
+  document.getElementById(screen).classList.add("active");
+  document.querySelectorAll(".tab-item").forEach((item) => {
+    item.classList.toggle("active", item.dataset.tab === screen);
+  });
+  if (screen === "checklist" && state.selectedDay === state.todayKey) {
+    state.viewedTodayChecklist = true;
+  }
+  renderApp();
+}
+
+function switchTab(screen) {
+  if (screen === "checklist" && state.selectedDay === state.todayKey) {
+    state.viewedTodayChecklist = true;
+  }
+  closeWeekView();
+  closeReminder();
+  closeFruit();
+  setActiveScreen(screen);
+}
+
+function nextOb(step) {
+  state.onboardingStep = step;
+  document.querySelectorAll(".onboard-step").forEach((item) => item.classList.remove("active"));
+  document.getElementById(`obStep${step}`).classList.add("active");
+  if (step === 3) {
+    const value = document.getElementById("goalInput").value.trim();
+    if (value) state.goal = value;
+    setTimeout(() => {
+      renderOnboardingPreview();
+      nextOb(4);
+    }, 900);
+  }
+}
+
+function renderOnboardingPreview() {
+  document.getElementById("onboardFocusPreview").innerHTML = state.weekFocuses
+    .map((focus) => `<span class="tag">${focus.title}</span>`)
+    .join("");
+  const preview = (state.todos[state.todayKey] || [])
+    .slice(0, 3)
+    .map((todo) => `
+      <div class="todo-item">
+        <button class="todo-check" disabled></button>
+        <div class="todo-copy">
+          <strong>${todo.text}</strong>
+          <span>${todo.source}</span>
+        </div>
+      </div>
+    `)
+    .join("");
+  document.getElementById("onboardTodoPreview").innerHTML = preview;
+}
+
+function finishOnboarding(targetScreen) {
+  document.getElementById("onboarding").classList.remove("active");
+  document.getElementById("tabBar").classList.remove("hidden");
+  setActiveScreen(targetScreen);
+}
+
+function updateEnergySlider(value) {
+  state.energySlider = Number(value);
+  document.getElementById("energySliderValue").textContent = `${value}%`;
+}
+
+function maybePromptChecklist() {
+  if (!state.viewedTodayChecklist) {
+    document.getElementById("checklistReminder").classList.add("show");
+    return;
+  }
+  confirmEnergy(true);
+}
+
+function closeReminder() {
+  document.getElementById("checklistReminder").classList.remove("show");
+}
+
+function goChecklistFromReminder() {
+  closeReminder();
+  state.selectedDay = state.todayKey;
+  state.viewedTodayChecklist = true;
+  setActiveScreen("checklist");
+}
+
+function confirmEnergy(forceCloseReminder) {
+  if (forceCloseReminder) closeReminder();
+  state.energyHistory[state.todayKey] = state.energySlider;
+  state.notice = `今天的推进已记录为 ${state.energySlider}%`;
+  renderApp();
+}
+
+function renderEnergy() {
+  const weekResult = calculateWeekResult();
+  const recordedCount = getRecordedValues().length;
+  const todayStats = getDayTodoStats(state.todayKey);
+  document.getElementById("orbValue").textContent = `${weekResult}%`;
+  document.getElementById("orbMeta").textContent = "本周累计";
+  document.getElementById("recordedDays").textContent = `${recordedCount} / 7`;
+  document.getElementById("todayChecklistStat").textContent = `${todayStats.done} / ${todayStats.total}`;
+  document.getElementById("energySlider").value = state.energySlider;
+  document.getElementById("energySliderValue").textContent = `${state.energySlider}%`;
+  document.getElementById("energyEvidence").textContent = state.viewedTodayChecklist
+    ? `你今天已经看过清单，当前完成 ${todayStats.done} / ${todayStats.total}。现在可以结合本周重点的推进感再打分。`
+    : "今天的清单还没看过。建议先看一眼今天在做什么，再回来记录推进。";
+  document.getElementById("energyFocusList").innerHTML = state.weekFocuses
+    .map((focus) => `
+      <div class="progress-row">
+        <div class="progress-dot"></div>
+        <div class="progress-copy">${focus.title}</div>
+        <div class="progress-value">${getFocusProgress(focus.id)}%</div>
+      </div>
+    `)
+    .join("");
+}
+
+function renderChecklist() {
+  const dayKey = state.selectedDay;
+  const day = dayMeta[dayKey];
+  const status = getDayStatus(dayKey);
+  const list = state.todos[dayKey] || [];
+  const readOnly = status === "past";
+  const subtitle = status === "today"
+    ? `今天，${day.date}，${day.label}`
+    : `${day.date}，${day.label} · ${status === "past" ? "过去日期，仅查看" : "未来日期，可提前安排"}`;
+  document.getElementById("checklistSubtitle").textContent = subtitle;
+  document.getElementById("selectedDayTitle").textContent = status === "today" ? "今天的待办" : `${day.label} 的待办`;
+  document.getElementById("selectedDayMeta").textContent = `第 16 周 · ${day.date} · ${day.note}`;
+  const badge = document.getElementById("selectedDayBadge");
+  badge.textContent = day.note;
+  badge.className = `day-chip${status === "past" ? " is-past" : ""}`;
+  document.getElementById("checklistFocusTags").innerHTML = state.weekFocuses
+    .map((focus) => `<span class="tag">${focus.title}</span>`)
+    .join("");
+  document.getElementById("checklistHint").textContent = readOnly
+    ? "这是已经过去的日期，线稿里先做成灰化查看态，不强调补填。"
+    : status === "today"
+      ? "今天是执行主场。你可以直接增删改查待办，右上角点“本周”再看整周分布。"
+      : "这是未来日期。你可以提前放几个待办，为这一周留出缓冲。";
+  document.getElementById("todoList").innerHTML = list.length
+    ? list
+        .map((todo) => `
+          <div class="todo-item${todo.done ? " done" : ""}${readOnly ? " past-day" : ""}">
+            <button class="todo-check" ${readOnly ? "disabled" : ""} onclick="toggleTodo(${todo.id})">${todo.done ? "✓" : ""}</button>
+            <div class="todo-copy">
+              <strong>${todo.text}</strong>
+              <span>${todo.source}</span>
+            </div>
+            <div class="todo-actions">
+              <button class="text-btn" ${readOnly ? "disabled" : ""} onclick="editTodo(${todo.id})">编辑</button>
+              <button class="text-btn" ${readOnly ? "disabled" : ""} onclick="deleteTodo(${todo.id})">删除</button>
+            </div>
+          </div>
+        `)
+        .join("")
+    : `<div class="list-note">这一天还没有安排待办。你可以稍后再补，或者让 AI 先给一版建议。</div>`;
+  document.getElementById("todoInput").value = "";
+  document.getElementById("todoInput").disabled = readOnly;
+  document.getElementById("addTodoBtn").disabled = readOnly;
+}
+
+function addTodo() {
+  const input = document.getElementById("todoInput");
+  const value = input.value.trim();
+  if (!value || getDayStatus(state.selectedDay) === "past") return;
+  todoId += 1;
+  state.todos[state.selectedDay].push({
+    id: todoId,
+    focusId: "focus-2",
+    text: value,
+    done: false,
+    source: "手动添加"
+  });
+  renderApp();
+}
+
+function toggleTodo(id) {
+  if (getDayStatus(state.selectedDay) === "past") return;
+  const list = state.todos[state.selectedDay];
+  const target = list.find((todo) => todo.id === id);
+  if (!target) return;
+  target.done = !target.done;
+  renderApp();
+}
+
+function editTodo(id) {
+  if (getDayStatus(state.selectedDay) === "past") return;
+  const list = state.todos[state.selectedDay];
+  const target = list.find((todo) => todo.id === id);
+  if (!target) return;
+  const nextText = window.prompt("修改这条待办", target.text);
+  if (nextText === null) return;
+  const trimmed = nextText.trim();
+  if (!trimmed) return;
+  target.text = trimmed;
+  target.source = "手动修改";
+  renderApp();
+}
+
+function deleteTodo(id) {
+  if (getDayStatus(state.selectedDay) === "past") return;
+  state.todos[state.selectedDay] = state.todos[state.selectedDay].filter((todo) => todo.id !== id);
+  renderApp();
+}
+
+function rerunAiDraft() {
+  if (getDayStatus(state.selectedDay) === "past") return;
+  todoId += 1;
+  state.todos[state.selectedDay].push({
+    id: todoId,
+    focusId: "focus-1",
+    text: "AI 建议：先把这一屏的关键状态补齐",
+    done: false,
+    source: "AI 重新整理"
+  });
+  document.getElementById("checklistHint").textContent = "AI 已根据本周重点补了一条建议待办，你可以继续调整。";
+  renderChecklist();
+  renderEnergy();
+}
+
+function openWeekView() {
+  document.getElementById("weekViewModal").classList.add("show");
+}
+
+function closeWeekView() {
+  document.getElementById("weekViewModal").classList.remove("show");
+}
+
+function selectDay(dayKey) {
+  state.selectedDay = dayKey;
+  if (dayKey === state.todayKey) {
+    state.viewedTodayChecklist = true;
+  }
+  closeWeekView();
+  setActiveScreen("checklist");
+}
+
+function renderWeekView() {
+  document.getElementById("weekGrid").innerHTML = dayOrder
+    .map((dayKey) => {
+      const meta = dayMeta[dayKey];
+      const stats = getDayTodoStats(dayKey);
+      const status = getDayStatus(dayKey);
+      return `
+        <button class="week-card${status === "past" ? " past" : ""}${status === "today" ? " today" : ""}" onclick="selectDay('${dayKey}')">
+          <div class="week-card-head">
+            <div>
+              <strong>${meta.label}</strong>
+              <span>${meta.date}</span>
+            </div>
+            <em>${meta.note}</em>
+          </div>
+          <span>完成 ${stats.done} / ${stats.total} 条待办</span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function renderPlan() {
+  const weeks = [
+    {
+      className: "past",
+      title: "第 14 周",
+      range: "4/6 - 4/12",
+      lines: ["完成产品设计规格的主结构", "确认成长树作为长期反馈主舞台"],
+      foot: "周结果 86%"
+    },
+    {
+      className: "past",
+      title: "第 15 周",
+      range: "4/13 - 4/19",
+      lines: ["做出彩色演示稿", "跑通 4 个主页面的第一版视觉稿"],
+      foot: "周结果 73%"
+    },
+    {
+      className: "current",
+      title: "第 16 周",
+      range: "4/20 - 4/26",
+      lines: state.weekFocuses.map((focus) => focus.title),
+      foot: "进行中 · 点我进入本周清单"
+    },
+    {
+      className: "future",
+      title: "第 17 周",
+      range: "4/27 - 5/3",
+      lines: ["把线稿确认过的结构落到真实前端", "补充更多周视图和结算边界情况"],
+      foot: "未来计划 · 点我看周视图原型"
+    }
+  ];
+  document.getElementById("planTimeline").innerHTML = weeks
+    .map((week, index) => `
+      <div class="timeline-node ${week.className}">
+        <div class="timeline-dot"></div>
+        <button class="timeline-card" onclick="jumpFromPlan(${index})">
+          <div class="timeline-week">${week.title}</div>
+          <div class="timeline-meta">${week.range}</div>
+          <div class="timeline-list">
+            ${week.lines.map((line) => `<div>• ${line}</div>`).join("")}
+          </div>
+          <div class="timeline-meta" style="margin-top:10px;">${week.foot}</div>
+        </button>
+      </div>
+    `)
+    .join("");
+}
+
+function jumpFromPlan(index) {
+  if (index >= 2) {
+    state.selectedDay = index === 2 ? state.todayKey : "fri";
+  } else {
+    state.selectedDay = "wed";
+  }
+  setActiveScreen("checklist");
+  openWeekView();
+}
+
+function planReframe() {
+  window.alert("线稿里先保留入口：这里会进入 AI 协作调整 4 周计划。");
+}
+
+function showFruit(week) {
+  const fruit = state.fruits[week];
+  if (!fruit) return;
+  document.getElementById("fruitTitle").textContent = fruit.title;
+  document.getElementById("fruitBody").innerHTML = `
+    <div class="section-title">这周你主要在推进什么</div>
+    <div class="todo-list">
+      ${fruit.focus.map((line) => `<div class="todo-item"><div class="todo-copy"><strong>${line}</strong></div></div>`).join("")}
+    </div>
+    <div class="result-badge">
+      <span class="tiny muted">本周结果</span>
+      <strong>${fruit.result}%</strong>
+    </div>
+    <div class="list-note" style="margin-top:16px;">${fruit.note}</div>
+  `;
+  document.getElementById("fruitModal").classList.add("show");
+}
+
+function closeFruit() {
+  document.getElementById("fruitModal").classList.remove("show");
+}
+
+function showSettlement() {
+  state.currentSettleStep = 1;
+  state.settleSlider = calculateWeekResult();
+  document.getElementById("settlementModal").classList.add("show");
+  renderSettlement();
+}
+
+function closeSettlement() {
+  document.getElementById("settlementModal").classList.remove("show");
+}
+
+function nextSettle(step) {
+  state.currentSettleStep = step;
+  renderSettlement();
+}
+
+function updateSettleSlider(value) {
+  state.settleSlider = Number(value);
+  document.getElementById("settleSliderValue").textContent = `${value}%`;
+}
+
+function renderSettlement() {
+  document.querySelectorAll(".settle-step").forEach((item) => item.classList.remove("active"));
+  document.getElementById(`settle${state.currentSettleStep}`).classList.add("active");
+  const suggested = calculateWeekResult();
+  state.settleSlider = state.currentSettleStep === 1 ? suggested : state.settleSlider;
+  document.getElementById("settleSuggested").textContent = `${suggested}%`;
+  document.getElementById("settleSlider").value = state.settleSlider;
+  document.getElementById("settleSliderValue").textContent = `${state.settleSlider}%`;
+  document.getElementById("finalWeekResult").textContent = `${state.settleSlider}%`;
+  document.getElementById("energyBars").innerHTML = dayOrder
+    .map((dayKey) => {
+      const value = state.energyHistory[dayKey] || 0;
+      return `
+        <div class="bar-col">
+          <div class="bar" style="height:${Math.max(value, 8)}%;"></div>
+          <span>${dayMeta[dayKey].label.replace("周", "")}</span>
+        </div>
+      `;
+    })
+    .join("");
+  document.getElementById("settleFocusList").innerHTML = state.weekFocuses
+    .map((focus) => `
+      <div class="progress-row">
+        <div class="progress-dot"></div>
+        <div class="progress-copy">${focus.title}</div>
+        <div class="progress-value">${getFocusProgress(focus.id)}%</div>
+      </div>
+    `)
+    .join("");
+}
+
+function finishSettlement() {
+  const result = state.settleSlider;
+  state.fruits[16].result = result;
+  const noteValue = document.getElementById("weekNoteInput").value.trim();
+  if (noteValue) {
+    state.fruits[16].note = noteValue;
+  } else {
+    state.fruits[16].note = `第 16 周已完成结算，最终结果 ${result}%。`;
+  }
+  document.getElementById("currentFruit").classList.remove("faint");
+  closeSettlement();
+  renderApp();
+}
+
+function renderApp() {
+  renderOnboardingPreview();
+  renderEnergy();
+  renderChecklist();
+  renderWeekView();
+  renderPlan();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("goalInput").value = state.goal;
+  renderApp();
+});
+</script>
+</body>
+</html>

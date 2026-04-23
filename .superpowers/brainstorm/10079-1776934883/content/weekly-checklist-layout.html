@@ -1,0 +1,348 @@
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .card {
+    cursor: pointer;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+    border-radius: 28px;
+    background: #0e1020;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+  }
+
+  .screen {
+    border-radius: 20px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top right, rgba(122, 92, 252, 0.16), transparent 35%),
+      #0a0b16;
+    min-height: 640px;
+    padding: 18px 16px 22px;
+    color: #f2f0ff;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .meta {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #9a98b3;
+  }
+
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c9b6ff;
+    background: rgba(255,255,255,0.03);
+    flex-shrink: 0;
+  }
+
+  .today-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 18px;
+  }
+
+  .section-label {
+    font-size: 12px;
+    color: #8b87a6;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .todo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 14px;
+  }
+
+  .todo-row:last-child {
+    border-bottom: none;
+  }
+
+  .check {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255,255,255,0.18);
+    flex-shrink: 0;
+  }
+
+  .check.done {
+    background: #7c5cfc;
+    border-color: #7c5cfc;
+    box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.14);
+  }
+
+  .row-actions {
+    margin-left: auto;
+    font-size: 11px;
+    color: #8f88b6;
+  }
+
+  .add-row {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px dashed rgba(201,182,255,0.22);
+    color: #c9b6ff;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .day-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .day-card {
+    border-radius: 16px;
+    padding: 13px 14px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .day-card.past {
+    opacity: 0.42;
+    filter: grayscale(0.3);
+  }
+
+  .day-card.future {
+    opacity: 0.78;
+  }
+
+  .day-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: #f6f4ff;
+    background: rgba(124,92,252,0.9);
+  }
+
+  .summary {
+    font-size: 12px;
+    color: #a7a4bf;
+    line-height: 1.6;
+  }
+
+  .week-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .day-pill {
+    border-radius: 16px;
+    padding: 10px 0;
+    text-align: center;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 12px;
+    color: #cfcce2;
+  }
+
+  .day-pill span {
+    display: block;
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .day-pill.past {
+    opacity: 0.35;
+  }
+
+  .day-pill.active {
+    background: linear-gradient(180deg, rgba(124,92,252,0.24), rgba(124,92,252,0.09));
+    border-color: rgba(201,182,255,0.22);
+    box-shadow: 0 10px 30px rgba(124,92,252,0.16);
+  }
+
+  .detail-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 16px 14px;
+  }
+
+  .muted-block {
+    border-radius: 16px;
+    margin-top: 12px;
+    padding: 12px 13px;
+    background: rgba(255,255,255,0.025);
+    border: 1px dashed rgba(255,255,255,0.08);
+    opacity: 0.52;
+  }
+
+  .muted-block .summary {
+    margin-top: 6px;
+  }
+
+  .caption {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #a9a4c7;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 1100px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<h2>周视图要长什么样？</h2>
+<p class="subtitle">两种方案都保留“过去日期灰掉”，差别在于你进入周视图后，是更像完整清单浏览，还是更像日期导航。</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="phone">
+        <div class="screen">
+          <div class="topbar">
+            <div>
+              <div class="title">本周清单</div>
+              <div class="meta">4 月 21 日这一周</div>
+            </div>
+            <div class="icon-btn">周</div>
+          </div>
+
+          <div class="day-stack">
+            <div class="day-card past">
+              <div class="day-top"><span>周一</span><span>已过去</span></div>
+              <div class="summary">2 / 3 已完成 · 已自动置灰</div>
+            </div>
+
+            <div class="day-card past">
+              <div class="day-top"><span>周二</span><span>已过去</span></div>
+              <div class="summary">1 / 4 已完成 · 已自动置灰</div>
+            </div>
+
+            <div class="day-card">
+              <div class="day-top"><span>周三</span><span class="badge">今天</span></div>
+              <div class="summary">展开显示今天全部 Todo</div>
+            </div>
+
+            <div class="day-card future">
+              <div class="day-top"><span>周四</span><span>明天</span></div>
+              <div class="summary">3 条待办 · 默认折叠</div>
+            </div>
+
+            <div class="day-card future">
+              <div class="day-top"><span>周五</span><span>后天</span></div>
+              <div class="summary">2 条待办 · 默认折叠</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 按天纵向展开</h3>
+      <p>一眼看到这周每天的 todo 概览，今天那天展开最完整，过去日期自然置灰。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="phone">
+        <div class="screen">
+          <div class="topbar">
+            <div>
+              <div class="title">清单</div>
+              <div class="meta">今天优先，周视图做辅助</div>
+            </div>
+            <div class="icon-btn">周</div>
+          </div>
+
+          <div class="week-strip">
+            <div class="day-pill past">一<span>21</span></div>
+            <div class="day-pill past">二<span>22</span></div>
+            <div class="day-pill active">三<span>23</span></div>
+            <div class="day-pill">四<span>24</span></div>
+            <div class="day-pill">五<span>25</span></div>
+            <div class="day-pill">六<span>26</span></div>
+            <div class="day-pill">日<span>27</span></div>
+          </div>
+
+          <div class="detail-card">
+            <div class="section-label">今天的 Todo</div>
+            <div class="todo-row">
+              <div class="check done"></div>
+              <span>把原型清单页改成今日待办</span>
+              <span class="row-actions">编辑</span>
+            </div>
+            <div class="todo-row">
+              <div class="check"></div>
+              <span>补上周视图入口和跳转</span>
+              <span class="row-actions">删除</span>
+            </div>
+            <div class="todo-row">
+              <div class="check"></div>
+              <span>验证过去日期置灰状态</span>
+              <span class="row-actions">编辑</span>
+            </div>
+            <div class="add-row">+ 新增一条待办</div>
+          </div>
+
+          <div class="muted-block">
+            <div class="section-label">本周其他日期</div>
+            <div class="summary">下面继续列出周四、周五、周六、周日的摘要卡片，重点还是今天这一屏。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 顶部星期导航 + 今日详情</h3>
+      <p>主舞台更像普通 TodoList，周视图通过顶部日期带和下方摘要补充，今天更聚焦。</p>
+    </div>
+  </div>
+</div>
+
+<div class="caption">
+  我推荐优先看 A 和 B 的整体感觉差异：A 更强调“这一周每天都在眼前”，B 更强调“今天先完成，再顺手扫一眼本周”。
+</div>
