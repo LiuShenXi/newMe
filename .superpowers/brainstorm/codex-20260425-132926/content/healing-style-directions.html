@@ -1,0 +1,325 @@
+<style>
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  @media (max-width: 980px) {
+    .style-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .style-card {
+    border: 1px solid rgba(20, 28, 24, 0.12);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+
+  .style-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 44px rgba(32, 36, 32, 0.12);
+  }
+
+  .style-card.selected {
+    border-color: #315f4d;
+    box-shadow: 0 0 0 3px rgba(49, 95, 77, 0.18), 0 18px 44px rgba(32, 36, 32, 0.12);
+  }
+
+  .phone {
+    width: min(100%, 280px);
+    height: 560px;
+    margin: 18px auto 0;
+    border-radius: 34px;
+    border: 7px solid rgba(18, 24, 22, 0.82);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 18px 40px rgba(10, 16, 14, 0.2);
+  }
+
+  .phone-inner {
+    height: 100%;
+    padding: 22px 18px 82px;
+    position: relative;
+  }
+
+  .mini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.72;
+    margin-bottom: 20px;
+  }
+
+  .mini-title {
+    font-size: 22px;
+    line-height: 1.25;
+    font-weight: 650;
+    letter-spacing: 0;
+    margin-bottom: 4px;
+  }
+
+  .mini-subtitle {
+    font-size: 12px;
+    line-height: 1.55;
+    opacity: 0.66;
+    margin-bottom: 18px;
+  }
+
+  .orb {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 8px auto 18px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    font-size: 38px;
+    font-weight: 680;
+  }
+
+  .orb small {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 2px;
+    opacity: 0.66;
+  }
+
+  .quiet-panel {
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .focus-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    line-height: 1.35;
+    margin: 9px 0;
+  }
+
+  .focus-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: none;
+  }
+
+  .bottom-nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 66px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .style-body {
+    padding: 18px 18px 20px;
+  }
+
+  .style-body h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+  }
+
+  .style-body p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #5f6863;
+  }
+
+  .keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .keywords span {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(48, 62, 54, 0.08);
+    color: #536058;
+  }
+
+  .morning .phone-inner {
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255, 246, 214, 0.72), transparent 28%),
+      linear-gradient(180deg, #edf5ee 0%, #f7f1df 58%, #fbf8ee 100%);
+    color: #20382f;
+  }
+
+  .morning .orb {
+    background:
+      radial-gradient(circle at 36% 28%, rgba(255, 255, 244, 0.98), rgba(191, 222, 182, 0.64) 33%, rgba(94, 144, 112, 0.28) 67%, rgba(255,255,255,0.32) 100%);
+    box-shadow: 0 0 42px rgba(124, 171, 116, 0.35);
+  }
+
+  .morning .quiet-panel {
+    background: rgba(255, 255, 246, 0.72);
+    border: 1px solid rgba(72, 108, 81, 0.13);
+  }
+
+  .morning .focus-dot {
+    background: #6d946e;
+  }
+
+  .morning .bottom-nav {
+    background: rgba(255, 255, 247, 0.86);
+    border-top: 1px solid rgba(72, 108, 81, 0.12);
+  }
+
+  .journal .phone-inner {
+    background:
+      linear-gradient(rgba(92, 73, 49, 0.055) 1px, transparent 1px),
+      linear-gradient(180deg, #fbf3df 0%, #f6e9cf 62%, #fffaf0 100%);
+    background-size: 100% 28px, auto;
+    color: #4b3928;
+  }
+
+  .journal .orb {
+    background:
+      radial-gradient(circle at 35% 28%, rgba(255, 252, 236, 1), rgba(236, 185, 121, 0.48) 35%, rgba(164, 104, 61, 0.22) 72%, rgba(255,246,222,0.48));
+    border: 1px solid rgba(117, 82, 46, 0.18);
+    box-shadow: 0 12px 36px rgba(150, 96, 49, 0.18);
+  }
+
+  .journal .quiet-panel {
+    background: rgba(255, 252, 240, 0.74);
+    border: 1px solid rgba(117, 82, 46, 0.14);
+  }
+
+  .journal .focus-dot {
+    background: #b98355;
+  }
+
+  .journal .bottom-nav {
+    background: rgba(255, 249, 234, 0.9);
+    border-top: 1px solid rgba(117, 82, 46, 0.13);
+  }
+
+  .greenhouse .phone-inner {
+    background:
+      radial-gradient(circle at 74% 18%, rgba(207, 234, 207, 0.62), transparent 22%),
+      radial-gradient(circle at 20% 72%, rgba(234, 206, 142, 0.28), transparent 22%),
+      linear-gradient(180deg, #10231d 0%, #18372e 48%, #f6f0dc 100%);
+    color: #f4f1df;
+  }
+
+  .greenhouse .orb {
+    background:
+      radial-gradient(circle at 38% 26%, rgba(255, 255, 230, 1), rgba(143, 211, 157, 0.68) 35%, rgba(31, 87, 67, 0.76) 70%, rgba(244, 239, 210, 0.28));
+    box-shadow: 0 0 48px rgba(143, 211, 157, 0.38);
+  }
+
+  .greenhouse .quiet-panel {
+    background: rgba(251, 247, 226, 0.88);
+    color: #214236;
+    border: 1px solid rgba(230, 218, 173, 0.35);
+  }
+
+  .greenhouse .focus-dot {
+    background: #d4b96c;
+  }
+
+  .greenhouse .bottom-nav {
+    background: rgba(17, 39, 32, 0.88);
+    border-top: 1px solid rgba(255, 255, 230, 0.15);
+    color: #efeacc;
+  }
+
+  .caption {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #718077;
+    text-align: center;
+  }
+</style>
+
+<h2>这次先不做组件库：先选一个“治愈感”的设计语言方向</h2>
+<p class="subtitle">下面不是最终 UI，只是用来判断产品气质。请优先看：你愿不愿意每天打开它记录一次能量。</p>
+
+<div class="style-grid">
+  <div class="style-card morning" data-choice="morning-garden" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-inner">
+        <div class="mini-header"><span>今天</span><span>第 16 周</span></div>
+        <div class="mini-title">给今天一点光</div>
+        <div class="mini-subtitle">不用急，先看看这周真正往前走了哪里。</div>
+        <div class="orb"><div>64%<small>本周能量</small></div></div>
+        <div class="quiet-panel">
+          <div class="focus-row"><span class="focus-dot"></span><span>完成首页体验骨架</span></div>
+          <div class="focus-row"><span class="focus-dot"></span><span>整理 3 个关键反馈节点</span></div>
+          <div class="focus-row"><span class="focus-dot"></span><span>记录一次真实使用感受</span></div>
+        </div>
+        <div class="bottom-nav"><span>能量</span><span>清单</span><span>计划</span><span>树</span></div>
+      </div>
+    </div>
+    <div class="style-body">
+      <h3>A. 晨雾花园</h3>
+      <p>明亮、柔软、植物感强。治愈来自清晨、空气、光和生命力，适合减少压力感。</p>
+      <div class="keywords"><span>浅色</span><span>自然</span><span>温柔</span><span>轻盈</span></div>
+    </div>
+  </div>
+
+  <div class="style-card journal" data-choice="warm-journal" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-inner">
+        <div class="mini-header"><span>今日页</span><span>安静记录</span></div>
+        <div class="mini-title">今天有一点进展，就很好</div>
+        <div class="mini-subtitle">像一本会回应你的成长手帐，少一点系统感，多一点生活温度。</div>
+        <div class="orb"><div>64%<small>推进感</small></div></div>
+        <div class="quiet-panel">
+          <div class="focus-row"><span class="focus-dot"></span><span>把原型问题写清楚</span></div>
+          <div class="focus-row"><span class="focus-dot"></span><span>完成一版首页调整</span></div>
+          <div class="focus-row"><span class="focus-dot"></span><span>晚上做 5 分钟回看</span></div>
+        </div>
+        <div class="bottom-nav"><span>能量</span><span>清单</span><span>计划</span><span>树</span></div>
+      </div>
+    </div>
+    <div class="style-body">
+      <h3>B. 温暖手帐</h3>
+      <p>纸张、笔记、柔和木色。治愈来自“被认真接住”，适合日常陪伴和自我整理。</p>
+      <div class="keywords"><span>手作</span><span>温暖</span><span>低压</span><span>生活感</span></div>
+    </div>
+  </div>
+
+  <div class="style-card greenhouse" data-choice="moon-greenhouse" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="phone-inner">
+        <div class="mini-header"><span>能量</span><span>温室中</span></div>
+        <div class="mini-title">树记得你慢慢长大的样子</div>
+        <div class="mini-subtitle">保留一点神秘感，但从暗紫星空转向安静温室。</div>
+        <div class="orb"><div>64%<small>今日注入</small></div></div>
+        <div class="quiet-panel">
+          <div class="focus-row"><span class="focus-dot"></span><span>让成长树承载年度回忆</span></div>
+          <div class="focus-row"><span class="focus-dot"></span><span>今天推进首页气质</span></div>
+          <div class="focus-row"><span class="focus-dot"></span><span>保留每周一颗果实</span></div>
+        </div>
+        <div class="bottom-nav"><span>能量</span><span>清单</span><span>计划</span><span>树</span></div>
+      </div>
+    </div>
+    <div class="style-body">
+      <h3>C. 月光温室</h3>
+      <p>仍然有“成长树”的奇幻感，但更安静、更疗愈。适合把长期反馈做成产品记忆点。</p>
+      <div class="keywords"><span>静谧</span><span>治愈</span><span>轻奇幻</span><span>有记忆点</span></div>
+    </div>
+  </div>
+</div>
+
+<p class="caption">可以直接点选，也可以告诉我：哪个方向接近、哪个完全不对、想混合哪两个。</p>

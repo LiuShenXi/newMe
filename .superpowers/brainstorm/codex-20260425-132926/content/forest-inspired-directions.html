@@ -1,0 +1,473 @@
+<style>
+  .forest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  @media (max-width: 980px) {
+    .forest-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .forest-card {
+    border: 1px solid rgba(39, 72, 49, 0.12);
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+
+  .forest-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 44px rgba(39, 72, 49, .13);
+  }
+
+  .forest-card.selected {
+    border-color: #4c8a53;
+    box-shadow: 0 0 0 3px rgba(76, 138, 83, .18), 0 18px 44px rgba(39, 72, 49, .13);
+  }
+
+  .phone {
+    width: min(100%, 280px);
+    height: 560px;
+    margin: 18px auto 0;
+    border: 7px solid #283129;
+    border-radius: 34px;
+    overflow: hidden;
+    box-shadow: 0 18px 42px rgba(28, 47, 31, .22);
+    position: relative;
+  }
+
+  .screen {
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 20px 18px 76px;
+    color: #2d4630;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: rgba(45, 70, 48, .62);
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .coin {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .7);
+    color: #607a35;
+    font-weight: 700;
+  }
+
+  .title {
+    position: relative;
+    z-index: 2;
+    font-size: 22px;
+    line-height: 1.2;
+    font-weight: 760;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    position: relative;
+    z-index: 2;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(45, 70, 48, .65);
+    margin-bottom: 18px;
+    max-width: 230px;
+  }
+
+  .forest-stage {
+    position: relative;
+    z-index: 1;
+    height: 216px;
+    margin: 4px -4px 16px;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .sun {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #ffd969;
+    right: 22px;
+    top: 18px;
+    box-shadow: 0 0 0 12px rgba(255, 217, 105, .18);
+  }
+
+  .cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, .72);
+    border-radius: 999px;
+  }
+
+  .cloud::before,
+  .cloud::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: inherit;
+  }
+
+  .cloud.one {
+    width: 54px;
+    height: 18px;
+    left: 22px;
+    top: 30px;
+  }
+
+  .cloud.one::before {
+    width: 26px;
+    height: 26px;
+    left: 9px;
+    bottom: 4px;
+  }
+
+  .cloud.one::after {
+    width: 20px;
+    height: 20px;
+    right: 8px;
+    bottom: 3px;
+  }
+
+  .hill {
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    bottom: -24px;
+    height: 108px;
+    border-radius: 50% 50% 0 0;
+  }
+
+  .hill.back {
+    bottom: 18px;
+    height: 88px;
+    opacity: .82;
+  }
+
+  .tree {
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 128px;
+  }
+
+  .trunk {
+    position: absolute;
+    left: 45px;
+    bottom: 0;
+    width: 14px;
+    height: 68px;
+    border-radius: 999px;
+    background: #8d5b2e;
+  }
+
+  .leaf {
+    position: absolute;
+    border-radius: 50%;
+    background: #5fae5b;
+  }
+
+  .leaf.a { width: 68px; height: 68px; left: 17px; top: 12px; }
+  .leaf.b { width: 58px; height: 58px; left: 0; top: 50px; background: #75bf62; }
+  .leaf.c { width: 62px; height: 62px; right: 0; top: 44px; background: #4f9b52; }
+  .leaf.d { width: 48px; height: 48px; left: 27px; top: 0; background: #86c96c; }
+
+  .fruit {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #f7b847;
+    z-index: 2;
+    box-shadow: inset 2px 2px 0 rgba(255, 255, 255, .35);
+  }
+
+  .fruit.one { left: 33px; top: 42px; }
+  .fruit.two { right: 32px; top: 64px; background: #f38152; }
+  .fruit.three { left: 53px; top: 72px; background: #fbd46d; }
+
+  .energy-pill {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 10px 24px rgba(61, 111, 56, .11);
+    margin-top: -6px;
+  }
+
+  .energy-num {
+    font-size: 27px;
+    font-weight: 790;
+    color: #4c8f45;
+  }
+
+  .mini-button {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: #78b756;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 720;
+  }
+
+  .focus-list {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .focus-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 11px;
+    border-radius: 15px;
+    font-size: 12px;
+    line-height: 1.35;
+    background: rgba(255, 255, 255, .74);
+  }
+
+  .seed {
+    width: 18px;
+    height: 18px;
+    border-radius: 50% 50% 50% 8px;
+    transform: rotate(-35deg);
+    background: #79b853;
+    flex: none;
+  }
+
+  .nav {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 64px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    text-align: center;
+    font-size: 10px;
+    background: rgba(255, 255, 255, .84);
+    color: rgba(45, 70, 48, .62);
+  }
+
+  .forest-body {
+    padding: 18px 18px 20px;
+  }
+
+  .forest-body h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+  }
+
+  .forest-body p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #5d6861;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .tags span {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(76, 138, 83, .1);
+    color: #536b4a;
+  }
+
+  .classic .screen {
+    background: linear-gradient(180deg, #cfeec3 0%, #edf7d7 55%, #fff5d8 100%);
+  }
+
+  .classic .forest-stage {
+    background: linear-gradient(180deg, #aee2ec 0%, #dff4c9 65%, #e6c277 66%, #e6c277 100%);
+  }
+
+  .classic .hill.back { background: #9ad783; }
+  .classic .hill.front { background: #78bd61; }
+
+  .classic .tree {
+    transform: translateX(-50%) scale(1.12);
+  }
+
+  .classic .energy-num {
+    color: #4f9651;
+  }
+
+  .storybook .screen {
+    background: linear-gradient(180deg, #f7ecc8 0%, #e6f2c6 58%, #fff8de 100%);
+  }
+
+  .storybook .forest-stage {
+    background: linear-gradient(180deg, #a7d9de 0%, #e5ecc7 64%, #d7b26d 65%, #d7b26d 100%);
+    box-shadow: inset 0 0 0 2px rgba(114, 126, 80, .08);
+  }
+
+  .storybook .hill.back { background: #b3cf7e; }
+  .storybook .hill.front { background: #83b764; }
+
+  .storybook .tree {
+    bottom: 46px;
+  }
+
+  .storybook .leaf {
+    border-radius: 46% 54% 54% 46%;
+  }
+
+  .storybook .focus-row,
+  .storybook .energy-pill {
+    border: 1px solid rgba(111, 123, 70, .13);
+    box-shadow: none;
+  }
+
+  .garden .screen {
+    background:
+      radial-gradient(circle at 18% 84%, rgba(247, 191, 92, .28), transparent 24%),
+      linear-gradient(180deg, #c4e8ce 0%, #eff5d2 48%, #ffe7bf 100%);
+  }
+
+  .garden .forest-stage {
+    background: linear-gradient(180deg, #9bd9e5 0%, #dff3c5 62%, #cda35e 63%, #cda35e 100%);
+  }
+
+  .garden .hill.back { background: #93cf7b; }
+  .garden .hill.front { background: #67b364; }
+
+  .garden .tree {
+    width: 116px;
+    transform: translateX(-50%) scale(.98);
+  }
+
+  .garden .leaf.a { background: #4f9f54; }
+  .garden .leaf.b { background: #90c658; }
+  .garden .leaf.c { background: #68b96a; }
+  .garden .leaf.d { background: #a9d86a; }
+</style>
+
+<h2>参考 Forest 后的新方向：清新种树感，不照搬资产</h2>
+<p class="subtitle">我参考的是 Forest 的“种下种子、时间变成森林、可爱轻游戏化”的体验气质。这里改成适合你产品的“每周推进和年度成长树”。</p>
+
+<div class="forest-grid">
+  <div class="forest-card classic" data-choice="forest-classic" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="screen">
+        <div class="topbar"><span>第 16 周</span><span class="coin">● 128</span></div>
+        <div class="title">今天让树长一点点</div>
+        <div class="subtitle">先不用想太多，给这周注入一点能量。</div>
+        <div class="forest-stage">
+          <div class="sun"></div>
+          <div class="cloud one"></div>
+          <div class="hill back"></div>
+          <div class="hill front"></div>
+          <div class="tree">
+            <div class="trunk"></div><div class="leaf a"></div><div class="leaf b"></div><div class="leaf c"></div><div class="leaf d"></div>
+            <div class="fruit one"></div><div class="fruit two"></div><div class="fruit three"></div>
+          </div>
+        </div>
+        <div class="energy-pill"><div><div class="energy-num">64%</div><div>本周能量</div></div><button class="mini-button">记录今天</button></div>
+        <div class="nav"><span>能量</span><span>清单</span><span>计划</span><span>森林</span></div>
+      </div>
+    </div>
+    <div class="forest-body">
+      <h3>A. Forest 经典清新感</h3>
+      <p>最接近 Forest 的轻快气质：绿色、圆润、即时反馈强。风险是会显得比较常见。</p>
+      <div class="tags"><span>最清新</span><span>低压力</span><span>像种树游戏</span><span>亲和</span></div>
+    </div>
+  </div>
+
+  <div class="forest-card storybook" data-choice="forest-storybook" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="screen">
+        <div class="topbar"><span>今天</span><span class="coin">● 16 周</span></div>
+        <div class="title">慢慢长，也是在长</div>
+        <div class="subtitle">把每天的推进变成一片安静的小森林。</div>
+        <div class="forest-stage">
+          <div class="sun"></div>
+          <div class="cloud one"></div>
+          <div class="hill back"></div>
+          <div class="hill front"></div>
+          <div class="tree">
+            <div class="trunk"></div><div class="leaf a"></div><div class="leaf b"></div><div class="leaf c"></div><div class="leaf d"></div>
+            <div class="fruit one"></div><div class="fruit two"></div><div class="fruit three"></div>
+          </div>
+        </div>
+        <div class="energy-pill"><div><div class="energy-num">64%</div><div>推进感</div></div><button class="mini-button">浇一点光</button></div>
+        <div class="focus-list">
+          <div class="focus-row"><span class="seed"></span><span>完成首页体验骨架</span></div>
+          <div class="focus-row"><span class="seed"></span><span>整理 3 个关键反馈节点</span></div>
+        </div>
+        <div class="nav"><span>能量</span><span>清单</span><span>计划</span><span>森林</span></div>
+      </div>
+    </div>
+    <div class="forest-body">
+      <h3>B. 森林绘本感</h3>
+      <p>保留 Forest 的可爱和种树，但更柔和、更像成长记录。适合治愈，不会太工具。</p>
+      <div class="tags"><span>治愈</span><span>绘本化</span><span>日常陪伴</span><span>柔软</span></div>
+    </div>
+  </div>
+
+  <div class="forest-card garden" data-choice="growth-garden" onclick="toggleSelect(this)">
+    <div class="phone">
+      <div class="screen">
+        <div class="topbar"><span>成长花园</span><span class="coin">● 3 果实</span></div>
+        <div class="title">这周的果实快熟了</div>
+        <div class="subtitle">不是专注计时器，而是把每周推进养成一座花园。</div>
+        <div class="forest-stage">
+          <div class="sun"></div>
+          <div class="cloud one"></div>
+          <div class="hill back"></div>
+          <div class="hill front"></div>
+          <div class="tree">
+            <div class="trunk"></div><div class="leaf a"></div><div class="leaf b"></div><div class="leaf c"></div><div class="leaf d"></div>
+            <div class="fruit one"></div><div class="fruit two"></div><div class="fruit three"></div>
+          </div>
+        </div>
+        <div class="energy-pill"><div><div class="energy-num">64%</div><div>本周成熟度</div></div><button class="mini-button">补一滴水</button></div>
+        <div class="focus-list">
+          <div class="focus-row"><span class="seed"></span><span>首页气质收敛</span></div>
+          <div class="focus-row"><span class="seed"></span><span>确认成长树反馈</span></div>
+        </div>
+        <div class="nav"><span>能量</span><span>清单</span><span>计划</span><span>花园</span></div>
+      </div>
+    </div>
+    <div class="forest-body">
+      <h3>C. 成长花园版</h3>
+      <p>从 Forest 出发，但更贴合你的“周推进、果实、年度树”。记忆点更属于你自己的产品。</p>
+      <div class="tags"><span>更产品化</span><span>果实反馈</span><span>年度成长</span><span>可扩展</span></div>
+    </div>
+  </div>
+</div>
