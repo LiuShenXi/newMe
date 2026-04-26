@@ -1,682 +1,2154 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>个人成长管理 App - 原型</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #0a0a12; --card: #14142a; --card2: #1c1c3a;
-  --text: #e8e8f0; --text2: #8888aa; --accent: #7c5cfc;
-  --accent2: #a78bfa; --green: #34d399; --orange: #f59e0b;
-  --glow: rgba(124,92,252,0.3); --radius: 16px;
-}
-body { font-family: -apple-system, 'SF Pro', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); max-width: 393px; margin: 0 auto; height: 100vh; overflow: hidden; position: relative; }
-.screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 90px; }
-.screen.active { display: flex; }
-.screen.no-tab { padding-bottom: 0; }
-
-/* Tab Bar */
-.tab-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 393px; height: 80px; background: rgba(10,10,18,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-around; z-index: 100; padding-bottom: 16px; }
-.tab-bar.hidden { display: none; }
-.tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.5; transition: all 0.2s; }
-.tab-item.active { opacity: 1; }
-.tab-item svg { width: 24px; height: 24px; }
-.tab-item span { font-size: 10px; color: var(--text2); }
-.tab-item.active span { color: var(--accent2); }
-.tab-item.active svg { fill: var(--accent2); stroke: var(--accent2); }
-
-/* Common */
-.page-header { padding: 56px 24px 16px; }
-.page-header h1 { font-size: 28px; font-weight: 700; }
-.page-header p { font-size: 14px; color: var(--text2); margin-top: 4px; }
-.card { background: var(--card); border-radius: var(--radius); padding: 20px; margin: 8px 16px; }
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-.btn-primary { background: var(--accent); color: #fff; width: 100%; }
-.btn-primary:hover { background: #6a4ae0; }
-.btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--text); }
-.btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 8px; }
-
-/* Onboarding */
-#onboarding { background: var(--bg); z-index: 200; }
-.onboard-step { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 40px 32px; text-align: center; }
-.onboard-step.active { display: flex; }
-.tree-seedling { width: 120px; height: 160px; margin-bottom: 32px; position: relative; }
-.tree-seedling .trunk { width: 6px; height: 60px; background: linear-gradient(to top, #5a3e1b, #7a5c2b); border-radius: 3px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
-.tree-seedling .leaf1, .tree-seedling .leaf2 { width: 30px; height: 40px; background: radial-gradient(ellipse, #34d399, #059669); border-radius: 50% 50% 50% 0; position: absolute; }
-.tree-seedling .leaf1 { top: 40px; left: 28px; transform: rotate(-30deg); }
-.tree-seedling .leaf2 { top: 30px; right: 28px; transform: rotate(30deg) scaleX(-1); }
-.tree-seedling .pot { width: 50px; height: 30px; background: linear-gradient(to bottom, #8b6f47, #6b4f2f); border-radius: 0 0 8px 8px; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); }
-.onboard-step h2 { font-size: 22px; font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
-.onboard-step p { font-size: 15px; color: var(--text2); line-height: 1.6; margin-bottom: 32px; }
-.onboard-input { width: 100%; background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; color: var(--text); font-size: 16px; outline: none; resize: none; min-height: 100px; margin-bottom: 20px; }
-.onboard-input:focus { border-color: var(--accent); }
-.onboard-input::placeholder { color: var(--text2); }
-
-/* Energy Page */
-.energy-orb-wrap { display: flex; flex-direction: column; align-items: center; padding: 24px 0 16px; }
-.energy-orb { width: 180px; height: 180px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.energy-orb-bg { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 40% 35%, rgba(124,92,252,0.4), rgba(10,10,18,0.8)); border: 2px solid rgba(124,92,252,0.3); transition: all 0.5s; }
-.energy-orb .pct { font-size: 42px; font-weight: 700; z-index: 1; }
-.energy-orb .pct-label { position: absolute; bottom: 38px; font-size: 12px; color: var(--text2); z-index: 1; }
-.energy-orb-glow { position: absolute; inset: -20px; border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 70%); opacity: 0.5; animation: pulse 3s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.08); opacity: 0.8; } }
-.week-label { font-size: 13px; color: var(--text2); margin-top: 12px; }
-
-.commitment-overview { margin: 0 16px; }
-.commitment-overview h3 { font-size: 14px; color: var(--text2); margin-bottom: 12px; padding: 0 4px; }
-.commit-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--card); border-radius: 12px; margin-bottom: 8px; }
-.commit-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.commit-item .commit-text { flex: 1; font-size: 14px; }
-.commit-item .commit-pct { font-size: 13px; color: var(--accent2); font-weight: 600; }
-
-.slider-section { margin: 16px 16px 0; padding: 20px; background: var(--card); border-radius: var(--radius); }
-.slider-section label { font-size: 14px; color: var(--text2); display: block; margin-bottom: 16px; }
-.slider-wrap { position: relative; }
-.slider-wrap input[type=range] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--val, 50%), rgba(255,255,255,0.08) var(--val, 50%)); outline: none; }
-.slider-wrap input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); border: 3px solid #fff; cursor: pointer; box-shadow: 0 0 12px var(--glow); }
-.slider-val { text-align: center; font-size: 28px; font-weight: 700; margin-top: 12px; color: var(--accent2); }
-.confirm-btn-wrap { padding: 16px; }
-
-/* Checklist Page */
-.commitment-card { background: var(--card); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; cursor: pointer; }
-.commit-header { display: flex; align-items: center; gap: 12px; padding: 16px; }
-.commit-expand-icon { transition: transform 0.2s; color: var(--text2); flex-shrink: 0; }
-.commitment-card.open .commit-expand-icon { transform: rotate(180deg); }
-.commit-info { flex: 1; }
-.commit-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-.commit-progress { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; }
-.commit-progress-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
-.commit-pct-badge { font-size: 13px; color: var(--accent2); font-weight: 600; flex-shrink: 0; }
-.commit-tasks { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 16px; }
-.commitment-card.open .commit-tasks { max-height: 400px; padding: 0 16px 16px; }
-.task-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; }
-.task-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.task-check.checked { background: var(--accent); border-color: var(--accent); }
-.task-check.checked::after { content: '✓'; color: #fff; font-size: 12px; }
-.task-item.done span { text-decoration: line-through; color: var(--text2); }
-
-/* Plan Page */
-.timeline { padding: 0 16px 0 40px; position: relative; }
-.tl-node { position: relative; padding: 0 0 24px 24px; border-left: 2px solid rgba(255,255,255,0.06); }
-.tl-node:last-child { border-left-color: transparent; }
-.tl-dot { width: 12px; height: 12px; border-radius: 50%; position: absolute; left: -7px; top: 4px; }
-.done-dot { background: var(--green); box-shadow: 0 0 8px rgba(52,211,153,0.4); }
-.current-dot { background: var(--accent); box-shadow: 0 0 12px var(--glow); animation: pulse 2s infinite; }
-.future-dot { background: rgba(255,255,255,0.15); }
-.tl-content { background: var(--card); border-radius: 12px; padding: 14px 16px; }
-.tl-week { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-.tl-date { font-size: 12px; color: var(--text2); font-weight: 400; }
-.tl-badge { font-size: 11px; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 4px; margin-left: 6px; }
-.tl-commits { font-size: 13px; color: var(--text2); line-height: 1.8; }
-.tl-result { font-size: 13px; color: var(--green); margin-top: 6px; font-weight: 600; }
-.tl-progress { font-size: 13px; color: var(--accent2); margin-top: 6px; font-weight: 600; }
-.tl-node.past .tl-content { opacity: 0.7; }
-.tl-node.future .tl-content { opacity: 0.5; border: 1px dashed rgba(255,255,255,0.08); background: transparent; }
-
-/* Tree Page */
-.tree-scene { display: flex; flex-direction: column; align-items: center; padding: 20px 0; position: relative; height: 320px; }
-.tree-container { position: relative; width: 200px; height: 260px; }
-.tree-trunk { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 16px; height: 120px; background: linear-gradient(to top, #5a3e1b, #7a5c2b); border-radius: 4px; }
-.tree-branch { position: absolute; height: 6px; border-radius: 3px; background: #6b4f2f; }
-.branch-l1 { width: 50px; bottom: 80px; left: 42px; transform: rotate(-25deg); }
-.branch-r1 { width: 55px; bottom: 90px; right: 38px; transform: rotate(20deg); }
-.branch-l2 { width: 40px; bottom: 110px; left: 50px; transform: rotate(-35deg); }
-.branch-r2 { width: 45px; bottom: 120px; right: 45px; transform: rotate(30deg); }
-.tree-canopy { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 140px; height: 120px; background: radial-gradient(ellipse, rgba(52,211,153,0.6), rgba(5,150,105,0.3)); border-radius: 50%; filter: blur(8px); }
-.canopy2 { top: 40px; width: 120px; height: 100px; background: radial-gradient(ellipse, rgba(52,211,153,0.4), transparent); }
-.tree-ground { width: 100%; height: 40px; background: linear-gradient(to top, rgba(30,20,10,0.5), transparent); }
-.tree-fruit { position: absolute; width: 16px; height: 16px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
-.tree-fruit:hover { transform: scale(1.3); }
-.tree-fruit { background: radial-gradient(circle at 35% 35%, rgba(255,255,255,calc(var(--brightness)*0.5)), rgba(124,92,252,var(--brightness))); box-shadow: 0 0 calc(var(--brightness)*12px) rgba(124,92,252,calc(var(--brightness)*0.6)); }
-.fruit1 { top: 80px; left: 45px; }
-.fruit2 { top: 65px; right: 50px; }
-.fruit3 { top: 95px; right: 65px; }
-.fruit-q1-1 { top: 110px; left: 55px; width: 12px; height: 12px; }
-.fruit-q1-2 { top: 100px; right: 55px; width: 12px; height: 12px; }
-.fruit-q1-3 { top: 125px; left: 75px; width: 12px; height: 12px; }
-.tree-stats { display: flex; gap: 12px; padding: 0 16px; margin-top: -20px; }
-.stat-card { flex: 1; background: var(--card); border-radius: 12px; padding: 16px; text-align: center; }
-.stat-val { font-size: 24px; font-weight: 700; }
-.stat-label { font-size: 11px; color: var(--text2); margin-top: 4px; }
-.glow-text { color: var(--accent2); text-shadow: 0 0 12px var(--glow); font-size: 16px; }
-.quarter-timeline { display: flex; align-items: center; justify-content: center; padding: 24px 16px; gap: 0; }
-.qt-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.qt-item span { font-size: 11px; color: var(--text2); }
-.qt-item.active span { color: var(--text); }
-.qt-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.1); }
-.qt-done { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.4); }
-.qt-current { background: var(--accent); box-shadow: 0 0 8px var(--glow); }
-.qt-line { width: 40px; height: 2px; background: rgba(255,255,255,0.06); margin-bottom: 20px; }
-.qt-line-done { background: var(--green); }
-
-/* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 300; }
-.modal-overlay.show { display: flex; }
-.modal-card { background: var(--card); border-radius: 20px; padding: 24px; width: 320px; max-width: 90%; }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 15px; font-weight: 600; }
-.modal-close { background: none; border: none; color: var(--text2); font-size: 18px; cursor: pointer; }
-
-/* Settlement */
-.settlement-screen { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-.settle-step { display: none; flex-direction: column; align-items: center; text-align: center; padding: 32px; width: 100%; }
-.settle-step.active { display: flex; }
-.settle-step h2 { font-size: 22px; font-weight: 600; }
-.settle-step p { color: var(--text2); margin-top: 8px; }
-.energy-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding: 0 20px; }
-.chart-bar { width: 32px; background: linear-gradient(to top, var(--accent), var(--accent2)); border-radius: 6px 6px 0 0; height: var(--h); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0; position: relative; }
-.chart-bar span { position: absolute; bottom: -20px; font-size: 11px; color: var(--text2); }
-.settle-commit { padding: 10px 0; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 8px; }
-.settle-check { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-.settle-check.done { background: var(--green); color: #fff; }
-.settle-check.partial { background: var(--orange); color: #fff; }
-.fruit-anim { width: 80px; height: 80px; border-radius: 50%; position: relative; animation: fruitAppear 1s ease-out; }
-.fruit-body { width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.4), var(--accent)); }
-.fruit-glow { position: absolute; inset: -20px; border-radius: 50%; background: radial-gradient(circle, var(--glow), transparent 70%); animation: pulse 2s infinite; }
-@keyframes fruitAppear { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewMe 交互原型 · 静态 HTML</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #030606;
+      color: #fff;
+    }
+    button, input, textarea {
+      font: inherit;
+      color: inherit;
+    }
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+    button:disabled {
+      cursor: not-allowed;
+    }
+    .app-shell {
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+    .prototype-stage {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+    @media (min-width: 1024px) {
+      .prototype-stage {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+      }
+    }
+    .device-zone {
+      flex: 0 0 auto;
+    }
+    .device-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 0 8px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+    .device-name {
+      color: rgba(71, 85, 105, .85);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .phone-host {
+      position: relative;
+      width: 393px;
+      height: 812px;
+      max-width: calc(100vw - 32px);
+    }
+    .phone {
+      position: relative;
+      width: 393px;
+      height: 812px;
+      overflow: hidden;
+      border-radius: 46px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: #07110f;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+    }
+    .phone-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(37, 255, 219, .12), transparent 28%),
+        radial-gradient(circle at 20% 90%, rgba(120, 255, 175, .10), transparent 35%),
+        linear-gradient(180deg, #091411 0%, #060b0a 55%, #030605 100%);
+    }
+    .phone-grid {
+      position: absolute;
+      inset: 0;
+      opacity: .15;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .phone-content {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px 20px;
+      color: #f1f5f9;
+    }
+    .status-bar {
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(203, 213, 225, .70);
+      font-size: 12px;
+    }
+    .speaker {
+      width: 112px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .35);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, .32);
+    }
+    .phone-main {
+      min-height: 0;
+      flex: 1;
+      padding-top: 12px;
+    }
+    .bottom-nav {
+      height: 70px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      padding: 8px;
+      border-radius: 26px;
+      border: 1px solid rgba(209, 250, 229, .10);
+      background: rgba(10, 22, 19, .85);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, .30);
+      backdrop-filter: blur(24px);
+    }
+    .nav-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-radius: 16px;
+      background: transparent;
+      color: #64748b;
+      font-size: 11px;
+      transition: transform .18s ease, color .18s ease, background .18s ease;
+    }
+    .nav-button:hover {
+      background: rgba(255, 255, 255, .035);
+      color: #cbd5e1;
+    }
+    .nav-button:active {
+      transform: scale(.96);
+    }
+    .nav-button.active {
+      color: #cffafe;
+      background: rgba(165, 243, 252, .10);
+      box-shadow: inset 0 0 24px rgba(65, 255, 226, .11);
+    }
+    .nav-button svg {
+      width: 20px;
+      height: 20px;
+    }
+    .screen-stack {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: hidden;
+      padding-bottom: 8px;
+    }
+    .glass-card {
+      border-radius: 26px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: rgba(255, 255, 255, .045);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 20px 48px rgba(0, 0, 0, .22);
+      backdrop-filter: blur(20px);
+    }
+    .muted {
+      color: #94a3b8;
+    }
+    .panel-in {
+      animation: panel .28s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .primary-button {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(207, 250, 254, .20);
+      background: rgba(207, 250, 254, .10);
+      color: #ecfeff;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 0 30px rgba(63, 255, 227, .12);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    .primary-button:active {
+      transform: scale(.98);
+    }
+    .primary-button:disabled {
+      opacity: .40;
+      box-shadow: none;
+    }
+    .ghost-button {
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .04);
+      color: #cbd5e1;
+    }
+    .small-pill {
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .15);
+      background: rgba(207, 250, 254, .08);
+      padding: 8px 12px;
+      color: #cffafe;
+      font-size: 12px;
+      transition: transform .18s ease;
+    }
+    .small-pill:active {
+      transform: scale(.96);
+    }
+    .onboarding-step {
+      height: 100%;
+      padding-top: 16px;
+    }
+    .onboarding-card {
+      padding: 24px;
+      text-align: center;
+      border-radius: 34px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: radial-gradient(circle at 50% 28%, rgba(123, 255, 194, .18), transparent 44%), rgba(255, 255, 255, .035);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+    }
+    .intro-tree {
+      position: relative;
+      width: 240px;
+      height: 320px;
+      margin: 0 auto;
+    }
+    .intro-trunk {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      width: 16px;
+      height: 160px;
+      transform: translateX(-50%);
+      border-radius: 999px 999px 0 0;
+      background: #51351d;
+    }
+    .intro-leaf {
+      position: absolute;
+      border-radius: 999px;
+      background: radial-gradient(circle at 38% 30%, rgba(152, 255, 197, .72), rgba(30, 86, 62, .74));
+    }
+    .intro-leaf.one {
+      bottom: 160px;
+      left: 92px;
+      width: 96px;
+      height: 96px;
+      box-shadow: 0 0 45px rgba(97, 255, 184, .22);
+    }
+    .intro-leaf.two {
+      bottom: 104px;
+      left: 58px;
+      width: 112px;
+      height: 112px;
+    }
+    .intro-leaf.three {
+      bottom: 88px;
+      right: 42px;
+      width: 112px;
+      height: 112px;
+    }
+    .intro-shadow {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 176px;
+      height: 20px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(167, 243, 208, .30);
+      filter: blur(18px);
+    }
+    .onboarding-copy {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .onboarding-form {
+      padding-top: 40px;
+    }
+    .question {
+      margin: 0;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+    .goal-input {
+      width: 100%;
+      height: 160px;
+      margin-top: 20px;
+      resize: none;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      outline: none;
+      background: rgba(0, 0, 0, .25);
+      padding: 16px;
+      color: #f8fafc;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .goal-input:focus {
+      border-color: rgba(207, 250, 254, .30);
+    }
+    .goal-input::placeholder {
+      color: #64748b;
+    }
+    .hint-copy {
+      margin: 12px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .loading-track {
+      height: 6px;
+      margin-top: 20px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .10);
+    }
+    .loading-bar {
+      width: 66%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #70ffbe, #55ffe0, #e9d58a);
+      animation: loadingBar 1.05s ease-in-out infinite;
+    }
+    .focus-list {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .focus-card {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      background: rgba(0, 0, 0, .18);
+    }
+    .focus-card p {
+      margin: 0;
+    }
+    .focus-title {
+      color: #f1f5f9;
+      font-size: 14px;
+    }
+    .focus-note {
+      margin-top: 4px !important;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    .energy-orb {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 242px;
+      height: 242px;
+      margin: 0 auto;
+    }
+    .orb-aura {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(165, 243, 252, .10);
+      filter: blur(40px);
+    }
+    .orb-core {
+      position: absolute;
+      width: 224px;
+      height: 224px;
+      border-radius: 50%;
+      border: 1px solid rgba(207, 250, 254, .45);
+      background: radial-gradient(circle at 45% 38%, rgba(121, 255, 234, .22), rgba(15, 32, 38, .70) 50%, rgba(5, 12, 13, .95) 72%);
+      box-shadow: 0 0 42px rgba(77, 255, 230, .28), inset 0 -28px 42px rgba(95, 255, 215, .22), inset 0 18px 60px rgba(255, 255, 255, .07);
+    }
+    .orb-shadow {
+      position: absolute;
+      bottom: 8px;
+      width: 160px;
+      height: 32px;
+      border-radius: 999px;
+      background: rgba(165, 243, 252, .40);
+      filter: blur(20px);
+    }
+    .orb-bubble {
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .40);
+      background: rgba(165, 243, 252, .10);
+      box-shadow: inset 0 -8px 18px rgba(74, 255, 224, .24), 0 0 20px rgba(74, 255, 224, .25);
+    }
+    .is-charging .orb-aura {
+      animation: orbAura 1.25s ease-in-out both;
+    }
+    .is-charging .orb-core {
+      animation: orbCharge 1.25s ease-in-out both;
+    }
+    .is-charging .orb-bubble {
+      animation: bubbleRise 1.25s ease-in-out both;
+    }
+    .orb-text {
+      position: relative;
+      text-align: center;
+    }
+    .orb-value {
+      color: #fff;
+      font-size: 58px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .orb-value span {
+      color: rgba(207, 250, 254, .90);
+      font-size: 24px;
+    }
+    .orb-label {
+      margin-top: 12px;
+      color: rgba(253, 230, 138, .90);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+    .orb-status {
+      width: fit-content;
+      margin: 12px auto 0;
+      padding: 4px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(207, 250, 254, .20);
+      color: rgba(236, 254, 255, .70);
+      font-size: 12px;
+      transition: border .2s ease, background .2s ease, color .2s ease;
+    }
+    .is-charging .orb-status {
+      border-color: rgba(254, 243, 199, .40);
+      background: rgba(254, 243, 199, .10);
+      color: #fffbeb;
+    }
+    .energy-progress {
+      flex: 0 0 auto;
+      padding: 16px;
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .card-head h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .card-head .badge {
+      border-radius: 999px;
+      background: rgba(167, 243, 208, .10);
+      padding: 4px 12px;
+      color: rgba(209, 250, 229, .70);
+      font-size: 11px;
+    }
+    .progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+    .progress-meta span:first-child {
+      overflow: hidden;
+      color: #e2e8f0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .progress-meta span:last-child {
+      color: #cffafe;
+    }
+    .progress-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(241, 245, 249, .10);
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(112, 255, 190, .75), rgba(75, 229, 255, .95));
+      transition: width .3s ease;
+    }
+    .range-card {
+      flex: 0 0 auto;
+      padding: 16px;
+    }
+    .range-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .range-head span:first-child {
+      color: #fff;
+    }
+    .range-head span:last-child {
+      color: #fde68a;
+    }
+    .energy-range {
+      width: 100%;
+      height: 24px;
+      margin: 0;
+      appearance: none;
+      background: transparent;
+      --range-fill: 82%;
+    }
+    .energy-range::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(103, 232, 249, .95) 0%, rgba(103, 232, 249, .95) var(--range-fill), rgba(255, 255, 255, .12) var(--range-fill), rgba(255, 255, 255, .12) 100%);
+    }
+    .energy-range::-webkit-slider-thumb {
+      width: 24px;
+      height: 24px;
+      margin-top: -9px;
+      appearance: none;
+      border-radius: 999px;
+      border: 3px solid #ecfeff;
+      background: #67e8f9;
+      box-shadow: 0 0 22px rgba(103, 232, 249, .35);
+    }
+    .energy-range::-moz-range-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .12);
+    }
+    .energy-range::-moz-range-progress {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(103, 232, 249, .95);
+    }
+    .energy-range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 3px solid #ecfeff;
+      background: #67e8f9;
+      box-shadow: 0 0 22px rgba(103, 232, 249, .35);
+    }
+    .confirm-energy {
+      flex: 0 0 auto;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(207, 250, 254, .20);
+      background: rgba(207, 250, 254, .10);
+      color: #ecfeff;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 0 30px rgba(63, 255, 227, .12);
+      transition: transform .18s ease;
+    }
+    .confirm-energy:active {
+      transform: scale(.98);
+    }
+    .toast {
+      position: absolute;
+      z-index: 60;
+      left: 50%;
+      bottom: 96px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .20);
+      background: rgba(0, 0, 0, .55);
+      padding: 8px 16px;
+      color: #ecfeff;
+      font-size: 12px;
+      white-space: nowrap;
+      backdrop-filter: blur(20px);
+      animation: panel .28s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .chip-row {
+      display: flex;
+      gap: 8px;
+      overflow: hidden;
+      padding-top: 4px;
+    }
+    .chip {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: rgba(167, 243, 208, .08);
+      padding: 8px 12px;
+      color: rgba(236, 253, 245, .75);
+      font-size: 12px;
+    }
+    .list-card {
+      min-height: 0;
+      flex: 1;
+      padding: 16px;
+    }
+    .list-title {
+      margin: 0;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .list-subtitle {
+      margin: 4px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    .todo-scroll {
+      max-height: 338px;
+      margin-top: 20px;
+      padding-right: 4px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .todo-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      background: rgba(0, 0, 0, .18);
+      padding: 12px;
+      text-align: left;
+      transition: border .18s ease, transform .18s ease;
+    }
+    .todo-button:hover {
+      border-color: rgba(207, 250, 254, .20);
+    }
+    .todo-button:active {
+      transform: scale(.99);
+    }
+    .todo-mark {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(100, 116, 139, .50);
+      color: #64748b;
+      font-size: 12px;
+    }
+    .todo-mark.done {
+      border-color: rgba(207, 250, 254, .40);
+      background: rgba(207, 250, 254, .20);
+      color: #ecfeff;
+    }
+    .todo-text {
+      color: #f1f5f9;
+      font-size: 14px;
+    }
+    .todo-text.done {
+      color: #94a3b8;
+      text-decoration: line-through;
+      text-decoration-color: rgba(207, 250, 254, .40);
+    }
+    .add-panel {
+      margin-top: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(207, 250, 254, .15);
+      background: rgba(0, 0, 0, .20);
+      padding: 12px;
+    }
+    .draft-input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 14px;
+    }
+    .draft-input::placeholder {
+      color: #64748b;
+    }
+    .add-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .add-actions button {
+      flex: 1;
+      border-radius: 12px;
+      padding: 8px;
+      font-size: 12px;
+    }
+    .add-actions button:first-child {
+      background: rgba(207, 250, 254, .12);
+      color: #ecfeff;
+    }
+    .add-actions button:last-child {
+      background: rgba(255, 255, 255, .04);
+      color: #cbd5e1;
+    }
+    .add-trigger {
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: rgba(255, 255, 255, .04);
+      color: rgba(236, 253, 245, .80);
+      font-size: 14px;
+      transition: transform .18s ease;
+    }
+    .add-trigger:active {
+      transform: scale(.98);
+    }
+    .week-strip {
+      flex: 0 0 auto;
+      padding: 16px;
+    }
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .day-cell {
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      background: rgba(255, 255, 255, .035);
+      padding: 8px 6px;
+      text-align: center;
+      opacity: .70;
+    }
+    .day-cell.today {
+      border-color: rgba(207, 250, 254, .35);
+      background: rgba(207, 250, 254, .10);
+      opacity: 1;
+    }
+    .day-cell p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+    .day-cell p + p {
+      margin-top: 4px;
+      color: #fff;
+    }
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(0, 0, 0, .22);
+      padding: 6px;
+    }
+    .seg-button {
+      border-radius: 17px;
+      background: transparent;
+      padding: 10px 8px;
+      color: #64748b;
+      font-size: 14px;
+      transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+    .seg-button.active {
+      background: rgba(207, 250, 254, .12);
+      color: #ecfeff;
+      box-shadow: 0 0 24px rgba(77, 255, 230, .12);
+    }
+    .seg-button:active {
+      transform: scale(.98);
+    }
+    .scroll-area {
+      min-height: 0;
+      flex: 1;
+      overflow-y: auto;
+      padding-top: 20px;
+      padding-right: 4px;
+    }
+    .plan-intro {
+      margin-bottom: 20px;
+      padding: 16px;
+    }
+    .eyebrow {
+      margin: 0;
+      color: rgba(209, 250, 229, .50);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .plan-intro h3,
+    .tree-detail h3 {
+      margin: 8px 0 0;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .plan-intro-grid {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .replan-button {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: rgba(254, 240, 138, .10);
+      padding: 8px 12px;
+      color: #fef3c7;
+      font-size: 12px;
+      transition: transform .18s ease;
+    }
+    .replan-button:active {
+      transform: scale(.96);
+    }
+    .plan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .week-button,
+    .quarter-card {
+      width: 100%;
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      background: rgba(255, 255, 255, .035);
+      padding: 16px;
+      text-align: left;
+      transition: transform .18s ease;
+    }
+    .week-button.current,
+    .quarter-card.current {
+      border-color: rgba(207, 250, 254, .30);
+      background: rgba(207, 250, 254, .08);
+    }
+    .week-button:active {
+      transform: scale(.99);
+    }
+    .week-row,
+    .quarter-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .week-row span:first-child {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .week-row span:last-child {
+      color: rgba(207, 250, 254, .80);
+      font-size: 12px;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tag {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(0, 0, 0, .18);
+      padding: 4px 10px;
+      color: #cbd5e1;
+      font-size: 11px;
+    }
+    .q-badge {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(209, 250, 229, .15);
+      background: rgba(0, 0, 0, .22);
+      color: #fff;
+      font-size: 14px;
+    }
+    .quarter-score {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    .quarter-card h3 {
+      margin: 12px 0 0;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .quarter-card p {
+      margin: 8px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .quarter-track {
+      height: 6px;
+      margin-top: 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .10);
+    }
+    .quarter-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #5effba, #56edff, #e6ca78);
+    }
+    .tree-canvas {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 34px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: radial-gradient(circle at 50% 35%, rgba(77, 255, 213, .15), transparent 45%), linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .015));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+    }
+    .ground-glow {
+      position: absolute;
+      inset: auto 0 0;
+      height: 144px;
+      background: linear-gradient(0deg, rgba(12, 30, 20, .92), transparent);
+    }
+    .tree-aura {
+      position: absolute;
+      top: 64px;
+      left: 50%;
+      width: 288px;
+      height: 288px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: rgba(167, 243, 208, .12);
+      filter: blur(40px);
+      animation: treeAura 5s ease-in-out infinite;
+    }
+    .tree-trunk {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      width: 48px;
+      height: 310px;
+      transform: translateX(-50%);
+      border-radius: 999px 999px 0 0;
+      background: linear-gradient(90deg, #1c120c, #4d3521, #1a110d);
+      box-shadow: inset -7px 0 20px rgba(0, 0, 0, .35);
+    }
+    .branch {
+      position: absolute;
+      height: 20px;
+      border-radius: 999px;
+      background: #3b2718;
+    }
+    .branch.one {
+      bottom: 306px;
+      left: 112px;
+      width: 148px;
+      transform: rotate(24deg);
+      transform-origin: right center;
+    }
+    .branch.two {
+      bottom: 330px;
+      right: 105px;
+      width: 142px;
+      transform: rotate(-26deg);
+      transform-origin: left center;
+    }
+    .branch.three {
+      bottom: 252px;
+      left: 88px;
+      width: 160px;
+      height: 16px;
+      transform: rotate(8deg);
+      transform-origin: right center;
+    }
+    .canopy {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 42% 38%, rgba(129, 255, 188, .30), rgba(22, 83, 62, .55) 55%, rgba(8, 30, 25, .88));
+      filter: blur(.2px);
+    }
+    .canopy.c1 { left: 42px; top: 68px; width: 176px; height: 176px; }
+    .canopy.c2 { left: 122px; top: 34px; width: 224px; height: 224px; }
+    .canopy.c3 { left: 186px; top: 112px; width: 176px; height: 176px; }
+    .canopy.c4 { left: 72px; top: 164px; width: 208px; height: 208px; }
+    .canopy.c5 { left: 144px; top: 202px; width: 176px; height: 176px; }
+    .fruit {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(254, 243, 199, .60);
+      background: radial-gradient(circle at 34% 28%, #fff3b0, #dfb64c 45%, #725626);
+      box-shadow: 0 0 22px rgba(239, 201, 102, .35);
+      transition: transform .18s ease;
+      animation: fruitPulse 3.8s ease-in-out infinite;
+    }
+    .fruit:hover {
+      transform: scale(1.25);
+    }
+    .fruit:active {
+      transform: scale(.95);
+    }
+    .tree-tools {
+      position: absolute;
+      right: 12px;
+      top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tree-tool {
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(0, 0, 0, .36);
+      padding: 8px 12px;
+      text-align: right;
+      font-size: 12px;
+      backdrop-filter: blur(20px);
+      transition: transform .18s ease;
+    }
+    .tree-tool:active {
+      transform: scale(.96);
+    }
+    .tree-tool b {
+      display: block;
+      font-size: 14px;
+    }
+    .tree-tool.fruit-tool { color: #fffbeb; border-color: rgba(254, 243, 199, .20); }
+    .tree-tool.quarter-tool { color: #ecfeff; border-color: rgba(207, 250, 254, .20); }
+    .tree-tool.honor-tool { color: #ecfdf5; border-color: rgba(209, 250, 229, .20); }
+    .tree-tip {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(0, 0, 0, .30);
+      padding: 8px 16px;
+      color: #cbd5e1;
+      font-size: 12px;
+      backdrop-filter: blur(20px);
+    }
+    .tree-detail {
+      height: 100%;
+      padding-top: 8px;
+    }
+    .back-button {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .04);
+      padding: 8px 16px;
+      color: #cbd5e1;
+      font-size: 14px;
+      transition: transform .18s ease;
+    }
+    .back-button:active {
+      transform: scale(.96);
+    }
+    .detail-card {
+      margin-top: 20px;
+      padding: 20px;
+    }
+    .detail-card h3 {
+      font-size: 24px;
+    }
+    .detail-card p:last-child {
+      margin: 12px 0 0;
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .stat-card {
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card p {
+      margin: 0;
+    }
+    .stat-card p:first-child {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 300;
+    }
+    .stat-card p:last-child {
+      margin-top: 4px;
+      color: #94a3b8;
+      font-size: 11px;
+    }
+    .settlement-card {
+      padding: 20px;
+      text-align: center;
+    }
+    .settlement-card p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .settle-fruit {
+      display: grid;
+      place-items: center;
+      width: 112px;
+      height: 112px;
+      margin: 20px auto 0;
+      border-radius: 999px;
+      border: 1px solid rgba(254, 243, 199, .50);
+      background: radial-gradient(circle at 35% 28%, #fff3bc, #d8ae46 45%, #3b2b11 80%);
+      box-shadow: 0 0 60px rgba(225, 192, 99, .35);
+    }
+    .settle-fruit.born {
+      animation: fruitBorn .9s ease-in-out both;
+    }
+    .settle-fruit span {
+      color: #221909;
+      font-size: 30px;
+      font-weight: 300;
+    }
+    .bars-card {
+      padding: 16px;
+    }
+    .energy-bars {
+      height: 144px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .energy-bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .energy-bar-track {
+      position: relative;
+      width: 100%;
+      height: 112px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .055);
+      overflow: hidden;
+    }
+    .energy-bar-fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(101, 255, 226, .9), rgba(80, 255, 177, .45));
+      transition: height .5s ease;
+    }
+    .energy-bar-col span {
+      color: #94a3b8;
+      font-size: 11px;
+    }
+    .settle-result {
+      padding: 16px;
+    }
+    .result-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .result-row h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .result-row span {
+      color: #cffafe;
+      font-size: 18px;
+    }
+    .settle-button {
+      width: 100%;
+      margin-top: 16px;
+      border-radius: 16px;
+      background: rgba(254, 243, 199, .15);
+      padding: 12px;
+      color: #fffbeb;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform .18s ease;
+    }
+    .settle-button:active {
+      transform: scale(.98);
+    }
+    .modal-layer {
+      position: absolute;
+      z-index: 80;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      border-radius: 46px;
+      background: rgba(0, 0, 0, .55);
+      backdrop-filter: blur(6px);
+    }
+    .modal-card {
+      width: 100%;
+      border-radius: 30px;
+      border: 1px solid rgba(207, 250, 254, .15);
+      background: rgba(7, 17, 15, .95);
+      padding: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .55);
+      animation: panel .28s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .modal-title {
+      margin: 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .modal-copy {
+      margin: 8px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .modal-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal-actions button {
+      border-radius: 16px;
+      padding: 12px;
+      font-size: 14px;
+    }
+    .modal-actions button:first-child {
+      background: rgba(207, 250, 254, .12);
+      color: #ecfeff;
+    }
+    .modal-actions button:last-child {
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .04);
+      color: #e2e8f0;
+    }
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .week-modal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .week-modal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      background: rgba(255, 255, 255, .035);
+      padding: 12px 16px;
+    }
+    .week-modal-row.today {
+      border-color: rgba(207, 250, 254, .30);
+      background: rgba(207, 250, 254, .10);
+    }
+    .week-modal-row p {
+      margin: 0;
+    }
+    .week-modal-row p:first-child {
+      color: #fff;
+      font-size: 14px;
+    }
+    .week-modal-row p:last-child {
+      margin-top: 4px;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+    .week-modal-row span {
+      color: #cffafe;
+      font-size: 14px;
+    }
+    .fruit-result {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 20px 0;
+      border-radius: 24px;
+      border: 1px solid rgba(254, 243, 199, .15);
+      background: rgba(254, 243, 199, .08);
+      padding: 16px;
+    }
+    .fruit-dot {
+      display: grid;
+      place-items: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      border: 1px solid rgba(254, 243, 199, .50);
+      background: radial-gradient(circle at 35% 28%, #fff3bc, #d8ae46 45%, #3b2b11 80%);
+      box-shadow: 0 0 40px rgba(225, 192, 99, .30);
+    }
+    .fruit-dot span {
+      color: #221909;
+      font-size: 14px;
+    }
+    .side-panel {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 34px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .035);
+      padding: 24px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .35);
+      backdrop-filter: blur(20px);
+    }
+    .side-panel .eyebrow {
+      color: rgba(167, 243, 208, .50);
+      letter-spacing: 0;
+    }
+    .side-panel h1 {
+      margin: 12px 0 0;
+      color: #fff;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+    .side-desc {
+      margin: 16px 0 0;
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .side-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .side-tab {
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .03);
+      padding: 12px 16px;
+      text-align: left;
+      color: #94a3b8;
+      font-size: 14px;
+      transition: transform .18s ease, color .18s ease, background .18s ease, border .18s ease;
+    }
+    .side-tab:hover {
+      color: #fff;
+    }
+    .side-tab.active {
+      border-color: rgba(207, 250, 254, .35);
+      background: rgba(207, 250, 254, .10);
+      color: #ecfeff;
+    }
+    .side-tab:disabled {
+      opacity: .35;
+    }
+    .side-tab:active {
+      transform: scale(.98);
+    }
+    .side-notes {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+    .note-card {
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(0, 0, 0, .20);
+      padding: 16px;
+      line-height: 1.65;
+    }
+    .note-card span {
+      color: #cffafe;
+    }
+    .side-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .side-footer button {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .04);
+      padding: 8px 16px;
+      color: #cbd5e1;
+      font-size: 14px;
+      transition: color .18s ease, transform .18s ease;
+    }
+    .side-footer button:hover {
+      color: #fff;
+    }
+    .side-footer button:active {
+      transform: scale(.98);
+    }
+    .side-footer .skip-button {
+      border-color: rgba(207, 250, 254, .25);
+      background: rgba(207, 250, 254, .10);
+      color: #ecfeff;
+    }
+    @keyframes panel {
+      from { opacity: 0; transform: translateY(10px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes loadingBar {
+      0% { transform: translateX(-90%); }
+      100% { transform: translateX(160%); }
+    }
+    @keyframes bubbleRise {
+      0% { transform: translateY(18px) scale(.8); opacity: .12; }
+      35% { opacity: .70; }
+      100% { transform: translateY(-90px) scale(1.15); opacity: 0; }
+    }
+    @keyframes orbCharge {
+      0%, 100% { filter: brightness(1); transform: scale(1); }
+      45% { filter: brightness(1.32); transform: scale(1.025); }
+    }
+    @keyframes orbAura {
+      0%, 100% { opacity: .4; transform: scale(1); }
+      50% { opacity: .95; transform: scale(1.12); }
+    }
+    @keyframes fruitPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.25); }
+    }
+    @keyframes fruitBorn {
+      0% { transform: scale(.72); opacity: .45; }
+      60% { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes treeAura {
+      0%, 100% { opacity: .5; transform: translateX(-50%) scale(1); }
+      50% { opacity: .9; transform: translateX(-50%) scale(1.08); }
+    }
+  </style>
 </head>
 <body>
-<!-- Onboarding -->
-<div id="onboarding" class="screen no-tab active">
-  <div class="onboard-step active" id="ob-step1">
-    <div class="tree-seedling">
-      <div class="leaf1"></div><div class="leaf2"></div>
-      <div class="trunk"></div><div class="pot"></div>
-    </div>
-    <h2>这是你今年的成长树</h2>
-    <p>它会陪你走过四个季节，<br>记录你每一周的努力与收获。</p>
-    <button class="btn btn-primary" onclick="nextOb(2)">开始我的旅程</button>
-  </div>
-  <div class="onboard-step" id="ob-step2">
-    <h2>这个季度，<br>你最想推进的一件事是什么？</h2>
-    <p>不用想太多，写下最重要的那一件就好。</p>
-    <textarea class="onboard-input" id="goal-input" placeholder="比如：完成个人 App 的 MVP 开发..."></textarea>
-    <button class="btn btn-primary" onclick="nextOb(3)">就是这件事</button>
-  </div>
-  <div class="onboard-step" id="ob-step3">
-    <div style="margin-bottom:24px;">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7c5cfc" stroke-width="1.5"><path d="M12 2a7 7 0 017 7c0 5-7 11-7 11S5 14 5 9a7 7 0 017-7z"/><circle cx="12" cy="9" r="2.5" fill="#7c5cfc" opacity="0.3"/></svg>
-    </div>
-    <h2>AI 正在帮你拆解...</h2>
-    <p>根据你的目标，生成本周承诺和任务建议。</p>
-    <div style="margin-top:20px;" id="ai-loading">
-      <div style="display:flex;gap:6px;justify-content:center;">
-        <div class="dot-anim" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotPulse 1.2s infinite;"></div>
-        <div class="dot-anim" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotPulse 1.2s 0.2s infinite;"></div>
-        <div class="dot-anim" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:dotPulse 1.2s 0.4s infinite;"></div>
-      </div>
-    </div>
-  </div>
-  <div class="onboard-step" id="ob-step4">
-    <h2>你的本周计划已就绪 ✨</h2>
-    <div style="width:100%;text-align:left;margin:20px 0;">
-      <div class="card" style="margin:0 0 8px;">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:8px;">本周承诺</div>
-        <div style="font-size:15px;margin-bottom:6px;">📌 完成核心功能原型设计</div>
-        <div style="font-size:15px;margin-bottom:6px;">📌 搭建项目基础框架</div>
-        <div style="font-size:15px;">📌 完成数据模型设计</div>
-      </div>
-    </div>
-    <p>现在，记录一下今天的推进吧。</p>
-    <button class="btn btn-primary" onclick="finishOnboarding()" style="margin-top:16px;">记录今日能量</button>
-  </div>
-</div>
-<style>
-@keyframes dotPulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.2)} }
-</style>
-
-<!-- Energy Page -->
-<div id="energy" class="screen">
-  <div class="page-header">
-    <h1>能量</h1>
-    <p>第 16 周 · 2026 Q2</p>
-  </div>
-  <div class="energy-orb-wrap">
-    <div class="energy-orb" id="energyOrb">
-      <div class="energy-orb-glow"></div>
-      <div class="energy-orb-bg" id="orbBg"></div>
-      <span class="pct" id="orbPct">42%</span>
-      <span class="pct-label">本周累计</span>
-    </div>
-    <div class="week-label">本周已记录 3 / 7 天</div>
-  </div>
-  <div class="commitment-overview">
-    <h3>本周承诺完成概览</h3>
-    <div class="commit-item">
-      <div class="commit-dot" style="background:var(--green)"></div>
-      <span class="commit-text">完成核心功能原型设计</span>
-      <span class="commit-pct">60%</span>
-    </div>
-    <div class="commit-item">
-      <div class="commit-dot" style="background:var(--orange)"></div>
-      <span class="commit-text">搭建项目基础框架</span>
-      <span class="commit-pct">40%</span>
-    </div>
-    <div class="commit-item">
-      <div class="commit-dot" style="background:var(--accent)"></div>
-      <span class="commit-text">完成数据模型设计</span>
-      <span class="commit-pct">25%</span>
-    </div>
-  </div>
-  <div class="slider-section">
-    <label>今日推进度</label>
-    <div class="slider-wrap">
-      <input type="range" min="0" max="100" value="50" id="energySlider" oninput="updateSlider(this)">
-    </div>
-    <div class="slider-val" id="sliderVal">50%</div>
-  </div>
-  <div class="confirm-btn-wrap">
-    <button class="btn btn-primary" onclick="confirmEnergy()">确认今日能量</button>
-    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="showSettlement()">体验周结算流程</button>
-  </div>
-</div>
-
-<!-- Checklist Page -->
-<div id="checklist" class="screen">
-  <div class="page-header">
-    <h1>清单</h1>
-    <p>本周承诺 · 3 项</p>
-  </div>
-  <div style="padding:0 16px;">
-    <!-- Commitment 1 -->
-    <div class="commitment-card" onclick="toggleCommit(this)">
-      <div class="commit-header">
-        <div class="commit-expand-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  <div class="app-shell">
+    <div class="prototype-stage">
+      <section class="device-zone" aria-label="手机交互原型">
+        <div class="device-head">
+          <span>可交互原型</span>
+          <span class="device-name">iPhone 14 Pro</span>
         </div>
-        <div class="commit-info">
-          <div class="commit-title">完成核心功能原型设计</div>
-          <div class="commit-progress"><div class="commit-progress-bar" style="width:60%"></div></div>
+        <div id="phoneHost" class="phone-host"></div>
+      </section>
+      <aside id="sidePanel" class="side-panel" aria-label="原型说明"></aside>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_WEEK = [
+      { d: "一", v: 72, tasks: "3/3" },
+      { d: "二", v: 84, tasks: "3/3" },
+      { d: "三", v: 66, tasks: "2/4" },
+      { d: "四", v: 88, tasks: "4/4" },
+      { d: "五", v: 78, tasks: "2/3" },
+      { d: "六", v: 0, tasks: "0/2" },
+      { d: "日", v: 0, tasks: "0/3" },
+    ];
+    const DEFAULT_FOCUS = [
+      { title: "完成能量页交互原型", value: 68, note: "前端结构已完成" },
+      { title: "晨跑 5 次", value: 60, note: "已完成 3 / 5" },
+      { title: "读完两章社会学", value: 40, note: "第 2 章进行中" },
+    ];
+    const DEFAULT_TODOS = [
+      { id: 1, text: "整理本周 3 个重点承诺", done: true },
+      { id: 2, text: "完成能量球动效第一版", done: true },
+      { id: 3, text: "跑步 30 分钟", done: false },
+      { id: 4, text: "睡前阅读 20 分钟", done: false },
+    ];
+    const MONTH_WEEKS = [
+      { week: "W15", state: "已结算", title: "冷启动闭环", score: 76, items: ["季度目标输入", "AI 拆解", "首次能量记录"] },
+      { week: "W16", state: "当前周", title: "能量页体验打磨", score: 78, items: ["能量球动效", "本周概览", "打分提醒"] },
+      { week: "W17", state: "计划中", title: "AI 拆解优化", score: null, items: ["目标类型识别", "任务质量优化", "重新规划"] },
+      { week: "W18", state: "计划中", title: "成长树时间胶囊", score: null, items: ["果实详情", "周回顾", "荣誉层"] },
+    ];
+    const YEAR_QUARTERS = [
+      { q: "Q1", title: "起始阶段", score: 76, desc: "跑通目标 → 清单 → 能量 → 果实的核心闭环。" },
+      { q: "Q2", title: "成长阶段", score: 43, desc: "打磨 AI 拆解、月计划和成长树反馈。" },
+      { q: "Q3", title: "丰茂阶段", score: null, desc: "扩大目标类型，验证持续使用意愿。" },
+      { q: "Q4", title: "年度完成", score: null, desc: "完成年度回看和荣誉层沉淀。" },
+    ];
+    const FRUITS = [
+      { week: "第 11 周", date: "2026-03-15", score: 72, x: 94, y: 226, s: 18, note: "完成登录模块前后端，恢复晨跑节奏。" },
+      { week: "第 12 周", date: "2026-03-22", score: 86, x: 145, y: 170, s: 24, note: "原型推进明显，阅读完成两章。" },
+      { week: "第 13 周", date: "2026-03-29", score: 64, x: 224, y: 214, s: 20, note: "工作较忙，但保留了最低推进。" },
+      { week: "第 14 周", date: "2026-04-05", score: 79, x: 252, y: 150, s: 16, note: "完成清单页基础结构。" },
+      { week: "第 15 周", date: "2026-04-12", score: 76, x: 122, y: 132, s: 14, note: "冷启动闭环跑通。" },
+      { week: "第 16 周", date: "2026-04-19", score: 78, x: 176, y: 260, s: 22, note: "能量球方向确认，准备做交互版本。" },
+    ];
+    const treeDetails = {
+      fruit: { title: "果实数据", sub: "每周一颗果实，记录这一周的推进质量。", stats: [["16", "累计果实"], ["78%", "最近一周"], ["72%", "季度均值"]] },
+      quarter: { title: "季度阶段", sub: "树的形态按时间自然进入下一阶段，荣誉由季度达标决定。", stats: [["Q2", "当前阶段"], ["43%", "年度进度"], ["80%", "达标线"]] },
+      honor: { title: "荣誉层", sub: "季度达标后叠加永久荣誉效果，只增不减。", stats: [["1", "已获得"], ["4", "年度上限"], ["永久", "保留规则"]] },
+    };
+
+    const cloneWeek = () => DEFAULT_WEEK.map((item) => ({ ...item }));
+    const cloneTodos = () => DEFAULT_TODOS.map((item) => ({ ...item }));
+    const cloneMonth = () => MONTH_WEEKS.map((item) => ({ ...item, items: [...item.items] }));
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[char]));
+
+    const state = {
+      booted: false,
+      tab: "energy",
+      onboardingStep: 0,
+      onboardingLoading: false,
+      goal: "开发一款个人成长 App，上架到应用商店",
+      todos: cloneTodos(),
+      focusItems: DEFAULT_FOCUS.map((item) => ({ ...item })),
+      monthWeeks: cloneMonth(),
+      weekRecords: cloneWeek(),
+      energyValue: 82,
+      charging: false,
+      viewedList: false,
+      showReminder: false,
+      showWeek: false,
+      selectedFruit: null,
+      selectedWeek: null,
+      adding: false,
+      draft: "",
+      planView: "month",
+      planning: false,
+      treeDetail: null,
+      settlementConfirmed: false,
+      toast: false,
+    };
+
+    function icon(type) {
+      const paths = {
+        energy: '<path d="M13 2 5 14h6l-1 8 9-13h-6l0-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />',
+        list: '<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />',
+        plan: '<path d="M7 3v18M7 6h9l-2 3 2 3H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />',
+        tree: '<path d="M12 21v-8M12 13c-4.2 0-6-2.2-6-5.5C9 7.5 11 9 12 13Zm0 0c4.2 0 6-2.2 6-5.5-3 0-5 1.5-6 5.5ZM12 21c3.5-1.6 6-4.4 6-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />',
+      };
+      return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${paths[type] || paths.tree}</svg>`;
+    }
+
+    function weekEnergy() {
+      const values = state.weekRecords.map((day) => day.v).filter(Boolean);
+      if (!values.length) return 0;
+      return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+    }
+
+    function renderNav(activeTab) {
+      const tabs = [["energy", "能量"], ["list", "清单"], ["plan", "计划"], ["tree", "成长树"]];
+      return `<nav class="bottom-nav">${tabs.map(([id, label]) => `
+        <button class="nav-button ${activeTab === id ? "active" : ""}" data-action="change-tab" data-tab="${id}">
+          ${icon(id)}
+          <span>${label}</span>
+        </button>`).join("")}</nav>`;
+    }
+
+    function renderPhone(children, options = {}) {
+      const activeTab = options.tab || state.tab;
+      const showNav = options.showNav !== false;
+      return `
+        <div class="phone">
+          <div class="phone-bg"></div>
+          <div class="phone-grid"></div>
+          <div class="phone-content">
+            <div class="status-bar"><span>09:07</span><div class="speaker"></div><span>87%</span></div>
+            <main class="phone-main">${children}</main>
+            ${showNav ? renderNav(activeTab) : ""}
+          </div>
+        </div>`;
+    }
+
+    function renderOnboarding() {
+      if (state.onboardingStep === 0) {
+        return `
+          <div class="onboarding-step panel-in">
+            <div class="onboarding-card">
+              <div class="intro-tree">
+                <div class="intro-trunk"></div>
+                <div class="intro-leaf one"></div>
+                <div class="intro-leaf two"></div>
+                <div class="intro-leaf three"></div>
+                <div class="intro-shadow"></div>
+              </div>
+              <p class="onboarding-copy">这是你今年的成长树，<br>它会陪你走过四个季节。</p>
+            </div>
+            <button class="primary-button" style="margin-top:20px" data-action="onboard-next">开始设置这个季度</button>
+          </div>`;
+      }
+      if (state.onboardingStep === 1) {
+        return `
+          <div class="onboarding-form panel-in">
+            <div class="glass-card" style="padding:20px">
+              <p class="question">这个季度，你最想推进的一件事是什么？</p>
+              <textarea id="goal-input" class="goal-input" placeholder="例如：开发一款 App，上架到应用商店">${escapeHtml(state.goal)}</textarea>
+              <p class="hint-copy">先用一件事跑通完整闭环，之后再补充其他方向。</p>
+            </div>
+            <button class="primary-button" style="margin-top:20px" data-action="start-ai" ${!state.goal.trim() || state.onboardingLoading ? "disabled" : ""}>${state.onboardingLoading ? "正在拆成本周行动..." : "让 AI 帮我拆成这周行动"}</button>
+            ${state.onboardingLoading ? '<div class="loading-track"><div class="loading-bar"></div></div>' : ""}
+          </div>`;
+      }
+      return `
+        <div class="onboarding-step panel-in" style="padding-top:20px">
+          <div class="glass-card" style="padding:20px">
+            <p class="eyebrow">weekly focus</p>
+            <h3 style="margin:8px 0 0;color:#fff;font-size:18px">本周先推进这 3 件事</h3>
+            <div class="focus-list">
+              ${state.focusItems.map((item, index) => `
+                <div class="focus-card">
+                  <p class="focus-title">${index + 1}. ${escapeHtml(item.title)}</p>
+                  <p class="focus-note">${escapeHtml(item.note)}</p>
+                </div>`).join("")}
+            </div>
+          </div>
+          <button class="primary-button" style="margin-top:20px" data-action="finish-onboarding">进入 NewMe</button>
+        </div>`;
+    }
+
+    function renderEnergyOrb() {
+      const bubbles = Array.from({ length: 7 }, (_, index) => {
+        const size = 16 + index * 5;
+        const left = 42 + (index % 4) * 40;
+        const bottom = 12 + (index % 5) * 20;
+        const opacity = 0.42 - index * 0.026;
+        return `<span class="orb-bubble" style="width:${size}px;height:${size}px;left:${left}px;bottom:${bottom}px;opacity:${opacity};animation-delay:${index * 90}ms"></span>`;
+      }).join("");
+      return `
+        <div class="energy-orb ${state.charging ? "is-charging" : ""}">
+          <div class="orb-aura"></div>
+          <div class="orb-core"></div>
+          <div class="orb-shadow"></div>
+          ${bubbles}
+          <div class="orb-text">
+            <div class="orb-value">${weekEnergy()}<span>%</span></div>
+            <div class="orb-label">本周能量</div>
+            <div class="orb-status">${state.charging ? "能量注入中" : "静默充能中"}</div>
+          </div>
+        </div>`;
+    }
+
+    function renderEnergyScreen() {
+      return renderPhone(`
+        <div class="screen-stack">
+          ${renderEnergyOrb()}
+          <section class="glass-card energy-progress">
+            <div class="card-head"><h3>本周进度概览</h3><span class="badge">打分参照</span></div>
+            <div class="progress-list">
+              ${state.focusItems.map((item) => `
+                <div>
+                  <div class="progress-meta"><span>${escapeHtml(item.title)}</span><span>${item.value}%</span></div>
+                  <div class="progress-track"><div class="progress-fill" style="width:${item.value}%"></div></div>
+                </div>`).join("")}
+            </div>
+          </section>
+          <section class="glass-card range-card">
+            <div class="range-head"><span>今日能量条</span><span id="energy-value-label">${state.energyValue}%</span></div>
+            <input id="energy-range" class="energy-range" aria-label="今日推进度" type="range" min="0" max="100" value="${state.energyValue}" style="--range-fill:${state.energyValue}%">
+          </section>
+          <button class="confirm-energy" data-action="confirm-energy">确认今日能量</button>
+          ${state.toast ? '<div class="toast">今日能量已注入</div>' : ""}
+        </div>`, { tab: "energy" });
+    }
+
+    function renderListScreen() {
+      const doneCount = state.todos.filter((todo) => todo.done).length;
+      return renderPhone(`
+        <div class="screen-stack" style="gap:16px">
+          <div class="chip-row">${state.focusItems.map((item) => `<span class="chip">${escapeHtml(item.title.slice(0, 7))}</span>`).join("")}</div>
+          <section class="glass-card list-card">
+            <div class="card-head" style="margin-bottom:0">
+              <div>
+                <h3 class="list-title">4 月 26 日</h3>
+                <p class="list-subtitle">${state.selectedWeek ? `来自 ${escapeHtml(state.selectedWeek)} 的计划` : `已完成 ${doneCount} / ${state.todos.length}`}</p>
+              </div>
+              <button class="small-pill" data-action="open-week">本周</button>
+            </div>
+            <div class="todo-scroll">
+              ${state.todos.map((todo, index) => `
+                <button class="todo-button" data-action="toggle-todo" data-id="${todo.id}">
+                  <span class="todo-mark ${todo.done ? "done" : ""}">${todo.done ? "✓" : index + 1}</span>
+                  <span class="todo-text ${todo.done ? "done" : ""}">${escapeHtml(todo.text)}</span>
+                </button>`).join("")}
+            </div>
+            ${state.adding ? `
+              <div class="add-panel">
+                <input id="draft-input" class="draft-input" value="${escapeHtml(state.draft)}" placeholder="写下一件今天要做的小事" autofocus>
+                <div class="add-actions">
+                  <button data-action="add-todo">添加</button>
+                  <button data-action="cancel-add">取消</button>
+                </div>
+              </div>` : '<button class="add-trigger" data-action="open-add">＋ 添加一件小事</button>'}
+          </section>
+          <section class="glass-card week-strip">
+            <div class="week-grid">
+              ${state.weekRecords.map((day, index) => `<div class="day-cell ${index === 6 ? "today" : ""}"><p>${day.d}</p><p>${day.tasks}</p></div>`).join("")}
+            </div>
+          </section>
+        </div>`, { tab: "list" });
+    }
+
+    function renderPlanScreen() {
+      const monthContent = `
+        <div class="scroll-area panel-in">
+          <section class="glass-card plan-intro">
+            <div class="plan-intro-grid">
+              <div><p class="eyebrow">April · 4 weeks</p><h3>只规划最近一个月，避免计划过远失效</h3></div>
+              <button class="replan-button" data-action="replan">${state.planning ? "生成中" : "AI 重规划"}</button>
+            </div>
+            ${state.planning ? '<div class="loading-track"><div class="loading-bar"></div></div>' : ""}
+          </section>
+          <div class="plan-list">
+            ${state.monthWeeks.map((node) => `
+              <button class="week-button ${node.state === "当前周" ? "current" : ""}" data-action="select-week" data-week="${node.week}">
+                <div class="week-row"><span>${node.week} · ${escapeHtml(node.title)}</span><span>${node.score ? `${node.score}%` : node.state}</span></div>
+                <div class="tag-list">${node.items.map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join("")}</div>
+              </button>`).join("")}
+          </div>
+        </div>`;
+      const yearContent = `
+        <div class="scroll-area panel-in">
+          <section class="glass-card plan-intro">
+            <p class="eyebrow">2026 · yearly map</p>
+            <h3>年度只看四个季度的阶段变化</h3>
+          </section>
+          <div class="plan-list">
+            ${YEAR_QUARTERS.map((quarter) => `
+              <article class="quarter-card ${quarter.q === "Q2" ? "current" : ""}">
+                <div class="quarter-row"><div class="q-badge">${quarter.q}</div><span class="quarter-score">${quarter.score === null ? "未开始" : `${quarter.score}%`}</span></div>
+                <h3>${escapeHtml(quarter.title)}</h3>
+                <p>${escapeHtml(quarter.desc)}</p>
+                <div class="quarter-track"><div class="quarter-fill" style="width:${quarter.score || 0}%;opacity:${quarter.score === null ? .18 : 1}"></div></div>
+              </article>`).join("")}
+          </div>
+        </div>`;
+      return renderPhone(`
+        <div class="screen-stack" style="gap:0">
+          <div class="segmented">
+            <button class="seg-button ${state.planView === "month" ? "active" : ""}" data-action="plan-view" data-view="month">月计划 · 按周</button>
+            <button class="seg-button ${state.planView === "year" ? "active" : ""}" data-action="plan-view" data-view="year">年计划 · 按 Q</button>
+          </div>
+          ${state.planView === "month" ? monthContent : yearContent}
+        </div>`, { tab: "plan" });
+    }
+
+    function renderTreeCanvas() {
+      return `
+        <div class="tree-canvas">
+          <div class="ground-glow"></div>
+          <div class="tree-aura"></div>
+          <div class="tree-trunk"></div>
+          <div class="branch one"></div>
+          <div class="branch two"></div>
+          <div class="branch three"></div>
+          <div class="canopy c1"></div>
+          <div class="canopy c2"></div>
+          <div class="canopy c3"></div>
+          <div class="canopy c4"></div>
+          <div class="canopy c5"></div>
+          ${FRUITS.map((fruit, index) => `<button class="fruit" data-action="open-fruit" data-index="${index}" aria-label="打开${escapeHtml(fruit.week)}" style="left:${fruit.x}px;top:${fruit.y}px;width:${fruit.s}px;height:${fruit.s}px;animation-delay:${index * 240}ms"></button>`).join("")}
+          <div class="tree-tools">
+            <button class="tree-tool fruit-tool" data-action="tree-detail" data-type="fruit"><b>16</b>果实</button>
+            <button class="tree-tool quarter-tool" data-action="tree-detail" data-type="quarter"><b>Q2</b>阶段</button>
+            <button class="tree-tool honor-tool" data-action="tree-detail" data-type="honor"><b>1</b>荣誉</button>
+          </div>
+          <div class="tree-tip">点击果实查看时间胶囊</div>
+        </div>`;
+    }
+
+    function renderTreeDetail() {
+      const detail = treeDetails[state.treeDetail] || treeDetails.fruit;
+      return `
+        <div class="tree-detail panel-in">
+          <button class="back-button" data-action="tree-back">← 返回成长树</button>
+          <section class="glass-card detail-card">
+            <p class="eyebrow">tree detail</p>
+            <h3>${escapeHtml(detail.title)}</h3>
+            <p>${escapeHtml(detail.sub)}</p>
+          </section>
+          <div class="detail-stats">
+            ${detail.stats.map(([value, label]) => `<section class="glass-card stat-card"><p>${escapeHtml(value)}</p><p>${escapeHtml(label)}</p></section>`).join("")}
+          </div>
+          <section class="glass-card detail-card" style="margin-top:16px">
+            <h4 style="margin:0;color:#fff;font-size:14px">说明</h4>
+            <p style="margin-top:12px;color:#94a3b8;font-size:12px;line-height:1.8">数据不压在成长树主画面上，主画面保持沉浸。需要时通过树旁按钮进入详情，避免把成长树做成成就面板或 Dashboard。</p>
+          </section>
+        </div>`;
+    }
+
+    function renderTreeScreen() {
+      return renderPhone(`<div style="height:100%;padding-bottom:8px">${state.treeDetail ? renderTreeDetail() : renderTreeCanvas()}</div>`, { tab: "tree" });
+    }
+
+    function renderSettlementScreen() {
+      return renderPhone(`
+        <div class="screen-stack" style="gap:16px">
+          <section class="glass-card settlement-card">
+            <p>这一周辛苦了，<br>我们一起看看这周的收获吧。</p>
+            <div class="settle-fruit ${state.settlementConfirmed ? "born" : ""}"><span>${weekEnergy()}%</span></div>
+          </section>
+          <section class="glass-card bars-card">
+            <div class="energy-bars">
+              ${state.weekRecords.map((day) => `
+                <div class="energy-bar-col">
+                  <div class="energy-bar-track"><div class="energy-bar-fill" style="height:${Math.max(day.v, 8)}%;opacity:${day.v ? 1 : .2}"></div></div>
+                  <span>${day.d}</span>
+                </div>`).join("")}
+            </div>
+          </section>
+          <section class="glass-card settle-result">
+            <div class="result-row"><h3>建议周结果</h3><span>${weekEnergy()}%</span></div>
+            <button class="settle-button" data-action="settle-confirm">确认并生成果实</button>
+          </section>
+        </div>`, { tab: "tree" });
+    }
+
+    function renderReminderModal() {
+      return `
+        <div class="modal-layer" data-modal="reminder">
+          <div class="modal-card">
+            <p class="modal-title">要不要先看看今天的清单？</p>
+            <p class="modal-copy">看起来今天的清单还没看过。你可以先看一眼，再决定今日推进度。</p>
+            <div class="modal-actions">
+              <button data-action="reminder-list">先看清单</button>
+              <button data-action="reminder-continue">继续注入</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderWeekModal() {
+      return `
+        <div class="modal-layer" data-modal="week">
+          <div class="modal-card">
+            <div class="modal-head">
+              <div><p class="eyebrow">week overview</p><h3 style="margin:8px 0 0;color:#fff;font-size:18px">本周 7 天概览</h3></div>
+              <button class="small-pill" data-action="close-week">关闭</button>
+            </div>
+            <div class="week-modal-list">
+              ${state.weekRecords.map((day, index) => `
+                <div class="week-modal-row ${index === 6 ? "today" : ""}">
+                  <div><p>周${day.d}</p><p>清单 ${day.tasks}</p></div>
+                  <span>${day.v ? `${day.v}%` : "未记录"}</span>
+                </div>`).join("")}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderFruitModal() {
+      const fruit = state.selectedFruit;
+      if (!fruit) return "";
+      return `
+        <div class="modal-layer" data-modal="fruit">
+          <div class="modal-card">
+            <p class="eyebrow" style="color:rgba(254,243,199,.60)">time capsule</p>
+            <h3 style="margin:8px 0 0;color:#fff;font-size:20px">${escapeHtml(fruit.week)}</h3>
+            <p style="margin:4px 0 0;color:#94a3b8;font-size:12px">${escapeHtml(fruit.date)}</p>
+            <div class="fruit-result">
+              <div class="fruit-dot"><span>${fruit.score}%</span></div>
+              <div><p style="margin:0;color:#fff;font-size:14px">本周结果</p><p style="margin:4px 0 0;color:#94a3b8;font-size:12px">果实亮度来自周结算确认值</p></div>
+            </div>
+            <p style="margin:0;color:#cbd5e1;font-size:14px;line-height:1.7">${escapeHtml(fruit.note)}</p>
+            <button class="primary-button" style="margin-top:20px;box-shadow:none" data-action="close-fruit">收起</button>
+          </div>
+        </div>`;
+    }
+
+    function renderOverlays() {
+      return `${state.showReminder ? renderReminderModal() : ""}${state.showWeek ? renderWeekModal() : ""}${state.selectedFruit ? renderFruitModal() : ""}`;
+    }
+
+    function renderSidePanel() {
+      const tabItems = [
+        ["energy", "能量页"],
+        ["list", "清单页"],
+        ["plan", "计划页"],
+        ["tree", "成长树"],
+        ["settlement", "周结算"],
+      ];
+      return `
+        <p class="eyebrow">NewMe Prototype</p>
+        <h1>交互原型 · 精简版</h1>
+        <p class="side-desc">已去掉手机内页顶部大标题，主体内容上移。能量页压缩为一屏四元素；计划页加入「月计划 / 年计划」切换；成长树页改为沉浸式整屏树，数据通过树旁按钮进入详情。</p>
+        <div class="side-tabs">
+          ${tabItems.map(([id, label]) => `<button class="side-tab ${state.booted && state.tab === id ? "active" : ""}" data-action="change-tab" data-tab="${id}" ${state.booted ? "" : "disabled"}>${label}</button>`).join("")}
         </div>
-        <span class="commit-pct-badge">60%</span>
-      </div>
-      <div class="commit-tasks">
-        <div class="task-item done"><div class="task-check checked"></div><span>梳理页面信息架构</span></div>
-        <div class="task-item done"><div class="task-check checked"></div><span>设计能量页交互流程</span></div>
-        <div class="task-item done"><div class="task-check checked"></div><span>设计清单页层级结构</span></div>
-        <div class="task-item"><div class="task-check"></div><span>设计计划页时间轴</span></div>
-        <div class="task-item"><div class="task-check"></div><span>设计成长树视觉方案</span></div>
-      </div>
-    </div>
-    <!-- Commitment 2 -->
-    <div class="commitment-card" onclick="toggleCommit(this)">
-      <div class="commit-header">
-        <div class="commit-expand-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        <div class="side-notes">
+          <div class="note-card"><span>能量页：</span>一屏展示：能量球、本周进度概览、能量条、确认按钮。</div>
+          <div class="note-card"><span>计划页：</span>顶部切换「月计划 · 按周」与「年计划 · 按 Q」。</div>
+          <div class="note-card"><span>成长树：</span>主画面只保留一棵树，数据隐藏到树旁按钮与详情页。</div>
         </div>
-        <div class="commit-info">
-          <div class="commit-title">搭建项目基础框架</div>
-          <div class="commit-progress"><div class="commit-progress-bar" style="width:40%"></div></div>
-        </div>
-        <span class="commit-pct-badge">40%</span>
-      </div>
-      <div class="commit-tasks">
-        <div class="task-item done"><div class="task-check checked"></div><span>初始化 React Native 项目</span></div>
-        <div class="task-item done"><div class="task-check checked"></div><span>配置导航和路由</span></div>
-        <div class="task-item"><div class="task-check"></div><span>搭建状态管理</span></div>
-        <div class="task-item"><div class="task-check"></div><span>实现本地数据持久化</span></div>
-        <div class="task-item"><div class="task-check"></div><span>接入 AI API</span></div>
-      </div>
-    </div>
-    <!-- Commitment 3 -->
-    <div class="commitment-card" onclick="toggleCommit(this)">
-      <div class="commit-header">
-        <div class="commit-expand-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-        <div class="commit-info">
-          <div class="commit-title">完成数据模型设计</div>
-          <div class="commit-progress"><div class="commit-progress-bar" style="width:25%"></div></div>
-        </div>
-        <span class="commit-pct-badge">25%</span>
-      </div>
-      <div class="commit-tasks">
-        <div class="task-item done"><div class="task-check checked"></div><span>定义核心实体关系</span></div>
-        <div class="task-item"><div class="task-check"></div><span>设计 API 接口规范</span></div>
-        <div class="task-item"><div class="task-check"></div><span>编写数据库 Schema</span></div>
-        <div class="task-item"><div class="task-check"></div><span>设计缓存策略</span></div>
-      </div>
-    </div>
-    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:12px;" onclick="showAiRePlan()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" style="margin-right:6px;"><path d="M12 2a7 7 0 017 7c0 5-7 11-7 11S5 14 5 9a7 7 0 017-7z"/></svg>
-      AI 帮我重新拆解
-    </button>
-  </div>
-</div>
+        <div class="side-footer">
+          <button data-action="reset">重置原型</button>
+          ${!state.booted ? '<button class="skip-button" data-action="skip-onboarding">跳过冷启动</button>' : ""}
+        </div>`;
+    }
 
-<!-- Plan Page -->
-<div id="plan" class="screen">
-  <div class="page-header">
-    <h1>计划</h1>
-    <p>2026 Q2 · 第 14-17 周</p>
-  </div>
-  <div class="timeline">
-    <div class="tl-node past">
-      <div class="tl-dot done-dot"></div>
-      <div class="tl-content">
-        <div class="tl-week">第 14 周 <span class="tl-date">4/1 - 4/7</span></div>
-        <div class="tl-commits">
-          <div>✅ 完成产品需求文档</div>
-          <div>✅ 确定技术选型</div>
-        </div>
-        <div class="tl-result">周结果：85%</div>
-      </div>
-    </div>
-    <div class="tl-node past">
-      <div class="tl-dot done-dot"></div>
-      <div class="tl-content">
-        <div class="tl-week">第 15 周 <span class="tl-date">4/8 - 4/14</span></div>
-        <div class="tl-commits">
-          <div>✅ 完成 UI 设计稿</div>
-          <div>✅ 搭建开发环境</div>
-        </div>
-        <div class="tl-result">周结果：72%</div>
-      </div>
-    </div>
-    <div class="tl-node current">
-      <div class="tl-dot current-dot"></div>
-      <div class="tl-content">
-        <div class="tl-week">第 16 周 <span class="tl-date">4/15 - 4/21</span> <span class="tl-badge">本周</span></div>
-        <div class="tl-commits">
-          <div>🔵 完成核心功能原型设计</div>
-          <div>🔵 搭建项目基础框架</div>
-          <div>🔵 完成数据模型设计</div>
-        </div>
-        <div class="tl-progress">进行中 · 42%</div>
-      </div>
-    </div>
-    <div class="tl-node future">
-      <div class="tl-dot future-dot"></div>
-      <div class="tl-content">
-        <div class="tl-week">第 17 周 <span class="tl-date">4/22 - 4/28</span></div>
-        <div class="tl-commits">
-          <div>⬜ 实现能量页核心交互</div>
-          <div>⬜ 实现清单页 CRUD</div>
-          <div>⬜ 接入 AI 拆解功能</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div style="padding:16px;">
-    <button class="btn btn-ghost btn-sm" style="width:100%;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" style="margin-right:6px;"><path d="M12 2a7 7 0 017 7c0 5-7 11-7 11S5 14 5 9a7 7 0 017-7z"/></svg>
-      AI 协作调整计划
-    </button>
-  </div>
-</div>
+    function renderApp() {
+      const screen = !state.booted
+        ? renderPhone(renderOnboarding(), { tab: "tree", showNav: false })
+        : state.tab === "energy"
+          ? renderEnergyScreen()
+          : state.tab === "list"
+            ? renderListScreen()
+            : state.tab === "plan"
+              ? renderPlanScreen()
+              : state.tab === "tree"
+                ? renderTreeScreen()
+                : renderSettlementScreen();
+      document.getElementById("phoneHost").innerHTML = screen + renderOverlays();
+      document.getElementById("sidePanel").innerHTML = renderSidePanel();
+      const draft = document.getElementById("draft-input");
+      if (draft) draft.focus();
+    }
 
-<!-- Growth Tree Page -->
-<div id="tree" class="screen">
-  <div class="page-header">
-    <h1>成长树</h1>
-    <p>2026 年度 · Q2 成长阶段</p>
-  </div>
-  <div class="tree-scene">
-    <div class="tree-container">
-      <!-- Tree trunk -->
-      <div class="tree-trunk"></div>
-      <!-- Branches -->
-      <div class="tree-branch branch-l1"></div>
-      <div class="tree-branch branch-r1"></div>
-      <div class="tree-branch branch-l2"></div>
-      <div class="tree-branch branch-r2"></div>
-      <!-- Canopy -->
-      <div class="tree-canopy"></div>
-      <div class="tree-canopy canopy2"></div>
-      <!-- Fruits -->
-      <div class="tree-fruit fruit1" style="--brightness:0.85" onclick="showFruitCard(14)"></div>
-      <div class="tree-fruit fruit2" style="--brightness:0.72" onclick="showFruitCard(15)"></div>
-      <div class="tree-fruit fruit3" style="--brightness:0.42;opacity:0.6" onclick="showFruitCard(16)"></div>
-      <!-- Q1 fruits (dimmer, past quarter) -->
-      <div class="tree-fruit fruit-q1-1" style="--brightness:0.9" onclick="showFruitCard(1)"></div>
-      <div class="tree-fruit fruit-q1-2" style="--brightness:0.65" onclick="showFruitCard(2)"></div>
-      <div class="tree-fruit fruit-q1-3" style="--brightness:0.78" onclick="showFruitCard(3)"></div>
-    </div>
-    <div class="tree-ground"></div>
-  </div>
-  <div class="tree-stats">
-    <div class="stat-card">
-      <div class="stat-val">15</div>
-      <div class="stat-label">累计果实</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val">1</div>
-      <div class="stat-label">季度达标</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val glow-text">发光</div>
-      <div class="stat-label">荣誉层</div>
-    </div>
-  </div>
-  <div class="quarter-timeline">
-    <div class="qt-item active"><div class="qt-dot qt-done"></div><span>Q1 起始</span></div>
-    <div class="qt-line qt-line-done"></div>
-    <div class="qt-item active"><div class="qt-dot qt-current"></div><span>Q2 成长</span></div>
-    <div class="qt-line"></div>
-    <div class="qt-item"><div class="qt-dot"></div><span>Q3 丰茂</span></div>
-    <div class="qt-line"></div>
-    <div class="qt-item"><div class="qt-dot"></div><span>Q4 完成</span></div>
-  </div>
-</div>
+    function changeTab(tab) {
+      if (tab === "list") state.viewedList = true;
+      if (tab === "settlement") state.settlementConfirmed = false;
+      state.tab = tab;
+      state.showReminder = false;
+      state.showWeek = false;
+      state.selectedFruit = null;
+      renderApp();
+    }
 
-<!-- Fruit Card Modal -->
-<div class="modal-overlay" id="fruitModal" onclick="closeFruitCard()">
-  <div class="modal-card" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <span id="fruitWeekTitle">第 14 周（2026-04-07）</span>
-      <button class="modal-close" onclick="closeFruitCard()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="font-size:13px;color:var(--text2);margin-bottom:8px;">本周承诺</div>
-      <div id="fruitCommits" style="font-size:14px;line-height:1.8;">
-        • 完成产品需求文档<br>• 确定技术选型
-      </div>
-      <div style="margin-top:16px;display:flex;gap:16px;">
-        <div>
-          <div style="font-size:13px;color:var(--text2);">周结果</div>
-          <div id="fruitResult" style="font-size:24px;font-weight:700;color:var(--accent2);margin-top:4px;">85%</div>
-        </div>
-      </div>
-      <div style="margin-top:16px;">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:4px;">本周感悟</div>
-        <div id="fruitNote" style="font-size:14px;color:var(--text);line-height:1.6;font-style:italic;">"第一周节奏不错，需求文档比预期完成得更快。"</div>
-      </div>
-    </div>
-  </div>
-</div>
+    function doConfirmEnergy() {
+      const doneCount = state.todos.filter((todo) => todo.done).length;
+      state.charging = true;
+      state.weekRecords = state.weekRecords.map((day, index) => index === 6 ? { ...day, v: state.energyValue, tasks: `${doneCount}/${state.todos.length}` } : day);
+      state.toast = true;
+      renderApp();
+      window.setTimeout(() => {
+        state.charging = false;
+        renderApp();
+      }, 1300);
+      window.setTimeout(() => {
+        state.toast = false;
+        renderApp();
+      }, 1400);
+    }
 
-<!-- Week Settlement Modal -->
-<div class="modal-overlay" id="settlementModal">
-  <div class="settlement-screen">
-    <div class="settle-step active" id="settle1">
-      <h2>这一周辛苦了</h2>
-      <p>我们一起看看这周的收获吧。</p>
-      <button class="btn btn-primary" style="margin-top:24px;width:auto;padding:12px 32px;" onclick="nextSettle(2)">开始回顾</button>
-    </div>
-    <div class="settle-step" id="settle2">
-      <h3 style="color:var(--text2);margin-bottom:16px;">每日能量回顾</h3>
-      <div class="energy-chart">
-        <div class="chart-bar" style="--h:40%"><span>一</span></div>
-        <div class="chart-bar" style="--h:55%"><span>二</span></div>
-        <div class="chart-bar" style="--h:70%"><span>三</span></div>
-        <div class="chart-bar" style="--h:45%"><span>四</span></div>
-        <div class="chart-bar" style="--h:60%"><span>五</span></div>
-        <div class="chart-bar" style="--h:80%"><span>六</span></div>
-        <div class="chart-bar" style="--h:50%"><span>日</span></div>
-      </div>
-      <button class="btn btn-primary" style="margin-top:24px;width:auto;padding:12px 32px;" onclick="nextSettle(3)">继续</button>
-    </div>
-    <div class="settle-step" id="settle3">
-      <h3 style="color:var(--text2);margin-bottom:16px;">本周承诺完成情况</h3>
-      <div style="text-align:left;width:100%;max-width:300px;">
-        <div class="settle-commit"><span class="settle-check done">✓</span>完成核心功能原型设计 <span style="color:var(--green)">60%</span></div>
-        <div class="settle-commit"><span class="settle-check partial">~</span>搭建项目基础框架 <span style="color:var(--orange)">40%</span></div>
-        <div class="settle-commit"><span class="settle-check partial">~</span>完成数据模型设计 <span style="color:var(--text2)">25%</span></div>
-      </div>
-      <div style="margin-top:20px;font-size:15px;color:var(--text2);">建议周结果</div>
-      <div style="font-size:36px;font-weight:700;color:var(--accent2);margin:8px 0;">42%</div>
-      <div class="slider-section" style="margin:12px 0;background:var(--card2);max-width:300px;">
-        <label>调整最终周结果</label>
-        <div class="slider-wrap">
-          <input type="range" min="0" max="100" value="42" id="settleSlider" oninput="updateSettleSlider(this)">
-        </div>
-        <div class="slider-val" id="settleVal" style="font-size:20px;">42%</div>
-      </div>
-      <button class="btn btn-primary" style="margin-top:16px;width:auto;padding:12px 32px;" onclick="nextSettle(4)">确认周结果</button>
-    </div>
-    <div class="settle-step" id="settle4">
-      <div class="fruit-anim" id="fruitAnim">
-        <div class="fruit-glow"></div>
-        <div class="fruit-body"></div>
-      </div>
-      <h2 style="margin-top:24px;">新果实长出来了</h2>
-      <p style="color:var(--text2);margin-top:8px;">这颗果实记录了你这一周的努力。</p>
-      <textarea class="onboard-input" placeholder="写下这周的感悟（可选）..." style="max-width:300px;min-height:60px;margin-top:16px;"></textarea>
-      <button class="btn btn-primary" style="margin-top:12px;width:auto;padding:12px 32px;" onclick="closeSettlement()">完成</button>
-    </div>
-  </div>
-</div>
+    function resetPrototype() {
+      state.booted = false;
+      state.tab = "energy";
+      state.onboardingStep = 0;
+      state.onboardingLoading = false;
+      state.todos = cloneTodos();
+      state.monthWeeks = cloneMonth();
+      state.weekRecords = cloneWeek();
+      state.energyValue = 82;
+      state.charging = false;
+      state.viewedList = false;
+      state.showReminder = false;
+      state.showWeek = false;
+      state.selectedFruit = null;
+      state.selectedWeek = null;
+      state.adding = false;
+      state.draft = "";
+      state.planView = "month";
+      state.planning = false;
+      state.treeDetail = null;
+      state.settlementConfirmed = false;
+      state.toast = false;
+      renderApp();
+    }
 
-<!-- Tab Bar -->
-<div class="tab-bar hidden" id="tabBar">
-  <div class="tab-item active" data-tab="energy" onclick="switchTab('energy')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-    <span>能量</span>
-  </div>
-  <div class="tab-item" data-tab="checklist" onclick="switchTab('checklist')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-    <span>清单</span>
-  </div>
-  <div class="tab-item" data-tab="plan" onclick="switchTab('plan')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-    <span>计划</span>
-  </div>
-  <div class="tab-item" data-tab="tree" onclick="switchTab('tree')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V8"/><path d="M5 12l7-8 7 8"/><path d="M3 17l9-6 9 6"/></svg>
-    <span>成长树</span>
-  </div>
-</div>
+    document.addEventListener("click", (event) => {
+      if (event.target.classList.contains("modal-layer")) {
+        const modal = event.target.dataset.modal;
+        if (modal === "reminder") state.showReminder = false;
+        if (modal === "week") state.showWeek = false;
+        if (modal === "fruit") state.selectedFruit = null;
+        renderApp();
+        return;
+      }
+      const target = event.target.closest("[data-action]");
+      if (!target) return;
+      const action = target.dataset.action;
+      if (action === "onboard-next") {
+        state.onboardingStep = 1;
+      }
+      if (action === "start-ai") {
+        if (!state.goal.trim() || state.onboardingLoading) return;
+        state.onboardingLoading = true;
+        renderApp();
+        window.setTimeout(() => {
+          state.onboardingLoading = false;
+          state.onboardingStep = 2;
+          renderApp();
+        }, 1000);
+        return;
+      }
+      if (action === "finish-onboarding" || action === "skip-onboarding") {
+        state.booted = true;
+        state.tab = "energy";
+      }
+      if (action === "change-tab") {
+        if (!state.booted) return;
+        changeTab(target.dataset.tab);
+        return;
+      }
+      if (action === "confirm-energy") {
+        if (!state.viewedList) {
+          state.showReminder = true;
+        } else {
+          doConfirmEnergy();
+          return;
+        }
+      }
+      if (action === "reminder-list") {
+        state.showReminder = false;
+        changeTab("list");
+        return;
+      }
+      if (action === "reminder-continue") {
+        state.showReminder = false;
+        doConfirmEnergy();
+        return;
+      }
+      if (action === "toggle-todo") {
+        const id = Number(target.dataset.id);
+        state.todos = state.todos.map((todo) => todo.id === id ? { ...todo, done: !todo.done } : todo);
+      }
+      if (action === "open-add") {
+        state.adding = true;
+        state.draft = "";
+      }
+      if (action === "cancel-add") {
+        state.adding = false;
+        state.draft = "";
+      }
+      if (action === "add-todo") {
+        const value = state.draft.trim();
+        if (value) {
+          state.todos = [...state.todos, { id: Date.now(), text: value, done: false }];
+          state.draft = "";
+          state.adding = false;
+        }
+      }
+      if (action === "open-week") {
+        state.showWeek = true;
+      }
+      if (action === "close-week") {
+        state.showWeek = false;
+      }
+      if (action === "plan-view") {
+        state.planView = target.dataset.view;
+      }
+      if (action === "replan") {
+        state.planning = true;
+        renderApp();
+        window.setTimeout(() => {
+          state.monthWeeks = state.monthWeeks.map((item) => item.week === "W17"
+            ? { ...item, title: "根据本周结果重排 AI 任务", items: ["调整任务密度", "保留晨跑", "压缩阅读量"] }
+            : item);
+          state.planning = false;
+          renderApp();
+        }, 1000);
+        return;
+      }
+      if (action === "select-week") {
+        state.selectedWeek = target.dataset.week;
+        state.viewedList = true;
+        changeTab("list");
+        return;
+      }
+      if (action === "tree-detail") {
+        state.treeDetail = target.dataset.type;
+      }
+      if (action === "tree-back") {
+        state.treeDetail = null;
+      }
+      if (action === "open-fruit") {
+        state.selectedFruit = FRUITS[Number(target.dataset.index)];
+      }
+      if (action === "close-fruit") {
+        state.selectedFruit = null;
+      }
+      if (action === "settle-confirm") {
+        state.settlementConfirmed = true;
+        renderApp();
+        window.setTimeout(() => {
+          state.tab = "tree";
+          state.settlementConfirmed = false;
+          renderApp();
+        }, 900);
+        return;
+      }
+      if (action === "reset") {
+        resetPrototype();
+        return;
+      }
+      renderApp();
+    });
 
-<script>
-// Onboarding
-function nextOb(step) {
-  document.querySelectorAll('.onboard-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('ob-step' + step).classList.add('active');
-  if (step === 3) {
-    setTimeout(() => nextOb(4), 2000);
-  }
-}
+    document.addEventListener("input", (event) => {
+      if (event.target.id === "goal-input") {
+        state.goal = event.target.value;
+        const button = document.querySelector('[data-action="start-ai"]');
+        if (button) button.disabled = !state.goal.trim() || state.onboardingLoading;
+      }
+      if (event.target.id === "draft-input") {
+        state.draft = event.target.value;
+      }
+      if (event.target.id === "energy-range") {
+        state.energyValue = Number(event.target.value);
+        event.target.style.setProperty("--range-fill", `${state.energyValue}%`);
+        const label = document.getElementById("energy-value-label");
+        if (label) label.textContent = `${state.energyValue}%`;
+      }
+    });
 
-function finishOnboarding() {
-  document.getElementById('onboarding').classList.remove('active');
-  document.getElementById('energy').classList.add('active');
-  document.getElementById('tabBar').classList.remove('hidden');
-}
+    document.addEventListener("keydown", (event) => {
+      if (event.target.id === "draft-input" && event.key === "Enter") {
+        event.preventDefault();
+        const value = state.draft.trim();
+        if (!value) return;
+        state.todos = [...state.todos, { id: Date.now(), text: value, done: false }];
+        state.draft = "";
+        state.adding = false;
+        renderApp();
+      }
+    });
 
-// Tab switching
-function switchTab(tab) {
-  document.querySelectorAll('.screen:not(#onboarding):not(.no-tab)').forEach(s => s.classList.remove('active'));
-  document.getElementById(tab).classList.add('active');
-  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-  document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
-}
-
-// Energy slider
-function updateSlider(el) {
-  const val = el.value;
-  el.style.setProperty('--val', val + '%');
-  document.getElementById('sliderVal').textContent = val + '%';
-}
-
-// Confirm energy with animation
-function confirmEnergy() {
-  const val = document.getElementById('energySlider').value;
-  const orb = document.getElementById('energyOrb');
-  const pct = document.getElementById('orbPct');
-  const bg = document.getElementById('orbBg');
-
-  // Charging animation
-  orb.style.transition = 'transform 0.3s';
-  orb.style.transform = 'scale(1.1)';
-
-  const hue = 250 + (parseInt(val) / 100) * 30;
-  const sat = 40 + (parseInt(val) / 100) * 30;
-  const light = 20 + (parseInt(val) / 100) * 25;
-  bg.style.background = 'radial-gradient(circle at 40% 35%, hsla(' + hue + ',' + sat + '%,' + light + '%,0.6), rgba(10,10,18,0.8))';
-
-  let current = parseInt(pct.textContent);
-  const target = parseInt(val);
-  const step = current < target ? 1 : -1;
-  const interval = setInterval(() => {
-    current += step;
-    pct.textContent = current + '%';
-    if (current === target) clearInterval(interval);
-  }, 20);
-
-  setTimeout(() => { orb.style.transform = 'scale(1)'; }, 500);
-}
-
-// Checklist toggle
-function toggleCommit(el) {
-  el.classList.toggle('open');
-}
-
-// Fruit card
-const fruitData = {
-  1: { week: '第 1 周（2026-01-05）', commits: '• 制定年度成长方向\n• 设定 Q1 目标', result: '90%', note: '"新年第一周，充满干劲。"' },
-  2: { week: '第 2 周（2026-01-12）', commits: '• 开始阅读计划\n• 建立晨跑习惯', result: '65%', note: '"有点忙，但坚持住了。"' },
-  3: { week: '第 3 周（2026-01-19）', commits: '• 完成第一本书\n• 晨跑 4/5 次', result: '78%', note: '"阅读进度超预期。"' },
-  14: { week: '第 14 周（2026-04-07）', commits: '• 完成产品需求文档\n• 确定技术选型', result: '85%', note: '"第一周节奏不错，需求文档比预期完成得更快。"' },
-  15: { week: '第 15 周（2026-04-14）', commits: '• 完成 UI 设计稿\n• 搭建开发环境', result: '72%', note: '"设计稿花了比预期更多的时间。"' },
-  16: { week: '第 16 周（2026-04-21）', commits: '• 完成核心功能原型设计\n• 搭建项目基础框架\n• 完成数据模型设计', result: '42%', note: '（进行中）' }
-};
-
-function showFruitCard(week) {
-  const data = fruitData[week];
-  if (!data) return;
-  document.getElementById('fruitWeekTitle').textContent = data.week;
-  document.getElementById('fruitCommits').innerHTML = data.commits.replace(/\n/g, '<br>');
-  document.getElementById('fruitResult').textContent = data.result;
-  document.getElementById('fruitNote').textContent = data.note;
-  document.getElementById('fruitModal').classList.add('show');
-}
-
-function closeFruitCard() {
-  document.getElementById('fruitModal').classList.remove('show');
-}
-
-// Settlement
-function showSettlement() {
-  document.getElementById('settlementModal').classList.add('show');
-}
-
-function nextSettle(step) {
-  document.querySelectorAll('.settle-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('settle' + step).classList.add('active');
-}
-
-function updateSettleSlider(el) {
-  const val = el.value;
-  el.style.setProperty('--val', val + '%');
-  document.getElementById('settleVal').textContent = val + '%';
-}
-
-function closeSettlement() {
-  document.getElementById('settlementModal').classList.remove('show');
-}
-
-function showAiRePlan() {
-  alert('AI 正在根据你的最新承诺重新拆解任务...');
-}
-
-// Init sliders
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('input[type=range]').forEach(el => {
-    el.style.setProperty('--val', el.value + '%');
-  });
-});
-</script>
+    renderApp();
+  </script>
 </body>
 </html>
