@@ -1,0 +1,649 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>林深时见鹿 — Design System v5</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap');
+
+:root {
+  --bg: #0f1a14;
+  --bg2: #162019;
+  --bg3: #1c2a22;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.06);
+  --glass-hover: rgba(255,255,255,0.07);
+  --glow-green: #4ade80;
+  --glow-gold: #fbbf24;
+  --glow-teal: #2dd4bf;
+  --text1: #e8f0e4;
+  --text2: rgba(232,240,228,0.6);
+  --text3: rgba(232,240,228,0.35);
+  --brand: #6B8F71;
+  --brand-light: #a3be8c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg);
+  color: var(--text1);
+  line-height: 1.6;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* Ambient background */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 600px 600px at 15% 20%, rgba(74,222,128,0.04) 0%, transparent 100%),
+    radial-gradient(ellipse 500px 500px at 80% 60%, rgba(45,212,191,0.03) 0%, transparent 100%),
+    radial-gradient(ellipse 400px 400px at 50% 90%, rgba(251,191,36,0.02) 0%, transparent 100%);
+}
+
+.page { max-width: 1000px; margin: 0 auto; padding: 60px 32px; position: relative; z-index: 1; }
+
+/* Section header */
+.section-header {
+  display: flex; align-items: center; gap: 12px;
+  margin: 64px 0 28px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.section-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 400;
+  color: var(--glow-green); background: rgba(74,222,128,0.08);
+  padding: 4px 10px; border-radius: 4px; letter-spacing: 1px;
+}
+.section-title {
+  font-family: 'ZCOOL XiaoWei', serif; font-size: 20px; color: var(--text1); font-weight: 400;
+}
+.section-title-en {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3);
+  margin-left: auto; letter-spacing: 0.5px;
+}
+
+/* Hero */
+.hero {
+  padding: 80px 0 60px; text-align: center; position: relative;
+}
+.hero::before {
+  content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,222,128,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--glow-green); letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 20px; opacity: 0.7;
+}
+.hero h1 {
+  font-family: 'Ma Shan Zheng', cursive; font-size: 56px;
+  color: var(--text1); font-weight: 400;
+  text-shadow: 0 0 40px rgba(74,222,128,0.15);
+  margin-bottom: 12px;
+}
+.hero-sub {
+  font-size: 15px; color: var(--text2); max-width: 500px; margin: 0 auto 32px;
+}
+.hero-tags {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text3); background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 5px 14px; border-radius: 20px;
+}
+
+/* Glass card */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 24px;
+  backdrop-filter: blur(12px);
+  transition: background 0.2s;
+}
+.glass:hover { background: var(--glass-hover); }
+
+/* Color grid */
+.color-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px; margin: 16px 0;
+}
+.color-chip {
+  border-radius: 12px; overflow: hidden;
+  background: var(--glass); border: 1px solid var(--glass-border);
+}
+.color-chip-swatch { height: 64px; position: relative; }
+.color-chip-swatch::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.2) 100%);
+}
+.color-chip-info { padding: 10px 12px; }
+.color-chip-name { font-size: 12px; color: var(--text1); font-weight: 400; margin-bottom: 2px; }
+.color-chip-hex {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3);
+}
+
+/* Type showcase */
+.type-row {
+  display: grid; grid-template-columns: 120px 1fr; gap: 0;
+  align-items: center; padding: 20px 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+.type-meta {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text3); line-height: 1.6;
+}
+.type-meta .size { color: var(--glow-green); }
+
+/* Energy orb */
+.orb-container {
+  display: flex; justify-content: center; align-items: center;
+  padding: 60px; position: relative;
+  background: radial-gradient(ellipse at 50% 50%, rgba(251,191,36,0.04) 0%, transparent 60%);
+  border-radius: 20px; margin: 16px 0;
+  border: 1px solid var(--glass-border);
+}
+.orb {
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fef3c7, #fbbf24 35%, #d97706 65%, #92400e);
+  box-shadow:
+    0 0 60px rgba(251,191,36,0.3),
+    0 0 120px rgba(251,191,36,0.1),
+    inset 0 -8px 20px rgba(0,0,0,0.15);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; animation: orb-breathe 4s ease-in-out infinite;
+}
+.orb::before {
+  content: ''; position: absolute;
+  width: 240px; height: 240px; border-radius: 50%;
+  border: 1px solid rgba(251,191,36,0.15);
+  animation: orb-ring 4s ease-in-out infinite;
+}
+.orb::after {
+  content: ''; position: absolute;
+  width: 280px; height: 280px; border-radius: 50%;
+  border: 1px solid rgba(251,191,36,0.06);
+  animation: orb-ring 4s ease-in-out infinite 0.5s;
+}
+@keyframes orb-breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.02)} }
+@keyframes orb-ring { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.06);opacity:0.3} }
+.orb-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 36px;
+  color: #fff; font-weight: 300;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.orb-label {
+  position: absolute; bottom: -32px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text3); letter-spacing: 2px;
+}
+
+/* Fruit */
+.fruit-grid {
+  display: flex; gap: 40px; justify-content: center; align-items: flex-end;
+  padding: 40px; margin: 16px 0;
+  background: var(--glass); border: 1px solid var(--glass-border); border-radius: 16px;
+}
+.fruit-item { text-align: center; }
+.fruit-orb { border-radius: 50%; margin: 0 auto 10px; }
+.fruit-orb-sm { width: 40px; height: 40px; background: radial-gradient(circle at 35% 35%, #4a5a44, #2d3a2e); opacity: 0.4; }
+.fruit-orb-md { width: 44px; height: 44px; background: radial-gradient(circle at 35% 35%, #fde68a, #d97706); box-shadow: 0 0 20px rgba(217,119,6,0.3); }
+.fruit-orb-lg { width: 48px; height: 48px; background: radial-gradient(circle at 35% 35%, #fef9c3, #fbbf24); box-shadow: 0 0 28px rgba(251,191,36,0.4), 0 0 56px rgba(251,191,36,0.12); }
+.fruit-pct { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); }
+.fruit-bar { width: 40px; height: 3px; border-radius: 2px; margin: 6px auto 0; }
+.fb-lo { background: rgba(255,255,255,0.06); }
+.fb-md { background: linear-gradient(90deg, #d97706, #fbbf24); }
+.fb-hi { background: linear-gradient(90deg, #fbbf24, #fef3c7); box-shadow: 0 0 8px rgba(251,191,36,0.3); }
+
+/* Buttons */
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.btn {
+  font-family: 'Noto Sans SC', sans-serif; font-size: 13px; font-weight: 400;
+  padding: 11px 24px; border-radius: 10px; border: none; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-fill {
+  background: var(--brand); color: #fff;
+  box-shadow: 0 4px 20px rgba(107,143,113,0.25);
+}
+.btn-fill:hover { box-shadow: 0 4px 24px rgba(107,143,113,0.35); transform: translateY(-1px); }
+.btn-glow {
+  background: linear-gradient(135deg, #fbbf24, #d97706); color: #fff;
+  box-shadow: 0 4px 20px rgba(251,191,36,0.2);
+}
+.btn-outline {
+  background: transparent; color: var(--brand-light);
+  border: 1px solid rgba(163,190,140,0.3);
+}
+.btn-ghost {
+  background: var(--glass); color: var(--text2);
+  border: 1px solid var(--glass-border);
+}
+
+/* Radius & Shadow */
+.token-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+.token-item {
+  width: 88px; height: 88px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+}
+.token-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--glow-green); }
+.token-label { font-size: 10px; color: var(--text3); }
+
+.shadow-item {
+  width: 120px; height: 88px; background: var(--bg2); border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+}
+.sh-sm { box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.sh-md { box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+.sh-lg { box-shadow: 0 8px 48px rgba(0,0,0,0.5), 0 0 24px rgba(74,222,128,0.03); }
+
+/* Spacing */
+.spacing-row { display: flex; align-items: center; gap: 16px; padding: 6px 0; }
+.spacing-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); min-width: 72px; }
+.spacing-bar { height: 20px; border-radius: 4px; background: linear-gradient(90deg, rgba(74,222,128,0.15), rgba(74,222,128,0.05)); border: 1px solid rgba(74,222,128,0.1); }
+
+/* Icons */
+.icon-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0;
+}
+.icon-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 20px; text-align: center;
+  transition: all 0.2s;
+}
+.icon-card:hover { background: var(--glass-hover); border-color: rgba(74,222,128,0.15); }
+.icon-emoji { font-size: 28px; margin-bottom: 8px; }
+.icon-name { font-size: 11px; color: var(--text2); }
+.icon-code { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3); margin-top: 4px; }
+/* Phone */
+.phone-wrap { display: flex; justify-content: center; margin: 24px 0; }
+.phone {
+  width: 375px; background: var(--bg);
+  border-radius: 36px; padding: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.04);
+  position: relative; overflow: hidden;
+}
+.phone::before {
+  content: ''; position: absolute; inset: 0; border-radius: 36px; pointer-events: none;
+  background:
+    radial-gradient(ellipse 200px 200px at 30% 20%, rgba(74,222,128,0.03) 0%, transparent 100%),
+    radial-gradient(ellipse 150px 150px at 70% 70%, rgba(251,191,36,0.02) 0%, transparent 100%);
+}
+.phone-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 8px 16px; position: relative; z-index: 1;
+}
+.phone-time { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text2); }
+.phone-dots { display: flex; gap: 4px; }
+.phone-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); }
+
+.phone-inner { position: relative; z-index: 1; }
+
+.p-greeting {
+  font-family: 'Ma Shan Zheng', cursive; font-size: 26px; color: var(--text1);
+  margin: 8px 8px 2px;
+}
+.p-sub {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text3); margin: 0 8px 20px; letter-spacing: 0.5px;
+}
+
+.p-orb-area {
+  display: flex; justify-content: center; padding: 24px 0 28px;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, rgba(251,191,36,0.05) 0%, transparent 60%);
+  border-radius: 16px; margin: 0 4px 12px;
+  border: 1px solid var(--glass-border);
+}
+.p-orb {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fef3c7, #fbbf24 40%, #d97706 70%);
+  box-shadow: 0 0 32px rgba(251,191,36,0.35), 0 0 64px rgba(251,191,36,0.1);
+  display: flex; align-items: center; justify-content: center;
+}
+.p-orb span {
+  font-family: 'JetBrains Mono', monospace; font-size: 22px; color: #fff; font-weight: 300;
+}
+
+.p-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 14px 16px; margin: 8px 4px;
+}
+.p-card-head {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+}
+.p-card-title {
+  font-family: 'ZCOOL XiaoWei', serif; font-size: 13px; color: var(--text1);
+}
+.p-card-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  color: var(--glow-green); background: rgba(74,222,128,0.08);
+  padding: 3px 8px; border-radius: 4px;
+}
+
+.p-item { margin: 10px 0; }
+.p-item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.p-item-name { font-size: 12px; color: var(--text2); }
+.p-item-pct { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); }
+.p-bar { height: 4px; background: rgba(255,255,255,0.04); border-radius: 2px; overflow: hidden; }
+.p-fill { height: 100%; border-radius: 2px; }
+.pf-green { background: linear-gradient(90deg, #4a7c59, #4ade80); box-shadow: 0 0 8px rgba(74,222,128,0.2); }
+.pf-gold { background: linear-gradient(90deg, #d97706, #fbbf24); box-shadow: 0 0 8px rgba(251,191,36,0.2); }
+
+.p-slider-card {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 16px; margin: 8px 4px; text-align: center;
+}
+.p-slider-label { font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+.p-track { height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; position: relative; margin: 0 0 8px; }
+.p-track-fill {
+  position: absolute; left: 0; top: 0; height: 100%; width: 65%;
+  background: linear-gradient(90deg, #4a7c59, var(--glow-green));
+  border-radius: 3px; box-shadow: 0 0 12px rgba(74,222,128,0.2);
+}
+.p-track-thumb {
+  position: absolute; left: 63%; top: -5px;
+  width: 16px; height: 16px; background: var(--glow-green);
+  border-radius: 50%; border: 3px solid var(--bg);
+  box-shadow: 0 0 12px rgba(74,222,128,0.4);
+}
+.p-slider-nums {
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3);
+}
+.p-btn {
+  display: inline-block; margin-top: 14px;
+  background: var(--brand); color: #fff;
+  border: none; padding: 10px 32px; border-radius: 10px;
+  font-family: 'Noto Sans SC'; font-size: 12px; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(107,143,113,0.25);
+}
+
+.p-tab-bar {
+  display: flex; justify-content: space-around;
+  padding: 14px 0 6px; margin-top: 14px;
+  border-top: 1px solid var(--glass-border);
+}
+.p-tab { text-align: center; font-size: 9px; color: var(--text3); }
+.p-tab.active { color: var(--glow-green); }
+.p-tab-icon {
+  width: 24px; height: 24px; border-radius: 8px;
+  margin: 0 auto 3px; display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.p-tab.active .p-tab-icon { background: rgba(74,222,128,0.08); }
+
+/* Tree */
+.tree-scene {
+  text-align: center; padding: 48px 20px 32px;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 20px; margin: 16px 0; position: relative; overflow: hidden;
+}
+.tree-scene::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, rgba(74,222,128,0.04) 0%, transparent 50%);
+}
+.tree-crown-v5 {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #4ade80, #22c55e 40%, #16a34a 65%, #166534);
+  margin: 0 auto -24px; position: relative; z-index: 1;
+  box-shadow: 0 0 40px rgba(74,222,128,0.2), 0 0 80px rgba(74,222,128,0.06);
+}
+.tree-trunk-v5 {
+  width: 14px; height: 72px;
+  background: linear-gradient(180deg, #78716c, #57534e);
+  margin: 0 auto; border-radius: 4px; position: relative; z-index: 1;
+}
+.tree-fruits-v5 { position: relative; z-index: 2; margin-top: -56px; margin-bottom: 24px; }
+.tree-f {
+  display: inline-block; width: 14px; height: 14px; border-radius: 50%; margin: 0 5px;
+}
+.tf-glow { background: radial-gradient(circle at 35% 35%, #fef9c3, #fbbf24); box-shadow: 0 0 10px rgba(251,191,36,0.5); }
+.tf-mid { background: radial-gradient(circle at 35% 35%, #fde68a, #d97706); box-shadow: 0 0 6px rgba(217,119,6,0.3); }
+.tf-dim { background: #3f4a3a; opacity: 0.4; }
+.tree-season {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text3); letter-spacing: 2px; margin-top: 16px; position: relative; z-index: 1;
+}
+.tree-name {
+  font-family: 'Ma Shan Zheng', cursive; font-size: 22px;
+  color: var(--text1); margin-top: 4px; position: relative; z-index: 1;
+}
+
+.footer {
+  text-align: center; padding: 48px 0 0;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--text3); letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="hero-label">design system v5.0</div>
+  <h1>林深时见鹿</h1>
+  <p class="hero-sub">科技感与森林静谧的融合 — 深色数字森林中的全息界面</p>
+  <div class="hero-tags">
+    <span class="hero-tag">bioluminescent</span>
+    <span class="hero-tag">glassmorphism</span>
+    <span class="hero-tag">watercolor-forest</span>
+    <span class="hero-tag">monospace-tech</span>
+  </div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">01</span>
+  <span class="section-title">色彩系统</span>
+  <span class="section-title-en">COLOR SYSTEM</span>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">生物光 · Bioluminescent</h3>
+<div class="color-grid">
+  <div class="color-chip"><div class="color-chip-swatch" style="background:linear-gradient(135deg,#4ade80,#22c55e)"></div><div class="color-chip-info"><div class="color-chip-name">萤火绿</div><div class="color-chip-hex">#4ADE80</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:linear-gradient(135deg,#fbbf24,#d97706)"></div><div class="color-chip-info"><div class="color-chip-name">琥珀金</div><div class="color-chip-hex">#FBBF24</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:linear-gradient(135deg,#2dd4bf,#14b8a6)"></div><div class="color-chip-info"><div class="color-chip-name">苔藓青</div><div class="color-chip-hex">#2DD4BF</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:linear-gradient(135deg,#d4836a,#c0392b)"></div><div class="color-chip-info"><div class="color-chip-name">浆果红</div><div class="color-chip-hex">#D4836A</div></div></div>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">品牌绿 · Brand</h3>
+<div class="color-grid">
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#3a5a40"></div><div class="color-chip-info"><div class="color-chip-name">深林绿</div><div class="color-chip-hex">#3A5A40</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#4a7c59"></div><div class="color-chip-info"><div class="color-chip-name">苔藓绿</div><div class="color-chip-hex">#4A7C59</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#6B8F71"></div><div class="color-chip-info"><div class="color-chip-name">蕨叶绿</div><div class="color-chip-hex">#6B8F71</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#a3be8c"></div><div class="color-chip-info"><div class="color-chip-name">嫩芽绿</div><div class="color-chip-hex">#A3BE8C</div></div></div>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">暗底 · Surface</h3>
+<div class="color-grid">
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#0f1a14"></div><div class="color-chip-info"><div class="color-chip-name">深渊</div><div class="color-chip-hex">#0F1A14</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#162019"></div><div class="color-chip-info"><div class="color-chip-name">林底</div><div class="color-chip-hex">#162019</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:#1c2a22"></div><div class="color-chip-info"><div class="color-chip-name">苔层</div><div class="color-chip-hex">#1C2A22</div></div></div>
+  <div class="color-chip"><div class="color-chip-swatch" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)"></div><div class="color-chip-info"><div class="color-chip-name">玻璃</div><div class="color-chip-hex">4% white</div></div></div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">02</span>
+  <span class="section-title">字体系统</span>
+  <span class="section-title-en">TYPOGRAPHY</span>
+</div>
+
+<div class="glass" style="margin:16px 0">
+  <div class="type-row">
+    <div class="type-meta">Ma Shan Zheng<br><span class="size">36-56px</span><br>标题/情绪</div>
+    <div style="font-family:'Ma Shan Zheng',cursive;font-size:36px;color:var(--text1)">这一周辛苦了</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">ZCOOL XiaoWei<br><span class="size">18-24px</span><br>副标题</div>
+    <div style="font-family:'ZCOOL XiaoWei',serif;font-size:22px;color:var(--text2)">本周重点推进概览</div>
+  </div>
+  <div class="type-row">
+    <div class="type-meta">Noto Sans SC<br><span class="size">14-15px/300</span><br>正文</div>
+    <div style="font-size:15px;color:var(--text2);font-weight:300;line-height:1.8">每天花一分钟，记录你对本周目标的推进感受。</div>
+  </div>
+  <div class="type-row" style="border:none">
+    <div class="type-meta">JetBrains Mono<br><span class="size">10-12px</span><br>数据/标注</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text3)">WEEK.16 // 2026-04-20 // ENERGY: 73%</div>
+  </div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">03</span>
+  <span class="section-title">能量球</span>
+  <span class="section-title-en">ENERGY ORB</span>
+</div>
+<div class="orb-container">
+  <div class="orb">
+    <span class="orb-text">73</span>
+    <span class="orb-label">ENERGY LEVEL</span>
+  </div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">04</span>
+  <span class="section-title">果实亮度</span>
+  <span class="section-title-en">FRUIT LUMINANCE</span>
+</div>
+<div class="fruit-grid">
+  <div class="fruit-item"><div class="fruit-orb fruit-orb-sm"></div><div class="fruit-pct">30%</div><div class="fruit-bar fb-lo"></div></div>
+  <div class="fruit-item"><div class="fruit-orb fruit-orb-md"></div><div class="fruit-pct">60%</div><div class="fruit-bar fb-md"></div></div>
+  <div class="fruit-item"><div class="fruit-orb fruit-orb-lg"></div><div class="fruit-pct">90%</div><div class="fruit-bar fb-hi"></div></div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">05</span>
+  <span class="section-title">成长树</span>
+  <span class="section-title-en">GROWTH TREE</span>
+</div>
+<div class="tree-scene">
+  <div class="tree-crown-v5"></div>
+  <div class="tree-fruits-v5">
+    <span class="tree-f tf-glow"></span><span class="tree-f tf-mid"></span>
+    <span class="tree-f tf-glow"></span><span class="tree-f tf-dim"></span>
+    <span class="tree-f tf-mid"></span>
+  </div>
+  <div class="tree-trunk-v5"></div>
+  <div class="tree-season">Q2 2026 · GROWTH PHASE</div>
+  <div class="tree-name">我的成长之树</div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">06</span>
+  <span class="section-title">组件</span>
+  <span class="section-title-en">COMPONENTS</span>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">按钮</h3>
+<div class="btn-row">
+  <button class="btn btn-fill">确认今日能量</button>
+  <button class="btn btn-glow">周结算</button>
+  <button class="btn btn-outline">查看本周</button>
+  <button class="btn btn-ghost">AI 帮我拆解</button>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">圆角</h3>
+<div class="token-row">
+  <div class="token-item" style="border-radius:6px"><div class="token-val">6px</div><div class="token-label">small</div></div>
+  <div class="token-item" style="border-radius:10px"><div class="token-val">10px</div><div class="token-label">medium</div></div>
+  <div class="token-item" style="border-radius:16px"><div class="token-val">16px</div><div class="token-label">large</div></div>
+  <div class="token-item" style="border-radius:50%"><div class="token-val">50%</div><div class="token-label">circle</div></div>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">阴影</h3>
+<div class="token-row">
+  <div class="shadow-item sh-sm"><div class="token-val">sm</div><div class="token-label">subtle</div></div>
+  <div class="shadow-item sh-md"><div class="token-val">md</div><div class="token-label">elevated</div></div>
+  <div class="shadow-item sh-lg"><div class="token-val">lg</div><div class="token-label">floating</div></div>
+</div>
+
+<h3 style="font-family:'ZCOOL XiaoWei',serif;font-size:16px;color:var(--text2);margin:20px 0 12px">图标</h3>
+<div class="icon-grid">
+  <div class="icon-card"><div class="icon-emoji">🌱</div><div class="icon-name">能量</div><div class="icon-code">energy</div></div>
+  <div class="icon-card"><div class="icon-emoji">📋</div><div class="icon-name">清单</div><div class="icon-code">checklist</div></div>
+  <div class="icon-card"><div class="icon-emoji">🗓</div><div class="icon-name">计划</div><div class="icon-code">plan</div></div>
+  <div class="icon-card"><div class="icon-emoji">🌳</div><div class="icon-name">成长树</div><div class="icon-code">tree</div></div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">07</span>
+  <span class="section-title">间距</span>
+  <span class="section-title-en">SPACING</span>
+</div>
+<div class="glass" style="margin:16px 0;padding:20px 24px">
+  <div class="spacing-row"><span class="spacing-label">4px  xs</span><div class="spacing-bar" style="width:4px"></div></div>
+  <div class="spacing-row"><span class="spacing-label">8px  sm</span><div class="spacing-bar" style="width:40px"></div></div>
+  <div class="spacing-row"><span class="spacing-label">16px md</span><div class="spacing-bar" style="width:100px"></div></div>
+  <div class="spacing-row"><span class="spacing-label">24px lg</span><div class="spacing-bar" style="width:180px"></div></div>
+  <div class="spacing-row"><span class="spacing-label">32px xl</span><div class="spacing-bar" style="width:260px"></div></div>
+  <div class="spacing-row"><span class="spacing-label">48px 2xl</span><div class="spacing-bar" style="width:380px"></div></div>
+</div>
+
+<div class="section-header">
+  <span class="section-num">08</span>
+  <span class="section-title">页面示例 · 能量页</span>
+  <span class="section-title-en">SCREEN: ENERGY</span>
+</div>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="phone-bar">
+      <span class="phone-time">21:41</span>
+      <div class="phone-dots"><span class="phone-dot"></span><span class="phone-dot"></span><span class="phone-dot"></span></div>
+    </div>
+    <div class="phone-inner">
+      <div class="p-greeting">晚上好，刘聪</div>
+      <div class="p-sub">WEEK.16 // MID-WEEK</div>
+
+      <div class="p-orb-area">
+        <div class="p-orb"><span>73</span></div>
+      </div>
+
+      <div class="p-card">
+        <div class="p-card-head">
+          <span class="p-card-title">本周重点</span>
+          <span class="p-card-badge">3 ACTIVE</span>
+        </div>
+        <div class="p-item">
+          <div class="p-item-row"><span class="p-item-name">完成登录模块前端</span><span class="p-item-pct">60%</span></div>
+          <div class="p-bar"><div class="p-fill pf-green" style="width:60%"></div></div>
+        </div>
+        <div class="p-item">
+          <div class="p-item-row"><span class="p-item-name">读完第 3-5 章</span><span class="p-item-pct">40%</span></div>
+          <div class="p-bar"><div class="p-fill pf-gold" style="width:40%"></div></div>
+        </div>
+        <div class="p-item">
+          <div class="p-item-row"><span class="p-item-name">晨跑 5 次</span><span class="p-item-pct">3/5</span></div>
+          <div class="p-bar"><div class="p-fill pf-green" style="width:60%"></div></div>
+        </div>
+      </div>
+
+      <div class="p-slider-card">
+        <div class="p-slider-label">今日推进度</div>
+        <div class="p-track"><div class="p-track-fill"></div><div class="p-track-thumb"></div></div>
+        <div class="p-slider-nums"><span>0</span><span>65</span><span>100</span></div>
+        <button class="p-btn">确认今日能量</button>
+      </div>
+
+      <div class="p-tab-bar">
+        <div class="p-tab active"><div class="p-tab-icon">🌱</div>能量</div>
+        <div class="p-tab"><div class="p-tab-icon">📋</div>清单</div>
+        <div class="p-tab"><div class="p-tab-icon">🗓</div>计划</div>
+        <div class="p-tab"><div class="p-tab-icon">🌳</div>成长树</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">林深时见鹿 · DESIGN SYSTEM v5.0 · TECH × FOREST</div>
+
+</div>
+</body>
+</html>
