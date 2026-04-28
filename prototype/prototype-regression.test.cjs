@@ -24,6 +24,7 @@ const weekModal = sliceBetween("function renderWeekModal()", "function renderFru
 const weekData = sliceBetween("const DEFAULT_WEEK", "const DEFAULT_FOCUS");
 const planScreen = sliceBetween("function renderPlanScreen()", "function renderTreeCanvas()");
 const onboarding = sliceBetween("function renderOnboarding()", "function renderEnergyOrb()");
+const clickHandler = sliceBetween('document.addEventListener("click"', 'document.addEventListener("input"');
 const settlement = sliceBetween("function renderSettlementScreen()", "function renderReminderModal()");
 const fruitModal = sliceBetween("function renderFruitModal()", "function renderOverlays()");
 
@@ -44,6 +45,15 @@ assert(onboarding.includes("年度 OKR") && onboarding.includes("4 个季度 OKR
 assert(onboarding.includes("首月 4 周承诺"), "深度愿景规划应拆到首月 4 周承诺。");
 assert(settlement.includes("settlement-score") && settlement.includes("settlement-reflection"), "周结算应支持微调最终周结果并填写本周感悟。");
 assert(fruitModal.includes("本周重点") && fruitModal.includes("fruit.focuses"), "果实时间胶囊应展示该周重点列表。");
+
+assert(onboarding.includes('data-action="onboarding-back"'), "冷启动后续步骤需要提供返回上一步。");
+assert(onboarding.includes('data-action="regenerate-current-onboarding"'), "冷启动 AI 草案层级需要提供重新生成入口。");
+assert(onboarding.includes("重新生成年度 OKR"), "年度 OKR 页需要重新生成按钮。");
+assert(onboarding.includes("重新生成季度 OKR"), "季度 OKR 页需要重新生成按钮。");
+assert(onboarding.includes("重新生成 4 周承诺"), "4 周承诺页需要重新生成按钮。");
+assert(onboarding.includes("重新生成行动建议"), "行动建议页需要重新生成按钮。");
+assert(clickHandler.includes('if (action === "onboarding-back")'), "点击处理需要支持返回上一步。");
+assert(clickHandler.includes('if (action === "regenerate-current-onboarding")'), "点击处理需要支持重新生成当前层级。");
 
 if (!process.exitCode) {
   console.log("prototype regression checks passed");
