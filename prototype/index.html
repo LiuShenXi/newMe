@@ -364,6 +364,50 @@
       color: #94a3b8;
       font-size: 12px;
     }
+    .today-suggestion .card-head h3 {
+      font-size: 14px;
+    }
+    .suggestion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .suggestion-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, .18);
+      padding: 10px;
+    }
+    .suggestion-item span {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .16);
+      color: #cffafe;
+      font-size: 11px;
+    }
+    .suggestion-item p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .onboarding-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .onboarding-actions .ghost-button {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
     .energy-orb {
       position: relative;
       display: grid;
@@ -752,23 +796,91 @@
       flex-direction: column;
       gap: 12px;
     }
+    .todo-item {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      background: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .todo-delete-reveal {
+      position: absolute;
+      z-index: 0;
+      inset: 0 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 78px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(244, 63, 94, .92), rgba(127, 29, 29, .86));
+      color: #fff1f2;
+      box-shadow: inset 1px 0 0 rgba(255, 255, 255, .16);
+      opacity: 0;
+      transition: opacity .14s ease;
+    }
+    .todo-item.is-swiping .todo-delete-reveal,
+    .todo-item.is-swiped .todo-delete-reveal {
+      opacity: 1;
+    }
+    .todo-delete-reveal svg {
+      width: 22px;
+      height: 22px;
+    }
+    .todo-surface {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, .06);
+      background: linear-gradient(180deg, rgba(6, 18, 17, .98), rgba(3, 9, 10, .98));
+      padding: 12px;
+      transform: translateX(var(--swipe-x, 0));
+      transition: transform .22s cubic-bezier(.2, .8, .2, 1), border .18s ease, background .18s ease;
+      touch-action: pan-y;
+    }
+    .todo-surface:hover {
+      border-color: rgba(207, 250, 254, .20);
+      background: linear-gradient(180deg, rgba(9, 26, 24, .98), rgba(4, 13, 14, .98));
+    }
     .todo-button {
       width: 100%;
       display: flex;
       align-items: center;
       gap: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, .06);
-      background: rgba(0, 0, 0, .18);
-      padding: 12px;
+      border-radius: 14px;
+      background: transparent;
       text-align: left;
-      transition: border .18s ease, transform .18s ease;
-    }
-    .todo-button:hover {
-      border-color: rgba(207, 250, 254, .20);
+      min-width: 0;
     }
     .todo-button:active {
       transform: scale(.99);
+    }
+    .todo-edit-button {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .10);
+      background: rgba(255, 255, 255, .04);
+      color: #9fb7c7;
+      transition: transform .18s ease, color .18s ease, background .18s ease;
+    }
+    .todo-edit-button svg {
+      width: 16px;
+      height: 16px;
+    }
+    .todo-edit-button:hover {
+      color: #ecfeff;
+      background: rgba(207, 250, 254, .10);
+    }
+    .todo-edit-button:active {
+      transform: scale(.94);
     }
     .todo-mark {
       flex: 0 0 auto;
@@ -789,11 +901,62 @@
     .todo-text {
       color: #f1f5f9;
       font-size: 14px;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .todo-text.done {
       color: #94a3b8;
       text-decoration: line-through;
       text-decoration-color: rgba(207, 250, 254, .40);
+    }
+    .edit-input {
+      width: 100%;
+      min-height: 104px;
+      resize: none;
+      border: 1px solid rgba(207, 250, 254, .20);
+      outline: 0;
+      border-radius: 20px;
+      background: rgba(3, 14, 15, .96);
+      padding: 16px;
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+    .edit-sheet {
+      align-self: end;
+      margin-bottom: 0;
+      border-radius: 30px 30px 42px 42px;
+      border-color: rgba(207, 250, 254, .26);
+      background: linear-gradient(180deg, rgba(17, 38, 34, .99), rgba(4, 15, 16, .99));
+      box-shadow: 0 -18px 70px rgba(0, 0, 0, .72), inset 0 1px 0 rgba(255, 255, 255, .08);
+    }
+    .sheet-handle {
+      width: 44px;
+      height: 4px;
+      margin: 0 auto 18px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, .36);
+    }
+    .sheet-title {
+      margin: 0;
+      color: #f8fafc;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .sheet-copy {
+      margin: 6px 0 16px;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .edit-sheet .modal-actions button:first-child {
+      background: rgba(207, 250, 254, .16);
+      color: #f0fdff;
+      font-weight: 700;
+    }
+    .edit-sheet .modal-actions button:last-child {
+      background: rgba(255, 255, 255, .06);
+      color: #cbd5e1;
     }
     .add-panel {
       margin-top: 16px;
@@ -945,6 +1108,37 @@
     }
     .replan-button:active {
       transform: scale(.96);
+    }
+    .coach-panel {
+      margin-top: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(254, 240, 138, .14);
+      background: rgba(45, 31, 4, .18);
+      padding: 12px;
+      animation: panel .24s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .coach-copy {
+      margin: 0 0 10px;
+      color: #cbd5e1;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .coach-input,
+    .settlement-note {
+      width: 100%;
+      resize: none;
+      border: 1px solid rgba(255, 255, 255, .08);
+      outline: 0;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, .22);
+      padding: 12px;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .coach-input:focus,
+    .settlement-note:focus {
+      border-color: rgba(254, 240, 138, .26);
     }
     .plan-list {
       display: flex;
@@ -1226,6 +1420,9 @@
       font-size: 12px;
       backdrop-filter: blur(20px);
     }
+    .fruit-focus-block {
+      margin-top: 16px;
+    }
     .tree-detail {
       height: 100%;
       padding-top: 8px;
@@ -1348,6 +1545,40 @@
     .settle-result {
       padding: 16px;
     }
+    .settle-focus-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .settle-focus-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, .16);
+      padding: 10px;
+    }
+    .settle-focus-row span:first-child {
+      min-width: 0;
+      color: #cbd5e1;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .settle-focus-row span:last-child {
+      color: #fef3c7;
+      font-size: 12px;
+    }
+    .settlement-slider {
+      width: 100%;
+      margin-top: 14px;
+      accent-color: #facc15;
+    }
+    .settlement-note {
+      height: 82px;
+      margin-top: 14px;
+    }
     .result-row {
       display: flex;
       align-items: center;
@@ -1387,6 +1618,13 @@
       border-radius: 46px;
       background: rgba(0, 0, 0, .55);
       backdrop-filter: blur(6px);
+    }
+    .sheet-layer {
+      align-items: end;
+      place-items: end center;
+      padding: 18px;
+      background: rgba(0, 0, 0, .42);
+      backdrop-filter: blur(8px);
     }
     .modal-card {
       width: 100%;
@@ -1811,13 +2049,13 @@
       { q: "Q3", title: "丰茂阶段", score: null, desc: "扩大目标类型，验证持续使用意愿。", goals: ["覆盖阅读、运动、项目交付和习惯养成四类目标", "加入月度复盘，让用户看见季度中段的方向调整", "验证连续 8 周使用后的留存和情绪反馈"] },
       { q: "Q4", title: "年度完成", score: null, desc: "完成年度回看和荣誉层沉淀。", goals: ["生成年度成长树回顾，把果实、荣誉和关键周串起来", "完成季度达标后的永久荣誉层表现", "沉淀下一年度目标输入和计划延续路径"] },
     ];
-    const FRUITS = [
-      { week: "第 11 周", date: "2026-03-15", score: 72, x: 94, y: 226, s: 18, note: "完成登录模块前后端，恢复晨跑节奏。" },
-      { week: "第 12 周", date: "2026-03-22", score: 86, x: 145, y: 170, s: 24, note: "原型推进明显，阅读完成两章。" },
-      { week: "第 13 周", date: "2026-03-29", score: 64, x: 224, y: 214, s: 20, note: "工作较忙，但保留了最低推进。" },
-      { week: "第 14 周", date: "2026-04-05", score: 79, x: 252, y: 150, s: 16, note: "完成清单页基础结构。" },
-      { week: "第 15 周", date: "2026-04-12", score: 76, x: 122, y: 132, s: 14, note: "冷启动闭环跑通。" },
-      { week: "第 16 周", date: "2026-04-19", score: 78, x: 176, y: 260, s: 22, note: "能量球方向确认，准备做交互版本。" },
+    const DEFAULT_FRUITS = [
+      { week: "第 11 周", date: "2026-03-15", score: 72, x: 94, y: 226, s: 18, focuses: ["完成登录模块前后端", "恢复晨跑节奏", "整理第一版产品笔记"], reflection: "虽然节奏有点碎，但核心模块终于往前推了一步。", note: "完成登录模块前后端，恢复晨跑节奏。" },
+      { week: "第 12 周", date: "2026-03-22", score: 86, x: 145, y: 170, s: 24, focuses: ["推进原型主流程", "读完两章社会学", "完成三次晨跑"], reflection: "原型有了第一口气，阅读也没有断。", note: "原型推进明显，阅读完成两章。" },
+      { week: "第 13 周", date: "2026-03-29", score: 64, x: 224, y: 214, s: 20, focuses: ["保留最低推进", "补齐清单结构", "记录一次产品反思"], reflection: "工作挤占了时间，但保留了最低行动线。", note: "工作较忙，但保留了最低推进。" },
+      { week: "第 14 周", date: "2026-04-05", score: 79, x: 252, y: 150, s: 16, focuses: ["完成清单页基础结构", "调整能量页层级", "确认成长树方向"], reflection: "开始看见这个产品真正的节奏了。", note: "完成清单页基础结构。" },
+      { week: "第 15 周", date: "2026-04-12", score: 76, x: 122, y: 132, s: 14, focuses: ["跑通冷启动闭环", "生成第一版今日清单", "完成一次周结算"], reflection: "从目标到行动的路径成立了，还需要更顺手。", note: "冷启动闭环跑通。" },
+      { week: "第 16 周", date: "2026-04-19", score: 78, x: 176, y: 260, s: 22, focuses: ["确认能量球方向", "补充打分前提醒", "准备交互版本"], reflection: "能量反馈比纯任务完成率更贴近真实状态。", note: "能量球方向确认，准备做交互版本。" },
     ];
     const treeDetails = {
       fruit: { title: "果实数据", sub: "每周一颗果实，记录这一周的推进质量。", stats: [["16", "累计果实"], ["78%", "最近一周"], ["72%", "季度均值"]] },
@@ -1828,6 +2066,7 @@
     const cloneWeek = () => DEFAULT_WEEK.map((item) => ({ ...item, todos: item.todos.map((todo) => ({ ...todo })) }));
     const cloneTodos = () => DEFAULT_TODOS.map((item) => ({ ...item }));
     const cloneMonth = () => MONTH_WEEKS.map((item) => ({ ...item, items: [...item.items] }));
+    const cloneFruits = () => DEFAULT_FRUITS.map((item) => ({ ...item, focuses: [...item.focuses] }));
     const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
       "&": "&amp;",
       "<": "&lt;",
@@ -1846,6 +2085,7 @@
       focusItems: DEFAULT_FOCUS.map((item) => ({ ...item })),
       monthWeeks: cloneMonth(),
       weekRecords: cloneWeek(),
+      fruits: cloneFruits(),
       energyValue: 82,
       charging: false,
       viewedList: false,
@@ -1853,14 +2093,25 @@
       showWeek: false,
       selectedFruit: null,
       selectedWeek: null,
+      swipedTodoId: null,
       adding: false,
       draft: "",
+      editingTodoId: null,
+      editDraft: "",
       planView: "month",
       planning: false,
+      planCoachOpen: false,
+      planFeedback: "",
+      planRounds: 0,
       treeDetail: null,
       settlementConfirmed: false,
+      settlementScore: null,
+      settlementReflection: "这一周虽然有几次节奏被打断，但关键推进没有断线。",
       toast: false,
     };
+
+    let swipeGesture = null;
+    let suppressNextClick = false;
 
     function icon(type) {
       const paths = {
@@ -1870,6 +2121,14 @@
         tree: '<path d="M12 21v-8M12 13c-4.2 0-6-2.2-6-5.5C9 7.5 11 9 12 13Zm0 0c4.2 0 6-2.2 6-5.5-3 0-5 1.5-6 5.5ZM12 21c3.5-1.6 6-4.4 6-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />',
       };
       return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${paths[type] || paths.tree}</svg>`;
+    }
+
+    function actionIcon(type) {
+      const paths = {
+        edit: '<path d="M12 20h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="m16.5 3.5 4 4L8 20H4v-4L16.5 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
+        trash: '<path d="M4 7h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 7l1 14h10l1-14M9 7V4h6v3" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+      };
+      return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${paths[type]}</svg>`;
     }
 
     function weekEnergy() {
@@ -1882,6 +2141,19 @@
       const doneCount = todos.filter((todo) => todo.done).length;
       return `${doneCount}/${todos.length}`;
     }
+
+    function weekRecordsForView() {
+      return state.weekRecords.map((day, index) => index === 6
+        ? { ...day, todos: state.todos.map(({ text, done }) => ({ text, done })) }
+        : day);
+    }
+
+    function syncTodayTodos() {
+      state.weekRecords = state.weekRecords.map((day, index) => index === 6
+        ? { ...day, todos: state.todos.map(({ text, done }) => ({ text, done })) }
+        : day);
+    }
+
 
     function syncEnergyRail(value, dragging = false) {
       const rail = document.getElementById("energy-rail");
@@ -1962,7 +2234,18 @@
                 </div>`).join("")}
             </div>
           </div>
-          <button class="primary-button" style="margin-top:20px" data-action="finish-onboarding">进入 NewMe</button>
+          <div class="glass-card today-suggestion" style="margin-top:14px;padding:16px">
+            <div class="card-head" style="margin-bottom:10px"><h3>今日清单建议</h3><span class="badge">可修改</span></div>
+            <div class="suggestion-list">
+              ${state.todos.slice(0, 3).map((todo, index) => `
+                <div class="suggestion-item"><span>${index + 1}</span><p>${escapeHtml(todo.text)}</p></div>
+              `).join("")}
+            </div>
+          </div>
+          <div class="onboarding-actions">
+            <button class="primary-button" data-action="finish-onboarding-list">先看今日清单</button>
+            <button class="ghost-button" data-action="finish-onboarding">进入能量页</button>
+          </div>
         </div>`;
     }
 
@@ -2044,10 +2327,20 @@
             </div>
             <div class="todo-scroll">
               ${state.todos.map((todo, index) => `
-                <button class="todo-button" data-action="toggle-todo" data-id="${todo.id}">
-                  <span class="todo-mark ${todo.done ? "done" : ""}">${todo.done ? "✓" : index + 1}</span>
-                  <span class="todo-text ${todo.done ? "done" : ""}">${escapeHtml(todo.text)}</span>
-                </button>`).join("")}
+                <article class="todo-item ${state.swipedTodoId === todo.id ? "is-swiped" : ""}" data-id="${todo.id}" style="--swipe-x:${state.swipedTodoId === todo.id ? "-78px" : "0px"}">
+                  <button class="todo-delete-reveal" data-action="delete-todo" data-id="${todo.id}" aria-label="删除">
+                    ${actionIcon("trash")}
+                  </button>
+                  <div class="todo-surface" data-id="${todo.id}">
+                    <button class="todo-button" data-action="toggle-todo" data-id="${todo.id}">
+                      <span class="todo-mark ${todo.done ? "done" : ""}">${todo.done ? "✓" : index + 1}</span>
+                      <span class="todo-text ${todo.done ? "done" : ""}">${escapeHtml(todo.text)}</span>
+                    </button>
+                    <button class="todo-edit-button" data-action="edit-todo" data-id="${todo.id}" aria-label="编辑">
+                      ${actionIcon("edit")}
+                    </button>
+                  </div>
+                </article>`).join("")}
             </div>
             ${state.adding ? `
               <div class="add-panel">
@@ -2070,6 +2363,15 @@
               <button class="replan-button" data-action="replan">${state.planning ? "生成中" : "AI 重规划"}</button>
             </div>
             ${state.planning ? '<div class="loading-track"><div class="loading-bar"></div></div>' : ""}
+            ${state.planCoachOpen ? `
+              <div class="coach-panel">
+                <p class="coach-copy">告诉 AI 这周哪里变了，它会只改后续计划。第 ${state.planRounds + 1} / 3 轮</p>
+                <textarea id="plan-feedback" class="coach-input" rows="3" placeholder="例如：这周工作会比较忙，运动保留，阅读降到每天 15 分钟">${escapeHtml(state.planFeedback)}</textarea>
+                <div class="add-actions">
+                  <button data-action="submit-plan-feedback">生成新版本</button>
+                  <button data-action="close-plan-coach">取消</button>
+                </div>
+              </div>` : ""}
           </section>
           <div class="plan-list">
             ${state.monthWeeks.map((node) => `
@@ -2124,9 +2426,9 @@
           <div class="canopy c3"></div>
           <div class="canopy c4"></div>
           <div class="canopy c5"></div>
-          ${FRUITS.map((fruit, index) => `<button class="fruit" data-action="open-fruit" data-index="${index}" aria-label="打开${escapeHtml(fruit.week)}" style="left:${fruit.x}px;top:${fruit.y}px;width:${fruit.s}px;height:${fruit.s}px;animation-delay:${index * 240}ms"></button>`).join("")}
+          ${state.fruits.map((fruit, index) => `<button class="fruit" data-action="open-fruit" data-index="${index}" aria-label="打开${escapeHtml(fruit.week)}" style="left:${fruit.x}px;top:${fruit.y}px;width:${fruit.s}px;height:${fruit.s}px;animation-delay:${index * 240}ms"></button>`).join("")}
           <div class="tree-tools">
-            <button class="tree-tool fruit-tool" data-action="tree-detail" data-type="fruit"><b>16</b>果实</button>
+            <button class="tree-tool fruit-tool" data-action="tree-detail" data-type="fruit"><b>${state.fruits.length}</b>果实</button>
             <button class="tree-tool quarter-tool" data-action="tree-detail" data-type="quarter"><b>Q2</b>阶段</button>
             <button class="tree-tool honor-tool" data-action="tree-detail" data-type="honor"><b>1</b>荣誉</button>
           </div>
@@ -2135,7 +2437,9 @@
     }
 
     function renderTreeDetail() {
-      const detail = treeDetails[state.treeDetail] || treeDetails.fruit;
+      const detail = state.treeDetail === "fruit"
+        ? { ...treeDetails.fruit, stats: [[String(state.fruits.length), "累计果实"], [`${state.fruits.at(-1)?.score || 0}%`, "最近一周"], ["72%", "季度均值"]] }
+        : treeDetails[state.treeDetail] || treeDetails.fruit;
       return `
         <div class="tree-detail panel-in">
           <button class="back-button" data-action="tree-back">← 返回成长树</button>
@@ -2159,11 +2463,12 @@
     }
 
     function renderSettlementScreen() {
+      const score = state.settlementScore ?? weekEnergy();
       return renderPhone(`
         <div class="screen-stack" style="gap:16px">
           <section class="glass-card settlement-card">
             <p>这一周辛苦了，<br>我们一起看看这周的收获吧。</p>
-            <div class="settle-fruit ${state.settlementConfirmed ? "born" : ""}"><span>${weekEnergy()}%</span></div>
+            <div class="settle-fruit ${state.settlementConfirmed ? "born" : ""}"><span>${score}%</span></div>
           </section>
           <section class="glass-card bars-card">
             <div class="energy-bars">
@@ -2175,7 +2480,17 @@
             </div>
           </section>
           <section class="glass-card settle-result">
-            <div class="result-row"><h3>建议周结果</h3><span>${weekEnergy()}%</span></div>
+            <div class="result-row"><h3>本周重点推进</h3><span>回顾</span></div>
+            <div class="settle-focus-list">
+              ${state.focusItems.map((item) => `
+                <div class="settle-focus-row"><span>${escapeHtml(item.title)}</span><span>${item.value}%</span></div>
+              `).join("")}
+            </div>
+          </section>
+          <section class="glass-card settle-result">
+            <div class="result-row"><h3>最终周结果</h3><span id="settlement-score-label">${score}%</span></div>
+            <input id="settlement-score" class="settlement-slider" aria-label="最终周结果" type="range" min="0" max="100" value="${score}">
+            <textarea id="settlement-reflection" class="settlement-note" placeholder="这一周有什么值得树记住？">${escapeHtml(state.settlementReflection)}</textarea>
             <button class="settle-button" data-action="settle-confirm">确认并生成果实</button>
           </section>
         </div>`, { tab: "tree" });
@@ -2196,15 +2511,16 @@
     }
 
     function renderWeekModal() {
+      const records = weekRecordsForView();
       return `
         <div class="modal-layer" data-modal="week">
           <div class="modal-card week-modal-card">
             <div class="modal-head">
-              <div><p class="eyebrow">week overview</p><h3 style="margin:8px 0 0;color:#fff;font-size:18px">本周 7 天概览</h3></div>
+              <div><p class="eyebrow">week overview</p><h3 style="margin:8px 0 0;color:#fff;font-size:18px">${state.selectedWeek ? `${escapeHtml(state.selectedWeek)} · ` : ""}本周 7 天概览</h3></div>
               <button class="small-pill" data-action="close-week">关闭</button>
             </div>
             <div class="week-modal-list">
-              ${state.weekRecords.map((day, index) => {
+              ${records.map((day, index) => {
                 const status = index === 6 ? "今天" : (day.v ? `${day.v}%` : "未记录");
                 return `
                   <div class="week-modal-row ${index < 6 ? "past" : ""} ${index === 6 ? "today" : ""}">
@@ -2240,14 +2556,40 @@
               <div class="fruit-dot"><span>${fruit.score}%</span></div>
               <div><p style="margin:0;color:#fff;font-size:14px">本周结果</p><p style="margin:4px 0 0;color:#94a3b8;font-size:12px">果实亮度来自周结算确认值</p></div>
             </div>
-            <p style="margin:0;color:#cbd5e1;font-size:14px;line-height:1.7">${escapeHtml(fruit.note)}</p>
+            <div class="fruit-focus-block">
+              <p style="margin:0 0 10px;color:#fff;font-size:14px">本周重点</p>
+              <div class="suggestion-list">
+                ${(fruit.focuses || []).map((focus, index) => `
+                  <div class="suggestion-item"><span>${index + 1}</span><p>${escapeHtml(focus)}</p></div>
+                `).join("")}
+              </div>
+            </div>
+            <p style="margin:14px 0 0;color:#cbd5e1;font-size:14px;line-height:1.7">${escapeHtml(fruit.reflection || fruit.note)}</p>
             <button class="primary-button" style="margin-top:20px;box-shadow:none" data-action="close-fruit">收起</button>
           </div>
         </div>`;
     }
 
+    function renderEditModal() {
+      const todo = state.todos.find((item) => item.id === state.editingTodoId);
+      if (!todo) return "";
+      return `
+        <div class="modal-layer sheet-layer" data-modal="edit">
+          <div class="modal-card edit-sheet">
+            <div class="sheet-handle"></div>
+            <p class="sheet-title">调整这件小事</p>
+            <p class="sheet-copy">只改今天要执行的表述，不影响本周重点。</p>
+            <textarea id="edit-input" class="edit-input" placeholder="写清楚今天真正要做什么">${escapeHtml(state.editDraft)}</textarea>
+            <div class="modal-actions">
+              <button data-action="save-edit">保存修改</button>
+              <button data-action="cancel-edit">取消</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
     function renderOverlays() {
-      return `${state.showReminder ? renderReminderModal() : ""}${state.showWeek ? renderWeekModal() : ""}${state.selectedFruit ? renderFruitModal() : ""}`;
+      return `${state.showReminder ? renderReminderModal() : ""}${state.showWeek ? renderWeekModal() : ""}${state.selectedFruit ? renderFruitModal() : ""}${state.editingTodoId !== null ? renderEditModal() : ""}`;
     }
 
     function renderSidePanel() {
@@ -2261,15 +2603,15 @@
       return `
         <p class="eyebrow">NewMe Prototype</p>
         <h1>交互原型 · 精简版</h1>
-        <p class="side-desc">已去掉手机内页顶部大标题，主体内容上移。清单页专注今日待办，本周入口展开 7 天 TDL；计划页切换周计划 / 季度计划，并展示具体行动明细。</p>
+        <p class="side-desc">已去掉手机内页顶部大标题，主体内容上移。清单页专注今日待办并补齐 CRUD；计划页保留月 / 年双视图，同时让 AI 重规划先收集用户反馈再生成新版本。</p>
         <div class="side-tabs">
           ${tabItems.map(([id, label]) => `<button class="side-tab ${state.booted && state.tab === id ? "active" : ""}" data-action="change-tab" data-tab="${id}" ${state.booted ? "" : "disabled"}>${label}</button>`).join("")}
         </div>
         <div class="side-notes">
           <div class="note-card"><span>能量页：</span>一屏展示：能量球、本周进度概览、能量条、确认按钮。</div>
-          <div class="note-card"><span>清单页：</span>默认只看今天，右上角「本周」查看每天的 TDL 明细。</div>
-          <div class="note-card"><span>计划页：</span>顶部切换「月计划 · 按周」与「年计划 · 按 Q」，卡片内展开具体计划。</div>
-          <div class="note-card"><span>成长树：</span>主画面只保留一棵树，数据隐藏到树旁按钮与详情页。</div>
+          <div class="note-card"><span>清单页：</span>今日待办支持新增、勾选、编辑；左滑露出垃圾桶删除，右上角查看 7 天 TDL。</div>
+          <div class="note-card"><span>计划页：</span>顶部切换「月计划 · 按周」与「年计划 · 按 Q」，AI 重规划带反馈输入。</div>
+          <div class="note-card"><span>成长树：</span>果实时间胶囊展示本周重点、结果和感悟；周结算可微调结果。</div>
         </div>
         <div class="side-footer">
           <button data-action="reset">重置原型</button>
@@ -2293,11 +2635,14 @@
       document.getElementById("sidePanel").innerHTML = renderSidePanel();
       const draft = document.getElementById("draft-input");
       if (draft) draft.focus();
+      const editInput = document.getElementById("edit-input");
+      if (editInput) editInput.focus();
     }
 
     function changeTab(tab) {
       if (tab === "list") state.viewedList = true;
       if (tab === "settlement") state.settlementConfirmed = false;
+      if (tab !== "list") state.selectedWeek = null;
       state.tab = tab;
       state.showReminder = false;
       state.showWeek = false;
@@ -2330,6 +2675,7 @@
       state.todos = cloneTodos();
       state.monthWeeks = cloneMonth();
       state.weekRecords = cloneWeek();
+      state.fruits = cloneFruits();
       state.energyValue = 82;
       state.charging = false;
       state.viewedList = false;
@@ -2337,22 +2683,41 @@
       state.showWeek = false;
       state.selectedFruit = null;
       state.selectedWeek = null;
+      state.swipedTodoId = null;
       state.adding = false;
       state.draft = "";
+      state.editingTodoId = null;
+      state.editDraft = "";
       state.planView = "month";
       state.planning = false;
+      state.planCoachOpen = false;
+      state.planFeedback = "";
+      state.planRounds = 0;
       state.treeDetail = null;
       state.settlementConfirmed = false;
+      state.settlementScore = null;
+      state.settlementReflection = "这一周虽然有几次节奏被打断，但关键推进没有断线。";
       state.toast = false;
       renderApp();
     }
 
     document.addEventListener("click", (event) => {
+      if (suppressNextClick) {
+        suppressNextClick = false;
+        if (!event.target.closest("[data-action]")) {
+          event.preventDefault();
+          return;
+        }
+      }
       if (event.target.classList.contains("modal-layer")) {
         const modal = event.target.dataset.modal;
         if (modal === "reminder") state.showReminder = false;
         if (modal === "week") state.showWeek = false;
         if (modal === "fruit") state.selectedFruit = null;
+        if (modal === "edit") {
+          state.editingTodoId = null;
+          state.editDraft = "";
+        }
         renderApp();
         return;
       }
@@ -2376,6 +2741,11 @@
       if (action === "finish-onboarding" || action === "skip-onboarding") {
         state.booted = true;
         state.tab = "energy";
+      }
+      if (action === "finish-onboarding-list") {
+        state.booted = true;
+        state.tab = "list";
+        state.viewedList = true;
       }
       if (action === "change-tab") {
         if (!state.booted) return;
@@ -2402,7 +2772,41 @@
       }
       if (action === "toggle-todo") {
         const id = Number(target.dataset.id);
+        if (state.swipedTodoId && state.swipedTodoId !== id) state.swipedTodoId = null;
         state.todos = state.todos.map((todo) => todo.id === id ? { ...todo, done: !todo.done } : todo);
+        syncTodayTodos();
+      }
+      if (action === "edit-todo") {
+        const id = Number(target.dataset.id);
+        const todo = state.todos.find((item) => item.id === id);
+        if (todo) {
+          state.swipedTodoId = null;
+          state.editingTodoId = id;
+          state.editDraft = todo.text;
+        }
+      }
+      if (action === "cancel-edit") {
+        state.editingTodoId = null;
+        state.editDraft = "";
+      }
+      if (action === "save-edit") {
+        const value = state.editDraft.trim();
+        if (value && state.editingTodoId !== null) {
+          state.todos = state.todos.map((todo) => todo.id === state.editingTodoId ? { ...todo, text: value } : todo);
+          syncTodayTodos();
+        }
+        state.editingTodoId = null;
+        state.editDraft = "";
+      }
+      if (action === "delete-todo") {
+        const id = Number(target.dataset.id);
+        state.todos = state.todos.filter((todo) => todo.id !== id);
+        state.swipedTodoId = null;
+        if (state.editingTodoId === id) {
+          state.editingTodoId = null;
+          state.editDraft = "";
+        }
+        syncTodayTodos();
       }
       if (action === "open-add") {
         state.adding = true;
@@ -2418,6 +2822,7 @@
           state.todos = [...state.todos, { id: Date.now(), text: value, done: false }];
           state.draft = "";
           state.adding = false;
+          syncTodayTodos();
         }
       }
       if (action === "open-week") {
@@ -2430,13 +2835,24 @@
         state.planView = target.dataset.view;
       }
       if (action === "replan") {
+        state.planCoachOpen = true;
+        state.planFeedback = state.planFeedback || "这周工作会比较忙，保留晨跑，阅读任务拆小一点。";
+      }
+      if (action === "close-plan-coach") {
+        state.planCoachOpen = false;
+        state.planFeedback = "";
+      }
+      if (action === "submit-plan-feedback") {
+        if (state.planRounds >= 3) return;
         state.planning = true;
         renderApp();
         window.setTimeout(() => {
           state.monthWeeks = state.monthWeeks.map((item) => item.week === "W17"
-            ? { ...item, title: "根据本周结果重排 AI 任务", items: ["把任务密度从 4 件降到 3 件，先保证能完成", "保留晨跑作为稳定能量来源，不再新增运动任务", "阅读任务改成每天 15 分钟，优先完成第 2 章"] }
+            ? { ...item, title: "根据反馈重排 AI 任务", items: ["把任务密度从 4 件降到 3 件，先保证能完成", "保留晨跑作为稳定能量来源，不再新增运动任务", "阅读任务改成每天 15 分钟，优先完成第 2 章"] }
             : item);
+          state.planRounds += 1;
           state.planning = false;
+          state.planCoachOpen = false;
           renderApp();
         }, 1000);
         return;
@@ -2444,7 +2860,9 @@
       if (action === "select-week") {
         state.selectedWeek = target.dataset.week;
         state.viewedList = true;
-        changeTab("list");
+        state.tab = "list";
+        state.showWeek = true;
+        renderApp();
         return;
       }
       if (action === "tree-detail") {
@@ -2454,17 +2872,32 @@
         state.treeDetail = null;
       }
       if (action === "open-fruit") {
-        state.selectedFruit = FRUITS[Number(target.dataset.index)];
+        state.selectedFruit = state.fruits[Number(target.dataset.index)];
       }
       if (action === "close-fruit") {
         state.selectedFruit = null;
       }
       if (action === "settle-confirm") {
+        const score = state.settlementScore ?? weekEnergy();
+        const nextIndex = state.fruits.length;
+        const latestFruit = {
+          week: "第 17 周",
+          date: "2026-04-26",
+          score,
+          x: 205 + (nextIndex % 3) * 28,
+          y: 108 + (nextIndex % 2) * 44,
+          s: 18 + Math.round(score / 18),
+          focuses: state.focusItems.map((item) => item.title),
+          reflection: state.settlementReflection.trim() || "这一周的努力已经被树记住了。",
+          note: state.settlementReflection.trim() || "这一周的努力已经被树记住了。",
+        };
         state.settlementConfirmed = true;
         renderApp();
         window.setTimeout(() => {
+          state.fruits = [...state.fruits, latestFruit];
           state.tab = "tree";
           state.settlementConfirmed = false;
+          state.settlementScore = null;
           renderApp();
         }, 900);
         return;
@@ -2485,17 +2918,52 @@
       if (event.target.id === "draft-input") {
         state.draft = event.target.value;
       }
+      if (event.target.id === "edit-input") {
+        state.editDraft = event.target.value;
+      }
       if (event.target.id === "energy-range") {
         state.energyValue = Number(event.target.value);
         syncEnergyRail(state.energyValue, true);
         const label = document.getElementById("energy-value-label");
         if (label) label.textContent = `${state.energyValue}%`;
       }
+      if (event.target.id === "plan-feedback") {
+        state.planFeedback = event.target.value;
+      }
+      if (event.target.id === "settlement-score") {
+        state.settlementScore = Number(event.target.value);
+        const label = document.getElementById("settlement-score-label");
+        if (label) label.textContent = `${state.settlementScore}%`;
+      }
+      if (event.target.id === "settlement-reflection") {
+        state.settlementReflection = event.target.value;
+      }
     });
 
     document.addEventListener("pointerdown", (event) => {
       if (event.target.id === "energy-range") {
         syncEnergyRail(Number(event.target.value), true);
+      }
+      const surface = event.target.closest(".todo-surface");
+      if (surface && state.tab === "list") {
+        const item = surface.closest(".todo-item");
+        if (item) item.classList.add("is-swiping");
+        swipeGesture = {
+          id: Number(surface.dataset.id),
+          startX: event.clientX,
+          currentX: event.clientX,
+          surface,
+          item,
+        };
+      }
+    });
+
+    document.addEventListener("pointermove", (event) => {
+      if (!swipeGesture) return;
+      swipeGesture.currentX = event.clientX;
+      const dx = Math.min(0, Math.max(-86, event.clientX - swipeGesture.startX));
+      if (Math.abs(dx) > 6) {
+        swipeGesture.surface.style.setProperty("--swipe-x", `${dx}px`);
       }
     });
 
@@ -2506,6 +2974,26 @@
           window.setTimeout(() => rail.classList.remove("is-dragging"), 420);
         }
       }
+      if (swipeGesture) {
+        const dx = swipeGesture.currentX - swipeGesture.startX;
+        if (swipeGesture.item) swipeGesture.item.classList.remove("is-swiping");
+        if (dx < -42) {
+          state.swipedTodoId = swipeGesture.id;
+          suppressNextClick = true;
+        } else if (dx > 24 || Math.abs(dx) > 6) {
+          state.swipedTodoId = null;
+          suppressNextClick = Math.abs(dx) > 6;
+        }
+        swipeGesture = null;
+        if (Math.abs(dx) > 6) renderApp();
+      }
+    });
+
+    document.addEventListener("pointercancel", () => {
+      if (!swipeGesture) return;
+      if (swipeGesture.item) swipeGesture.item.classList.remove("is-swiping");
+      swipeGesture = null;
+      renderApp();
     });
 
     document.addEventListener("keydown", (event) => {
@@ -2516,6 +3004,17 @@
         state.todos = [...state.todos, { id: Date.now(), text: value, done: false }];
         state.draft = "";
         state.adding = false;
+        syncTodayTodos();
+        renderApp();
+      }
+      if (event.target.id === "edit-input" && event.key === "Enter") {
+        event.preventDefault();
+        const value = state.editDraft.trim();
+        if (!value || state.editingTodoId === null) return;
+        state.todos = state.todos.map((todo) => todo.id === state.editingTodoId ? { ...todo, text: value } : todo);
+        state.editingTodoId = null;
+        state.editDraft = "";
+        syncTodayTodos();
         renderApp();
       }
     });
