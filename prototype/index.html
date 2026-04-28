@@ -293,6 +293,51 @@
     .onboarding-form {
       padding-top: 40px;
     }
+    .has-top-actions {
+      padding-top: 0 !important;
+    }
+    .onboarding-top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 36px;
+      margin-bottom: 10px;
+      padding: 0 2px;
+    }
+    .top-action-placeholder,
+    .top-icon-button {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+    }
+    .top-action-placeholder {
+      display: block;
+    }
+    .top-icon-button {
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .16);
+      background: rgba(255, 255, 255, .055);
+      color: #e8fffb;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 8px 22px rgba(0, 0, 0, .22);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+    }
+    .top-icon-button:hover {
+      border-color: rgba(207, 250, 254, .28);
+      background: rgba(207, 250, 254, .09);
+      color: #ffffff;
+    }
+    .top-icon-button:active {
+      transform: scale(.94);
+    }
+    .top-icon-button.refresh {
+      background: rgba(207, 250, 254, .075);
+    }
+    .top-icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
     .question {
       margin: 0;
       color: #fff;
@@ -2387,10 +2432,23 @@
 
     function actionIcon(type) {
       const paths = {
+        back: '<path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>',
+        refresh: '<path d="M19 8a7 7 0 1 0 1.15 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="M19 4v4h-4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>',
         edit: '<path d="M12 20h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="m16.5 3.5 4 4L8 20H4v-4L16.5 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
         trash: '<path d="M4 7h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6 7l1 14h10l1-14M9 7V4h6v3" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
       };
       return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${paths[type]}</svg>`;
+    }
+
+    function renderOnboardingTopActions(options = {}) {
+      const regenerateLabel = options.regenerateLabel || "重新生成";
+      return `
+        <div class="onboarding-top-actions">
+          <button class="top-icon-button back" data-action="onboarding-back" aria-label="返回上一步" title="返回上一步">${actionIcon("back")}</button>
+          ${options.regenerate
+            ? `<button class="top-icon-button refresh" data-action="regenerate-current-onboarding" aria-label="${regenerateLabel}" title="${regenerateLabel}">${actionIcon("refresh")}</button>`
+            : '<span class="top-action-placeholder" aria-hidden="true"></span>'}
+        </div>`;
     }
 
     function weekEnergy() {
@@ -2533,22 +2591,21 @@
       }
       if (state.onboardingStep === 2) {
         return `
-          <div class="onboarding-form panel-in">
+          <div class="onboarding-form panel-in has-top-actions">
+            ${renderOnboardingTopActions()}
             <div class="glass-card" style="padding:20px">
               <p class="question">这个季度，你最想推进的一件事是什么？</p>
               <textarea id="goal-input" class="goal-input" placeholder="例如：开发一款 App，上架到应用商店">${escapeHtml(state.goal)}</textarea>
               <p class="hint-copy">先用一件事跑通完整闭环，之后再补充其他方向。</p>
             </div>
             <button class="primary-button" style="margin-top:20px" data-action="start-ai" ${!state.goal.trim() || state.onboardingLoading ? "disabled" : ""}>${state.onboardingLoading ? "正在拆成本周行动..." : "让 AI 帮我拆成这周行动"}</button>
-            <div class="onboarding-secondary-actions single">
-              <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
-            </div>
             ${state.onboardingLoading ? '<div class="loading-track"><div class="loading-bar"></div></div>' : ""}
           </div>`;
       }
       if (state.onboardingStep === 3) {
         return `
-        <div class="onboarding-step panel-in" style="padding-top:20px">
+        <div class="onboarding-step panel-in has-top-actions">
+          ${renderOnboardingTopActions({ regenerate: true, regenerateLabel: "重新生成行动建议" })}
           <div class="glass-card" style="padding:20px">
             <p class="eyebrow">weekly focus</p>
             <h3 style="margin:8px 0 0;color:#fff;font-size:18px">本周先推进这 3 件事</h3>
@@ -2568,10 +2625,6 @@
               `).join("")}
             </div>
           </div>
-          <div class="onboarding-secondary-actions">
-            <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
-            <button class="secondary-button" data-action="regenerate-current-onboarding">重新生成行动建议</button>
-          </div>
           <div class="onboarding-actions">
             <button class="primary-button" data-action="finish-onboarding-list">先看今日清单</button>
             <button class="ghost-button" data-action="finish-onboarding">进入能量页</button>
@@ -2580,7 +2633,8 @@
       }
       if (state.onboardingStep === 4) {
         return `
-          <div class="onboarding-form panel-in">
+          <div class="onboarding-form panel-in has-top-actions">
+            ${renderOnboardingTopActions()}
             <div class="glass-card" style="padding:20px">
               <p class="eyebrow">five-year vision</p>
               <p class="question" style="margin-top:8px">五年后，你希望自己成为一个什么样的人？</p>
@@ -2588,30 +2642,28 @@
               <p class="hint-copy">这里先不进入 App 常驻展示，只作为今年规划的方向感。</p>
             </div>
             <button class="primary-button" style="margin-top:20px" data-action="submit-vision" ${!state.vision.trim() ? "disabled" : ""}>继续</button>
-            <div class="onboarding-secondary-actions">
-              <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
+            <div class="onboarding-secondary-actions single">
               <button class="secondary-button" data-action="choose-quick-planning">先快速规划这个季度</button>
             </div>
           </div>`;
       }
       if (state.onboardingStep === 5) {
         return `
-          <div class="vision-ack panel-in">
+          <div class="vision-ack panel-in has-top-actions">
+            ${renderOnboardingTopActions()}
             <section class="glass-card" style="padding:24px;text-align:center">
               <div class="ack-symbol">✓</div>
               <p class="eyebrow">vision accepted</p>
               <h3>我记住了。</h3>
               <p class="path-copy">这个愿景不用完美，它只是我们今年往前走的方向。接下来，我会先帮你把它整理成今年的 OKR。</p>
               <button class="primary-button" data-action="build-annual-okr">整理今年 OKR</button>
-              <div class="onboarding-secondary-actions single">
-                <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
-              </div>
             </section>
           </div>`;
       }
       if (state.onboardingStep === 6) {
         return `
-          <div class="planning-review panel-in">
+          <div class="planning-review panel-in has-top-actions">
+            ${renderOnboardingTopActions({ regenerate: true, regenerateLabel: "重新生成年度 OKR" })}
             <section class="glass-card" style="padding:18px">
               <p class="eyebrow">annual okr</p>
               <h3>年度 OKR</h3>
@@ -2626,15 +2678,12 @@
               </div>
             </section>
             <button class="primary-button" style="margin-top:14px" data-action="confirm-annual-okrs">确认年度 OKR</button>
-            <div class="onboarding-secondary-actions">
-              <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
-              <button class="secondary-button" data-action="regenerate-current-onboarding">重新生成年度 OKR</button>
-            </div>
           </div>`;
       }
       if (state.onboardingStep === 7) {
         return `
-          <div class="planning-review panel-in">
+          <div class="planning-review panel-in has-top-actions">
+            ${renderOnboardingTopActions({ regenerate: true, regenerateLabel: "重新生成季度 OKR" })}
             <section class="glass-card" style="padding:18px">
               <p class="eyebrow">quarterly okr</p>
               <h3>4 个季度 OKR</h3>
@@ -2649,14 +2698,11 @@
               </div>
             </section>
             <button class="primary-button" style="margin-top:14px" data-action="confirm-quarter-okrs">确认季度 OKR</button>
-            <div class="onboarding-secondary-actions">
-              <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
-              <button class="secondary-button" data-action="regenerate-current-onboarding">重新生成季度 OKR</button>
-            </div>
           </div>`;
       }
       return `
-        <div class="planning-review panel-in">
+        <div class="planning-review panel-in has-top-actions">
+          ${renderOnboardingTopActions({ regenerate: true, regenerateLabel: "重新生成 4 周承诺" })}
           <section class="glass-card" style="padding:18px">
             <p class="eyebrow">first month</p>
             <h3>首月 4 周承诺</h3>
@@ -2671,10 +2717,6 @@
             </div>
           </section>
           <button class="primary-button" style="margin-top:14px" data-action="confirm-week-commitments">确认 4 周承诺，生成天计划</button>
-          <div class="onboarding-secondary-actions">
-            <button class="secondary-button" data-action="onboarding-back">返回上一步</button>
-            <button class="secondary-button" data-action="regenerate-current-onboarding">重新生成 4 周承诺</button>
-          </div>
         </div>`;
     }
 
