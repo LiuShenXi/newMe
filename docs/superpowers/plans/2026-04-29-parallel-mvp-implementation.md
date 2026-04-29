@@ -1842,7 +1842,7 @@ git commit -m "feat: add SQLite database with migration framework"
 
 管理待同步队列：入队、出队、标记成功/失败、重试。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit -m "feat: add local SQLite repositories with sync queue"
@@ -1854,11 +1854,11 @@ git commit -m "feat: add local SQLite repositories with sync queue"
 - Create: `apps/mobile/src/db/sync/sync-engine.ts`
 - Create: `apps/mobile/src/db/sync/conflict-resolver.ts`
 
-- [ ] **Step 1: 实现同步引擎**
+- [x] **Step 1: 实现同步引擎**
 
 网络可用时批量推送 sync_queue 中的变更到后端 /sync/push。处理返回的逐条结果。按水位从 /sync/pull 拉取远端变更。
 
-- [ ] **Step 2: 实现冲突解决器**
+- [x] **Step 2: 实现冲突解决器**
 
 版本号比较，服务端版本大的赢。结算数据以首次确认为准。
 
