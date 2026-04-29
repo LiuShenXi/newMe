@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 0
-- 当前阶段：计划已增强，尚未正式开始代码实现
-- 当前主控：待启动
+- 当前阶段：Batch 0 / Track A 契约基线开发中
+- 当前主控：feat/track-a-contract
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -34,7 +34,7 @@ git worktree list
 
 | Track/Task | 状态 | Owner/Branch | 最近 commit | 验证 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| A1 Monorepo 初始化 | TODO | 未分配 | 无 | 未运行 | Batch 0 |
+| A1 Monorepo 初始化 | DONE | feat/track-a-contract | 本提交 | pnpm install 通过 | Batch 0 |
 | A2 Shared 枚举和常量 | TODO | 未分配 | 无 | 未运行 | Batch 0 |
 | A3 Shared DTO 和 Zod Schema | TODO | 未分配 | 无 | 未运行 | Batch 0 |
 | A4 契约冻结 | TODO | 未分配 | 无 | 未运行 | Batch 0 闸门 |
@@ -58,15 +58,15 @@ git worktree list
 
 ### 2026-04-29
 
+- 技术总监正式启动开发：已在 main 提交文档基线与 `.gitignore` worktree 忽略规则，并创建 `.worktrees/track-a-contract` / `feat/track-a-contract`。
+- A1 Monorepo 初始化完成：创建 root package、pnpm workspace、Node 版本、TypeScript 基础配置，扩展 `.gitignore`，并运行 `pnpm install` 通过。
 - 增强并行计划，加入 AI worker 必读、worktree、多批次并行、A4 契约冻结、Owned paths、B12 health 闸门、F7 optional、主控收口清单。
 - 新增技术总监续跑协议：用户只需说“技术总监，请按照当前进度和计划文档继续开发”，Director 应自动检查进度并续跑。
 - 新增额度保护收尾协议：小任务提交、定期更新本文件、额度不足时优先交接。
 
 ## 阻塞与风险
 
-- 尚未创建 worktree。
-- 尚未执行 Batch 0 代码实现。
-- 当前文档改动尚未提交。
+- Batch 0 正在执行，A4 契约冻结完成前不得启动 B/C/D/E 业务实现。
 
 ## 下次建议
 
