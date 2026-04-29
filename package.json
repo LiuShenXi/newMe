@@ -1,0 +1,12 @@
+{
+  "name": "newme",
+  "private": true,
+  "scripts": {
+    "api": "pnpm --filter @newme/api",
+    "mobile": "pnpm --filter @newme/mobile",
+    "shared": "pnpm --filter @newme/shared"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
