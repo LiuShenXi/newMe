@@ -1,0 +1,11 @@
+export const QUARTER_HONOR_THRESHOLD = 0.8;
+export const MAX_WEEKLY_FOCUSES = 5;
+export const MIN_WEEKLY_FOCUSES = 3;
+export const MAX_DAILY_TODOS = 10;
+export const ENERGY_MIN = 0;
+export const ENERGY_MAX = 100;
+export const AI_REQUEST_TIMEOUT_MS = 30_000;
+export const AI_PROVIDER_TIMEOUT_MS = 25_000;
+export const AI_RATE_LIMIT_PER_SCENARIO_PER_MIN = 3;
+export const AI_RATE_LIMIT_GLOBAL_PER_HOUR = 30;
+export const SETTLEMENT_BACKFILL_WEEKS = 1;
