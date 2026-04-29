@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B API 基础继续推进，B1-B2 已完成，下一步立即执行 B12
+- 当前阶段：Batch 1 / Track B API 基础闸门已完成，B1-B2-B12 已完成，下一步可继续 B3 Auth 或合并 Track B 基础
 - 当前主控：feat/track-b-api
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -39,8 +39,8 @@ git worktree list
 | A3 Shared DTO 和 Zod Schema | DONE | feat/track-a-contract | 8539966 | pnpm --filter @newme/shared typecheck 通过 | Batch 0 |
 | A4 契约冻结 | DONE | feat/track-a-contract | ede104e | shared typecheck + 契约 grep + pnpm -r typecheck 通过 | Batch 0 闸门已通过 |
 | B1 API 初始化 | DONE | feat/track-b-api | 36994ca | pnpm --filter @newme/api test -- --runInBand；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api build；pnpm -r typecheck 均通过 | A4 后已推进 |
-| B2 Prisma Schema | DONE | feat/track-b-api | 本次提交 | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
-| B12 Health/Error | TODO | 未分配 | 无 | 未运行 | Week 1 必做闸门 |
+| B2 Prisma Schema | DONE | feat/track-b-api | 78cd00d | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
+| B12 Health/Error | DONE | feat/track-b-api | 7d63a5b | health controller RED/GREEN；api test/typecheck/build；pnpm -r typecheck；真实 /api/v1/health 验证均通过 | Week 1 必做闸门已通过 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -70,6 +70,11 @@ git worktree list
 - B2 TDD 记录：先运行 `pnpm --filter @newme/api test -- prisma.module.spec --runInBand`，确认因 `prisma.module` / `prisma.service` 缺失失败；实现后测试通过。
 - B2 迁移验证：使用临时 Docker Postgres `newme-b2-postgres`（`localhost:55432`）运行 `prisma migrate dev --name init` 成功，查询确认 19 张核心表均存在。
 - B2 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- B12 全局错误处理和健康检查完成：新增 `HttpExceptionFilter`、`RequestIdInterceptor`、`HealthController`，并在 `main.ts` 注册全局 filter/interceptor。
+- B12 TDD 记录：先运行 `pnpm --filter @newme/api test -- health.controller.spec --runInBand`，确认因 `health.controller` 缺失失败；实现后测试通过。
+- B12 运行态修正：真实启动 `node dist/main` 时发现 root tsconfig 的 ESNext 输出导致 Node 无法解析 `dist/app.module`，已在 `apps/api/tsconfig.json` 覆盖为 `CommonJS` + `node` module resolution，并同步更新计划文档。
+- B12 HTTP 验证：使用 `DATABASE_URL=postgresql://newme:newme@localhost:55432/newme_dev` 和 `PORT=3300` 启动构建产物，请求 `http://127.0.0.1:3300/api/v1/health` 返回 `{"status":"ok","database":"connected","version":"0.1.0"}`。
+- B12 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 增强并行计划，加入 AI worker 必读、worktree、多批次并行、A4 契约冻结、Owned paths、B12 health 闸门、F7 optional、主控收口清单。
 - 新增技术总监续跑协议：用户只需说“技术总监，请按照当前进度和计划文档继续开发”，Director 应自动检查进度并续跑。
 - 新增额度保护收尾协议：小任务提交、定期更新本文件、额度不足时优先交接。
@@ -84,8 +89,8 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 立即执行 B12 全局错误处理 + `/health`，满足 Week 1 集成闸门。
-2. B12 完成并验证后，可继续 B3 Auth 或合并 `feat/track-b-api` 让其他后端 worker 基于 B1-B2-B12 开发。
+1. 可继续 Track B：执行 B3 Auth 模块。
+2. 也可先将 `feat/track-b-api` 合并回主控，让其他后端 worker 基于 B1-B2-B12 开发。
 3. 其他 worker 可基于已合并的 shared 契约并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 
 ## 收尾模板

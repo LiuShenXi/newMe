@@ -1041,6 +1041,8 @@ Run: `mkdir -p apps/api/src`
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
@@ -1417,17 +1419,17 @@ git commit -m "feat: add sync module with push/pull and conflict resolution"
 - Create: `apps/api/src/common/interceptors/request-id.interceptor.ts`
 - Create: `apps/api/src/health/health.controller.ts`
 
-- [ ] **Step 1: 实现统一错误响应格式**
+- [x] **Step 1: 实现统一错误响应格式**
 
 ```json
 { "code": "ERROR_CODE", "message": "用户友好文案", "requestId": "req_xxx" }
 ```
 
-- [ ] **Step 2: 实现健康检查 GET /health**
+- [x] **Step 2: 实现健康检查 GET /health**
 
 返回 API 状态、数据库连接、版本号。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit -m "feat: add global error handling and health check"
