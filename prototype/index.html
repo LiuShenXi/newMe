@@ -457,16 +457,50 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      padding-top: 28px;
+      padding-top: 10px;
+    }
+    .path-hero {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(167, 243, 208, .13);
+      background:
+        radial-gradient(circle at 18% 14%, rgba(254, 240, 138, .13), transparent 30%),
+        radial-gradient(circle at 84% 10%, rgba(103, 232, 249, .16), transparent 36%),
+        linear-gradient(145deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .026));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 24px 70px rgba(0, 0, 0, .26);
+    }
+    .path-hero::after {
+      content: "";
+      position: absolute;
+      right: -56px;
+      bottom: -68px;
+      width: 178px;
+      height: 178px;
+      border-radius: 50%;
+      border: 1px solid rgba(207, 250, 254, .10);
+      background: radial-gradient(circle at 40% 40%, rgba(207, 250, 254, .13), transparent 62%);
+    }
+    .path-hero h3 {
+      position: relative;
+      margin: 8px 0 0;
+      color: #fff;
+      font-size: 22px;
+      line-height: 1.26;
+      letter-spacing: 0;
+    }
+    .path-hero .path-copy {
+      position: relative;
+      max-width: 260px;
+      margin-bottom: 0;
     }
     .path-choice-card {
       overflow: hidden;
-      padding: 22px;
-      border-radius: 30px;
-      border: 1px solid rgba(167, 243, 208, .12);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(128, 255, 206, .16), transparent 42%),
-        rgba(255, 255, 255, .045);
+      padding: 16px;
+      border-radius: 26px;
+      border: 1px solid rgba(167, 243, 208, .10);
+      background: rgba(255, 255, 255, .035);
     }
     .path-choice-card h3,
     .vision-ack h3,
@@ -486,6 +520,94 @@
     .path-action-stack {
       display: grid;
       gap: 10px;
+    }
+    .path-option-list {
+      display: grid;
+      gap: 10px;
+    }
+    .path-option {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 96px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .095);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .028)),
+        rgba(0, 0, 0, .14);
+      padding: 14px;
+      text-align: left;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .path-option::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .92;
+      pointer-events: none;
+    }
+    .path-option.deep::before {
+      background: radial-gradient(circle at 100% 0%, rgba(103, 232, 249, .14), transparent 45%);
+    }
+    .path-option.quick::before {
+      background: radial-gradient(circle at 100% 0%, rgba(167, 243, 208, .13), transparent 45%);
+    }
+    .path-option.manual::before {
+      background: radial-gradient(circle at 100% 0%, rgba(254, 240, 138, .15), transparent 45%);
+    }
+    .path-option:hover {
+      border-color: rgba(207, 250, 254, .22);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .038)),
+        rgba(0, 0, 0, .12);
+    }
+    .path-option:active {
+      transform: scale(.985);
+    }
+    .path-icon {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      border: 1px solid rgba(207, 250, 254, .13);
+      background: rgba(0, 0, 0, .20);
+      color: #ecfeff;
+      font-size: 19px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .20);
+    }
+    .path-body {
+      position: relative;
+      min-width: 0;
+    }
+    .path-body h4 {
+      margin: 0;
+      color: #f8fafc;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .path-body p {
+      margin: 5px 0 0;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .path-arrow {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      color: rgba(236, 254, 255, .78);
+      background: rgba(255, 255, 255, .045);
     }
     .secondary-button {
       width: 100%;
@@ -528,6 +650,154 @@
       color: #fef3c7;
       font-size: 11px;
       font-weight: 700;
+    }
+    .manual-flow {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .manual-stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      padding: 2px;
+    }
+    .manual-dot {
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+    }
+    .manual-dot.done {
+      background: rgba(167, 243, 208, .42);
+    }
+    .manual-dot.active {
+      background: linear-gradient(90deg, #d8c36c, #73f6dc);
+      box-shadow: 0 0 18px rgba(115, 246, 220, .22);
+    }
+    .manual-card {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+      border-radius: 30px;
+      border: 1px solid rgba(254, 240, 138, .13);
+      background:
+        radial-gradient(circle at 88% 0%, rgba(254, 240, 138, .12), transparent 38%),
+        radial-gradient(circle at 0% 100%, rgba(103, 232, 249, .10), transparent 44%),
+        rgba(255, 255, 255, .045);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 22px 60px rgba(0, 0, 0, .25);
+    }
+    .manual-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      top: 42px;
+      width: 110px;
+      height: 110px;
+      border-radius: 32px;
+      border: 1px solid rgba(254, 240, 138, .10);
+      transform: rotate(18deg);
+      background: rgba(255, 255, 255, .018);
+      pointer-events: none;
+    }
+    .manual-card h3 {
+      position: relative;
+      margin: 8px 0 0;
+      color: #fff;
+      font-size: 21px;
+      line-height: 1.32;
+    }
+    .manual-card .hint-copy {
+      position: relative;
+      max-width: 260px;
+    }
+    .manual-input {
+      position: relative;
+      width: 100%;
+      height: 154px;
+      margin-top: 16px;
+      resize: none;
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      outline: none;
+      background: rgba(0, 0, 0, .24);
+      padding: 15px;
+      color: #f8fafc;
+      font-size: 14px;
+      line-height: 1.65;
+      box-shadow: inset 0 1px 18px rgba(0, 0, 0, .20);
+    }
+    .manual-input:focus {
+      border-color: rgba(254, 240, 138, .28);
+    }
+    .manual-context {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .manual-context-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      background: rgba(0, 0, 0, .16);
+      padding: 10px 12px;
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+    .manual-context-row span:last-child {
+      max-width: 160px;
+      overflow: hidden;
+      color: #fef3c7;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-context-row.empty span:last-child {
+      color: #64748b;
+    }
+    .manual-ai-panel {
+      margin-top: 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(103, 232, 249, .14);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(103, 232, 249, .14), transparent 42%),
+        rgba(8, 21, 22, .62);
+      padding: 12px;
+    }
+    .manual-ai-panel p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .manual-actions {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.35fr);
+      gap: 10px;
+      margin-top: auto;
+    }
+    .manual-actions .primary-button {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .manual-ai-button {
+      width: 100%;
+      border-radius: 16px;
+      padding: 13px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .manual-ai-button {
+      border: 1px solid rgba(103, 232, 249, .16);
+      background: rgba(103, 232, 249, .08);
+      color: #cffafe;
+    }
+    .manual-ai-button:active {
+      transform: scale(.98);
     }
     .vision-ack,
     .planning-review {
@@ -722,6 +992,15 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+    }
+    .empty-progress {
+      border-radius: 16px;
+      border: 1px dashed rgba(148, 163, 184, .24);
+      background: rgba(255, 255, 255, .025);
+      padding: 14px;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.65;
     }
     .progress-meta {
       display: flex;
@@ -1275,6 +1554,111 @@
     .plan-intro {
       margin-bottom: 20px;
       padding: 16px;
+    }
+    .plan-origin-card {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
+      padding: 16px;
+      border-color: rgba(254, 240, 138, .14);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(254, 240, 138, .13), transparent 42%),
+        radial-gradient(circle at 0% 100%, rgba(103, 232, 249, .10), transparent 44%),
+        rgba(255, 255, 255, .045);
+    }
+    .plan-origin-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .plan-source-pill {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      border: 1px solid rgba(254, 240, 138, .18);
+      background: rgba(254, 240, 138, .09);
+      padding: 7px 10px;
+      color: #fef3c7;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .plan-origin-card h3 {
+      margin: 8px 0 0;
+      color: #f8fafc;
+      font-size: 18px;
+      line-height: 1.35;
+      text-shadow: 0 0 18px rgba(207, 250, 254, .08);
+    }
+    .manual-layer-grid {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .manual-layer-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, .075);
+      background: rgba(0, 0, 0, .16);
+      padding: 11px 12px;
+    }
+    .manual-layer-card.empty {
+      border-style: dashed;
+      border-color: rgba(148, 163, 184, .28);
+      background: rgba(255, 255, 255, .035);
+    }
+    .manual-layer-card p {
+      margin: 0;
+      min-width: 0;
+    }
+    .manual-layer-card p:first-child {
+      color: #f8fafc;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .manual-layer-card p:last-child {
+      margin-top: 4px;
+      overflow: hidden;
+      color: #94a3b8;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .manual-layer-card.empty p:last-child {
+      color: #7f8ea3;
+    }
+    .manual-layer-action {
+      border-radius: 999px;
+      border: 1px solid rgba(207, 250, 254, .14);
+      background: rgba(207, 250, 254, .07);
+      padding: 7px 9px;
+      color: #cffafe;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .manual-plan-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .manual-plan-actions button {
+      border-radius: 14px;
+      padding: 10px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .manual-plan-actions button:first-child {
+      border: 1px solid rgba(254, 240, 138, .17);
+      background: rgba(254, 240, 138, .09);
+      color: #fef3c7;
+    }
+    .manual-plan-actions button:last-child {
+      border: 1px solid rgba(103, 232, 249, .16);
+      background: rgba(103, 232, 249, .08);
+      color: #cffafe;
     }
     .eyebrow {
       margin: 0;
@@ -2275,6 +2659,61 @@
       "第 3 周：打磨 AI 拆解质量，把任务密度调整到能坚持",
       "第 4 周：完成第一次月度回看，决定后续 4 周的节奏",
     ];
+    const MANUAL_AI_SUGGESTIONS = {
+      year: "今年先把身体、学习和作品三条线稳定下来：保持规律运动，完成关键阅读，并把个人成长 App 做到可公开演示。",
+      quarter: "这个季度聚焦跑通一个可持续节奏：每周推进 App 原型，每周运动 4 次，每周沉淀 1 条产品反思。",
+      month: "本月先完成手动 OKR 链路和计划页补填体验，同时保留运动与阅读的最低行动线。",
+      week: "本周重点：1. 完成手动 OKR 冷启动原型；2. 让计划页能展示暂未设置和补填入口；3. 保留 3 次运动和 2 次阅读。",
+      today: "梳理手动 OKR 页面结构；补齐计划页空状态；用 Playwright 截图检查冷启动和计划页视觉。",
+    };
+    const MANUAL_AI_TODOS = [
+      { id: 1, text: "梳理手动 OKR 页面结构", done: false },
+      { id: 2, text: "补齐计划页空状态和补填入口", done: false },
+      { id: 3, text: "检查本周计划与今日清单是否同步", done: false },
+      { id: 4, text: "运动 30 分钟，保留身体底盘", done: false },
+    ];
+    const MANUAL_STEP_META = {
+      9: {
+        key: "yearGoal",
+        level: "01 / 年目标",
+        title: "今年你想让什么真正发生？",
+        hint: "可以写 1 条，也可以写 3 条。这里不追求完整，只需要让今年有一个可以回看的方向。",
+        placeholder: "例如：做出一款能公开演示的个人成长 App；全年保持稳定运动；读完 5 本关键书。",
+        nextLabel: "继续设置季度目标",
+      },
+      10: {
+        key: "quarterGoal",
+        level: "02 / 当前季度",
+        title: "这个季度先推进哪一段？",
+        hint: "如果年目标还没想清楚，也可以只写这个季度。上层空着不影响后面继续。",
+        placeholder: "例如：Q2 完成个人成长 App 的可体验原型，并收集 5 条真实反馈。",
+        nextLabel: "继续设置本月目标",
+      },
+      11: {
+        key: "monthGoal",
+        level: "03 / 本月目标",
+        title: "这个月先收住哪几个结果？",
+        hint: "只看最近一个月，避免把计划拉得太远。可以写结果，也可以写节奏。",
+        placeholder: "例如：本月完成手动 OKR 链路、计划页补填入口和一次完整视觉检查。",
+        nextLabel: "继续设置本周计划",
+      },
+      12: {
+        key: "weekPlan",
+        level: "04 / 本周计划",
+        title: "这周你想先承诺什么？",
+        hint: "年、季、月都可以暂时为空。本周计划会直接成为能量页打分的参照物。",
+        placeholder: "例如：1. 完成手动 OKR 冷启动；2. 计划页展示暂未设置；3. 保留 3 次运动。",
+        nextLabel: "继续设置今日 ToDo",
+      },
+      13: {
+        key: "todayTodoText",
+        level: "05 / 今日 ToDo",
+        title: "今天先做哪几件小事？",
+        hint: "可以只填今天。即使前面的目标都空着，清单和能量记录也能直接开始。",
+        placeholder: "例如：梳理手动流程；补齐三入口视觉；截图检查计划页。",
+        nextLabel: "进入今日清单",
+      },
+    };
     const ANNUAL_OKR_VARIANTS = [
       DEFAULT_ANNUAL_OKRS,
       [
@@ -2363,6 +2802,14 @@
     const cloneAnnualOkrs = () => [...DEFAULT_ANNUAL_OKRS];
     const cloneQuarterOkrs = () => DEFAULT_QUARTER_OKRS.map((item) => ({ ...item }));
     const cloneWeekCommitments = () => [...DEFAULT_WEEK_COMMITMENTS];
+    const cloneManualPlan = () => ({
+      yearGoal: "",
+      quarterGoal: "",
+      monthGoal: "",
+      weekPlan: "",
+      todayTodoText: "",
+      usedAi: false,
+    });
     const cloneActionPlanVariant = (index) => ({
       focusItems: ACTION_PLAN_VARIANTS[index].focusItems.map((item) => ({ ...item })),
       todos: ACTION_PLAN_VARIANTS[index].todos.map((item) => ({ ...item })),
@@ -2387,6 +2834,8 @@
       annualOkrs: cloneAnnualOkrs(),
       quarterOkrs: cloneQuarterOkrs(),
       weekCommitments: cloneWeekCommitments(),
+      manualPlan: cloneManualPlan(),
+      planSource: "ai",
       goal: "开发一款个人成长 App，上架到应用商店",
       todos: cloneTodos(),
       focusItems: DEFAULT_FOCUS.map((item) => ({ ...item })),
@@ -2451,6 +2900,54 @@
         </div>`;
     }
 
+    function renderManualContext() {
+      const rows = [
+        ["年目标", "yearGoal"],
+        ["季度目标", "quarterGoal"],
+        ["本月目标", "monthGoal"],
+      ];
+      return `
+        <div class="manual-context">
+          ${rows.map(([label, key]) => `
+            <div class="manual-context-row ${manualValue(key) ? "" : "empty"}">
+              <span>${label}</span>
+              <span>${escapeHtml(manualDisplay(key))}</span>
+            </div>
+          `).join("")}
+        </div>`;
+    }
+
+    function renderManualOnboarding() {
+      const meta = MANUAL_STEP_META[state.onboardingStep];
+      const value = state.manualPlan[meta.key] || "";
+      const isFinal = state.onboardingStep === 13;
+      const showContext = state.onboardingStep >= 12;
+      return `
+        <div class="manual-flow panel-in has-top-actions">
+          ${renderOnboardingTopActions()}
+          <div class="manual-stepper" aria-hidden="true">
+            ${Array.from({ length: 5 }, (_, index) => `
+              <span class="manual-dot ${index < manualStepIndex() ? "done" : ""} ${index === manualStepIndex() ? "active" : ""}"></span>
+            `).join("")}
+          </div>
+          <section class="manual-card">
+            <p class="eyebrow">${meta.level}</p>
+            <h3>${meta.title}</h3>
+            <p class="hint-copy">${meta.hint}</p>
+            ${showContext ? renderManualContext() : ""}
+            <textarea id="manual-${meta.key}" class="manual-input" placeholder="${meta.placeholder}">${escapeHtml(value)}</textarea>
+            ${state.manualPlan.usedAi ? `
+              <div class="manual-ai-panel">
+                <p>局部 AI 只补当前层级及下游建议；上面的空目标不会被自动补齐，已有手写内容也不会被覆盖。</p>
+              </div>` : ""}
+          </section>
+          <div class="manual-actions">
+            <button class="manual-ai-button" data-action="manual-ai">AI 辅助</button>
+            <button class="primary-button" data-action="manual-next">${meta.nextLabel}</button>
+          </div>
+        </div>`;
+    }
+
     function weekEnergy() {
       const values = state.weekRecords.map((day) => day.v).filter(Boolean);
       if (!values.length) return 0;
@@ -2475,7 +2972,7 @@
     }
 
     function onboardingBackStep() {
-      const backSteps = { 2: 1, 4: 1, 5: 4, 6: 5, 7: 6, 8: 7 };
+      const backSteps = { 2: 1, 4: 1, 5: 4, 6: 5, 7: 6, 8: 7, 9: 1, 10: 9, 11: 10, 12: 11, 13: 12 };
       if (state.onboardingStep === 3) return state.onboardingPath === "deep" ? 8 : 2;
       return backSteps[state.onboardingStep] ?? state.onboardingStep;
     }
@@ -2514,6 +3011,99 @@
       if (state.onboardingStep === 8) {
         const index = nextRegenerationIndex("commitments", WEEK_COMMITMENT_VARIANTS.length);
         state.weekCommitments = [...WEEK_COMMITMENT_VARIANTS[index]];
+      }
+    }
+
+    function manualStepIndex(step = state.onboardingStep) {
+      return Math.max(0, Math.min(4, step - 9));
+    }
+
+    function manualValue(key) {
+      return (state.manualPlan[key] || "").trim();
+    }
+
+    function manualDisplay(key) {
+      return manualValue(key) || "暂未设置";
+    }
+
+    function textToTodos(text) {
+      const parts = text
+        .split(/\n|；|;/)
+        .map((item) => item.replace(/^\s*(\d+\.|[一二三四五六七八九十]+、|-)\s*/, "").trim())
+        .filter(Boolean);
+      const source = parts.length ? parts : MANUAL_AI_TODOS.map((item) => item.text);
+      return source.slice(0, 5).map((item, index) => ({ id: 600 + index, text: item, done: false }));
+    }
+
+    function weekPlanToFocusItems(text) {
+      const parts = text
+        .split(/\n|；|;/)
+        .map((item) => item.replace(/^\s*(\d+\.|[一二三四五六七八九十]+、|-)\s*/, "").trim())
+        .filter(Boolean);
+      const source = parts.length ? parts : [
+        "本周先跑通一个可执行计划",
+        "把今日清单保持在能完成的密度",
+        "保留身体和阅读的最低行动线",
+      ];
+      return source.slice(0, 4).map((title, index) => ({
+        title,
+        value: [18, 8, 0, 0][index] ?? 0,
+        note: index === 0 ? "手动创建，本周开始推进" : "可在计划页继续补充",
+      }));
+    }
+
+    function syncManualPlanToApp() {
+      const weekText = manualValue("weekPlan");
+      const todayText = manualValue("todayTodoText");
+      state.focusItems = weekText ? weekPlanToFocusItems(weekText) : [];
+      state.todos = todayText ? textToTodos(todayText) : [];
+      state.monthWeeks = state.monthWeeks.map((item) => item.week === "W16"
+        ? {
+            ...item,
+            title: weekText ? "手动 OKR 本周推进" : "只从今日清单开始",
+            state: "当前周",
+            items: state.focusItems.length ? state.focusItems.map((focus) => focus.title) : ["本周计划暂未设置，可以先从今日清单开始"],
+          }
+        : item);
+      syncTodayTodos();
+    }
+
+    function applyManualAi() {
+      const meta = MANUAL_STEP_META[state.onboardingStep];
+      if (!meta) return;
+      const suggestionByKey = {
+        yearGoal: MANUAL_AI_SUGGESTIONS.year,
+        quarterGoal: MANUAL_AI_SUGGESTIONS.quarter,
+        monthGoal: MANUAL_AI_SUGGESTIONS.month,
+        weekPlan: MANUAL_AI_SUGGESTIONS.week,
+        todayTodoText: MANUAL_AI_SUGGESTIONS.today,
+      };
+      state.manualPlan = {
+        ...state.manualPlan,
+        [meta.key]: state.manualPlan[meta.key].trim() || suggestionByKey[meta.key] || state.manualPlan[meta.key],
+        usedAi: true,
+      };
+      if (state.onboardingStep === 12 && !manualValue("todayTodoText")) {
+        state.manualPlan.todayTodoText = MANUAL_AI_SUGGESTIONS.today;
+      }
+      if (state.onboardingStep === 13 && !manualValue("weekPlan")) {
+        state.manualPlan.weekPlan = MANUAL_AI_SUGGESTIONS.week;
+      }
+      state.planSource = "mixed";
+      syncManualPlanToApp();
+    }
+
+    function advanceManualOnboarding() {
+      const meta = MANUAL_STEP_META[state.onboardingStep];
+      if (!meta) return;
+      state.planSource = state.manualPlan.usedAi ? "mixed" : "manual";
+      if (state.onboardingStep < 13) {
+        state.onboardingStep += 1;
+      } else {
+        syncManualPlanToApp();
+        state.booted = true;
+        state.tab = "list";
+        state.viewedList = true;
       }
     }
 
@@ -2556,6 +3146,9 @@
     }
 
     function renderOnboarding() {
+      if (state.onboardingStep >= 9) {
+        return renderManualOnboarding();
+      }
       if (state.onboardingStep === 0) {
         return `
           <div class="onboarding-step panel-in">
@@ -2575,17 +3168,27 @@
       if (state.onboardingStep === 1) {
         return `
           <div class="path-choice panel-in">
-            <section class="path-choice-card">
-              <span class="path-ribbon">推荐路径</span>
-              <h3>先看见五年后的自己</h3>
-              <p class="path-copy">写下一句话就好。它不会变成压力，只会成为今年规划的北极星。</p>
-              <div class="path-action-stack">
-                <button class="primary-button" data-action="choose-deep-planning">体验深度愿景规划</button>
-                <button class="secondary-button" data-action="choose-quick-planning">先快速规划这个季度</button>
-              </div>
+            <section class="path-hero">
+              <span class="path-ribbon">New year map</span>
+              <h3>你想怎样开始今年？</h3>
+              <p class="path-copy">可以从五年愿景倒推，也可以快速拆这个季度；如果你只想自己安排，也有完整手动 OKR 路径。</p>
             </section>
-            <section class="glass-card" style="padding:16px">
-              <p class="hint-copy" style="margin:0">深度路径会帮你从五年愿景倒推年度 OKR、4 个季度 OKR、首月 4 周承诺，再落到今天。快速路径会直接沿用当前冷启动流程。</p>
+            <section class="path-option-list">
+              <button class="path-option deep" data-action="choose-deep-planning">
+                <span class="path-icon">✦</span>
+                <span class="path-body"><h4>体验深度愿景规划</h4><p>从五年后的自己，倒推出今年、季度、首月和今天。</p></span>
+                <span class="path-arrow">›</span>
+              </button>
+              <button class="path-option quick" data-action="choose-quick-planning">
+                <span class="path-icon">↯</span>
+                <span class="path-body"><h4>先快速规划这个季度</h4><p>只输入这一季最想推进的一件事，让 AI 拆成本周行动。</p></span>
+                <span class="path-arrow">›</span>
+              </button>
+              <button class="path-option manual" data-action="choose-manual-planning">
+                <span class="path-icon">□</span>
+                <span class="path-body"><h4>手动创建 OKR</h4><p>年、季、月、周、日逐层填写；空着点下一步就行。</p></span>
+                <span class="path-arrow">›</span>
+              </button>
             </section>
           </div>`;
       }
@@ -2762,11 +3365,11 @@
           <section class="glass-card energy-progress">
             <div class="card-head"><h3>本周进度概览</h3><span class="badge">打分参照</span></div>
             <div class="progress-list">
-              ${state.focusItems.map((item) => `
+              ${state.focusItems.length ? state.focusItems.map((item) => `
                 <div>
                   <div class="progress-meta"><span>${escapeHtml(item.title)}</span><span>${item.value}%</span></div>
                   <div class="progress-track"><div class="progress-fill" style="width:${item.value}%"></div></div>
-                </div>`).join("")}
+                </div>`).join("") : '<div class="empty-progress">本周重点暂未设置。你仍然可以先记录今天的主观推进，之后再回计划页补上本周计划。</div>'}
             </div>
           </section>
           <section class="glass-card range-card">
@@ -2825,13 +3428,51 @@
         </div>`, { tab: "list" });
     }
 
+    function renderManualLayer(label, key, actionLabel) {
+      const value = manualValue(key);
+      return `
+        <div class="manual-layer-card ${value ? "" : "empty"}">
+          <div>
+            <p>${label}</p>
+            <p>${escapeHtml(value || "暂未设置")}</p>
+          </div>
+          <button class="manual-layer-action" data-action="edit-manual-layer" data-step="${key}">${value ? "编辑" : actionLabel}</button>
+        </div>`;
+    }
+
+    function renderManualPlanOverview() {
+      if (state.planSource === "ai") return "";
+      const sourceLabel = state.planSource === "mixed" ? "手动 + 局部 AI" : "手动 OKR";
+      return `
+        <section class="glass-card plan-origin-card">
+          <div class="plan-origin-row">
+            <div>
+              <p class="eyebrow">planning source</p>
+              <h3>自己掌控粒度，空着也可以继续走</h3>
+            </div>
+            <span class="plan-source-pill">${sourceLabel}</span>
+          </div>
+          <div class="manual-layer-grid">
+            ${renderManualLayer("年目标", "yearGoal", "补全年")}
+            ${renderManualLayer("季度目标", "quarterGoal", "补全季度")}
+            ${renderManualLayer("本月目标", "monthGoal", "补全本月")}
+            ${renderManualLayer("本周计划", "weekPlan", "设置本周")}
+          </div>
+          <div class="manual-plan-actions">
+            <button data-action="edit-manual-layer" data-step="weekPlan">编辑计划</button>
+            <button data-action="manual-plan-ai">局部 AI 辅助</button>
+          </div>
+        </section>`;
+    }
+
     function renderPlanScreen() {
       const monthContent = `
         <div class="scroll-area panel-in">
+          ${renderManualPlanOverview()}
           <section class="glass-card plan-intro">
             <div class="plan-intro-grid">
-              <div><p class="eyebrow">April · 4 weeks</p><h3>只规划最近一个月，避免计划过远失效</h3></div>
-              <button class="replan-button" data-action="replan">${state.planning ? "生成中" : "AI 重规划"}</button>
+              <div><p class="eyebrow">April · 4 weeks</p><h3>${state.planSource === "ai" ? "只规划最近一个月，避免计划过远失效" : "本周先能执行，月目标可以后补"}</h3></div>
+              <button class="replan-button" data-action="${state.planSource === "ai" ? "replan" : "manual-plan-ai"}">${state.planSource === "ai" ? (state.planning ? "生成中" : "AI 重规划") : "局部 AI"}</button>
             </div>
             ${state.planning ? '<div class="loading-track"><div class="loading-bar"></div></div>' : ""}
             ${state.planCoachOpen ? `
@@ -2856,9 +3497,10 @@
         </div>`;
       const yearContent = `
         <div class="scroll-area panel-in">
+          ${renderManualPlanOverview()}
           <section class="glass-card plan-intro">
             <p class="eyebrow">2026 · yearly map</p>
-            <h3>年度只看四个季度的阶段变化</h3>
+            <h3>${state.planSource === "ai" ? "年度只看四个季度的阶段变化" : "上层目标可以慢慢补齐，不影响今天开始"}</h3>
           </section>
           <div class="plan-list">
             ${YEAR_QUARTERS.map((quarter) => `
@@ -2876,8 +3518,8 @@
       return renderPhone(`
         <div class="screen-stack" style="gap:0">
           <div class="segmented">
-            <button class="seg-button ${state.planView === "month" ? "active" : ""}" data-action="plan-view" data-view="month">月计划 · 按周</button>
-            <button class="seg-button ${state.planView === "year" ? "active" : ""}" data-action="plan-view" data-view="year">年计划 · 按 Q</button>
+            <button class="seg-button ${state.planView === "month" ? "active" : ""}" data-action="plan-view" data-view="month">周/月计划</button>
+            <button class="seg-button ${state.planView === "year" ? "active" : ""}" data-action="plan-view" data-view="year">年/季度</button>
           </div>
           ${state.planView === "month" ? monthContent : yearContent}
         </div>`, { tab: "plan" });
@@ -3074,16 +3716,16 @@
       return `
         <p class="eyebrow">NewMe Prototype</p>
         <h1>交互原型 · 精简版</h1>
-        <p class="side-desc">冷启动已升级为双路径：推荐深度愿景规划，也保留快速规划这个季度。深度路径会从五年愿景倒推出年度 OKR、季度 OKR、首月 4 周承诺，再汇入今日清单和能量闭环。</p>
+        <p class="side-desc">冷启动升级为三路径：深度愿景规划、快速季度规划、手动创建 OKR。手动路径不单独放跳过按钮，空着直接下一步；也能在任意节点局部引入 AI，但不会自动补上游目标。</p>
         <div class="side-tabs">
           ${tabItems.map(([id, label]) => `<button class="side-tab ${state.booted && state.tab === id ? "active" : ""}" data-action="change-tab" data-tab="${id}" ${state.booted ? "" : "disabled"}>${label}</button>`).join("")}
         </div>
         <div class="side-notes">
           <div class="note-card"><span>能量页：</span>一屏展示：能量球、本周进度概览、能量条、确认按钮。</div>
           <div class="note-card"><span>清单页：</span>今日待办支持新增、勾选、编辑；左滑露出垃圾桶删除，右上角查看 7 天 TDL。</div>
-          <div class="note-card"><span>计划页：</span>顶部切换「月计划 · 按周」与「年计划 · 按 Q」，AI 重规划带反馈输入。</div>
+          <div class="note-card"><span>计划页：</span>顶部切换「周/月计划」与「年/季度」，手动来源展示暂未设置和补填入口。</div>
           <div class="note-card"><span>成长树：</span>果实时间胶囊展示本周重点、结果和感悟；周结算可微调结果。</div>
-          <div class="note-card"><span>冷启动：</span>深度愿景规划有仪式感但不强制，快速规划仍可直接输入季度目标。</div>
+          <div class="note-card"><span>冷启动：</span>三张路径卡片并列，手动 OKR 不是降级入口，而是普通工具链路。</div>
         </div>
         <div class="side-footer">
           <button data-action="reset">重置原型</button>
@@ -3111,6 +3753,8 @@
       if (editInput) editInput.focus();
       const visionInput = document.getElementById("vision-input");
       if (visionInput) visionInput.focus();
+      const manualInput = document.querySelector(".manual-input");
+      if (manualInput) manualInput.focus();
     }
 
     function changeTab(tab) {
@@ -3152,6 +3796,8 @@
       state.annualOkrs = cloneAnnualOkrs();
       state.quarterOkrs = cloneQuarterOkrs();
       state.weekCommitments = cloneWeekCommitments();
+      state.manualPlan = cloneManualPlan();
+      state.planSource = "ai";
       state.todos = cloneTodos();
       state.monthWeeks = cloneMonth();
       state.weekRecords = cloneWeek();
@@ -3220,6 +3866,18 @@
       if (action === "choose-quick-planning") {
         state.onboardingPath = "quick";
         state.onboardingStep = 2;
+      }
+      if (action === "choose-manual-planning") {
+        state.onboardingPath = "manual";
+        state.planSource = "manual";
+        state.manualPlan = cloneManualPlan();
+        state.onboardingStep = 9;
+      }
+      if (action === "manual-ai") {
+        applyManualAi();
+      }
+      if (action === "manual-next") {
+        advanceManualOnboarding();
       }
       if (action === "submit-vision") {
         if (!state.vision.trim()) return;
@@ -3348,6 +4006,23 @@
         state.planCoachOpen = true;
         state.planFeedback = state.planFeedback || "这周工作会比较忙，保留晨跑，阅读任务拆小一点。";
       }
+      if (action === "edit-manual-layer") {
+        const stepByKey = { yearGoal: 9, quarterGoal: 10, monthGoal: 11, weekPlan: 12, todayTodoText: 13 };
+        state.booted = false;
+        state.onboardingPath = "manual";
+        state.planSource = state.planSource === "ai" ? "manual" : state.planSource;
+        state.onboardingStep = stepByKey[target.dataset.step] || 12;
+      }
+      if (action === "manual-plan-ai") {
+        state.manualPlan = {
+          ...state.manualPlan,
+          weekPlan: manualValue("weekPlan") || MANUAL_AI_SUGGESTIONS.week,
+          todayTodoText: manualValue("todayTodoText") || MANUAL_AI_SUGGESTIONS.today,
+          usedAi: true,
+        };
+        state.planSource = "mixed";
+        syncManualPlanToApp();
+      }
       if (action === "close-plan-coach") {
         state.planCoachOpen = false;
         state.planFeedback = "";
@@ -3441,6 +4116,10 @@
       if (event.target.id?.startsWith("commitment-")) {
         const index = Number(event.target.id.replace("commitment-", ""));
         state.weekCommitments = state.weekCommitments.map((item, itemIndex) => itemIndex === index ? event.target.value : item);
+      }
+      if (event.target.id?.startsWith("manual-")) {
+        const key = event.target.id.replace("manual-", "");
+        state.manualPlan = { ...state.manualPlan, [key]: event.target.value };
       }
       if (event.target.id === "draft-input") {
         state.draft = event.target.value;
@@ -3546,6 +4225,42 @@
       }
     });
 
+    function applyPrototypeDemoRoute() {
+      const demo = new URLSearchParams(window.location.search).get("demo");
+      if (!demo) return;
+      if (demo === "path") {
+        state.onboardingStep = 1;
+      }
+      if (demo === "manual-year") {
+        state.onboardingPath = "manual";
+        state.planSource = "manual";
+        state.onboardingStep = 9;
+      }
+      if (demo === "manual-week-empty") {
+        state.onboardingPath = "manual";
+        state.planSource = "manual";
+        state.onboardingStep = 12;
+      }
+      if (demo === "manual-week-ai") {
+        state.onboardingPath = "manual";
+        state.onboardingStep = 12;
+        applyManualAi();
+      }
+      if (demo === "manual-plan") {
+        state.booted = true;
+        state.tab = "plan";
+        state.planSource = "mixed";
+        state.manualPlan = {
+          ...cloneManualPlan(),
+          weekPlan: MANUAL_AI_SUGGESTIONS.week,
+          todayTodoText: MANUAL_AI_SUGGESTIONS.today,
+          usedAi: true,
+        };
+        syncManualPlanToApp();
+      }
+    }
+
+    applyPrototypeDemoRoute();
     renderApp();
   </script>
 </body>
