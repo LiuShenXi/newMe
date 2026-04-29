@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track C1 Mobile Shell 实现完成，等待合并 main；下一步建议继续 C2-C4 或 D1-D2
-- 当前主控：feat/track-c-mobile-shell
+- 当前阶段：Batch 1 / Track C1 Mobile Shell 已完成并合并到 main；下一步建议继续 C2-C4 或 D1-D2
+- 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -52,7 +52,7 @@ git worktree list
 | B11 Sync | DONE | feat/track-b-sync -> main | 21606c5 | sync.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
 | E1 AI 骨架 | DONE | feat/track-e-ai -> main | 4323f13 | ai.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
 | E2 Prompt 模板 | DONE | feat/track-e-prompts -> main | 38455eb | prompt registry RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 7 个场景模板接入 PromptRegistry；示例输出与 shared schema 匹配 |
-| C1 Mobile Shell 初始化 | REVIEW_PENDING | feat/track-c-mobile-shell | 本分支提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成；待合并 main |
+| C1 Mobile Shell 初始化 | DONE | feat/track-c-mobile-shell -> main | 4e85a49 / merge 5372cd9 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成 |
 | C2-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | C1 合并后推进导航、主题、状态管理 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 
@@ -60,7 +60,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（C1 提交后 `feat/track-c-mobile-shell` 工作区应保持干净；合并 main 后需更新本行）。
+- 无（C1 已合并 main，主工作区保持干净）。
 
 ## 最近工作记录
 
@@ -166,6 +166,7 @@ git worktree list
 - C1 最小路由：新增 `apps/mobile/app/index.tsx` 和 `apps/mobile/app/(tabs)/energy.tsx` 作为 Expo Router 可启动壳；正式 4 Tab、主题和状态管理留给 C2-C4。
 - C1 调试记录：`pnpm -r typecheck` 初次失败，根因是本 worktree 重新安装依赖后 Prisma Client 生成物缺失；运行 `pnpm --filter @newme/api exec prisma generate --schema prisma/schema.prisma` 后 workspace typecheck 通过。
 - C1 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；短启动 `expo start --web --port 19006 --non-interactive` 并请求 `http://127.0.0.1:19006` 返回 HTTP 200；清理启动进程和验证导出产物后，`pnpm -r typecheck` 通过。
+- 主控已将 `feat/track-c-mobile-shell` 合并到 `main`；合并提交 `5372cd9`。合并后在主目录执行 `pnpm install`、`pnpm --filter @newme/api exec prisma generate --schema prisma/schema.prisma`、`pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
 
 ## 阻塞与风险
 

@@ -1482,7 +1482,7 @@ pnpm add @newme/shared@workspace:*
 Run: `cd apps/mobile && npx expo start`
 Expected: Metro bundler 启动，App 可在模拟器中打开
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/mobile/
