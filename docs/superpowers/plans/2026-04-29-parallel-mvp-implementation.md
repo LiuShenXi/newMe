@@ -1767,7 +1767,7 @@ git commit -m "feat: add growth tree page with fruits and honors"
 
 弹出、成形、亮起的序列动画。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit -m "feat: add weekly settlement flow with fruit animation"
