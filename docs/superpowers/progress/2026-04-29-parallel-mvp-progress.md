@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B11 Sync 已在 `feat/track-b-sync` 完成；Track B B1-B12/B3-B11 主体完成，下一步建议启动 C1-C4、D1-D2、E1 或进入集成点 1 验证
+- 当前阶段：Batch 1 / Track B B11 Sync 已完成并合并到 main；Track B B1-B12/B3-B11 主体完成，下一步建议启动 C1-C4、D1-D2、E1 或进入集成点 1 验证
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -49,7 +49,7 @@ git worktree list
 | B8 Energy | DONE | feat/track-b-energy -> main | 956e0c8 | energy.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
 | B9 Settlement | DONE | feat/track-b-settlements -> main | 657344b | settlements.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
 | B10 Tree | DONE | feat/track-b-tree -> main | a687630 | tree.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 读取年度树阶段、果实和已有荣誉；不生成荣誉 |
-| B11 Sync | DONE | feat/track-b-sync | 本任务提交 | sync.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
+| B11 Sync | DONE | feat/track-b-sync -> main | 21606c5 | sync.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -58,7 +58,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- B11 Sync 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/sync/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
+- 无（B11 Sync 已合并 main；本条交接日志提交后工作区应保持干净）。
 
 ## 最近工作记录
 
@@ -144,6 +144,7 @@ git worktree list
 - B11 Sync 行为范围：`POST /sync/push` 按表名映射 Prisma delegate，逐条处理 create/update/delete，服务端版本大于客户端版本时返回 conflict；`POST /sync/pull` 按 `updatedAt > lastPulledAt` 拉取远端变更，软删除记录返回 delete 操作。
 - B11 Sync 范围说明：当前为 MVP 级同步能力，不做字段级合并、操作日志回放或多设备复杂冲突合并。
 - B11 Sync 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-b-sync` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
