@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track E1 AI 骨架已在 `feat/track-e-ai` 完成；下一步可继续 E2 Prompt 模板，或启动 C1-C4 / D1-D2
+- 当前阶段：Batch 1 / Track E1 AI 骨架已完成并合并到 main；下一步可继续 E2 Prompt 模板，或启动 C1-C4 / D1-D2
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -50,7 +50,7 @@ git worktree list
 | B9 Settlement | DONE | feat/track-b-settlements -> main | 657344b | settlements.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
 | B10 Tree | DONE | feat/track-b-tree -> main | a687630 | tree.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 读取年度树阶段、果实和已有荣誉；不生成荣誉 |
 | B11 Sync | DONE | feat/track-b-sync -> main | 21606c5 | sync.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
-| E1 AI 骨架 | DONE | feat/track-e-ai | 本任务提交 | ai.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
+| E1 AI 骨架 | DONE | feat/track-e-ai -> main | 4323f13 | ai.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -59,7 +59,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- E1 AI 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/ai/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
+- 无（E1 AI 已合并 main；本条交接日志提交后工作区应保持干净）。
 
 ## 最近工作记录
 
@@ -152,6 +152,7 @@ git worktree list
 - E1 AI 行为范围：`POST /ai/generations` 走场景 prompt、provider 调用、JSON parse、shared Zod schema 校验、ai_generations 记录；同用户同场景每分钟 3 次限流；失败计入熔断；`POST /ai/generations/:id/confirm` 标记 confirmed；`POST /ai/assist` 走手动局部辅助场景。
 - E1 AI 范围说明：OpenAI/DeepSeek adapter 当前为可替换骨架，未在无密钥环境里直接发起真实外部调用；完整 7 场景 prompt 模板留给 E2。
 - E1 AI 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-e-ai` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
