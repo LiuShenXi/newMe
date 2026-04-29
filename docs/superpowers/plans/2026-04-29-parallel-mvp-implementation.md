@@ -1457,11 +1457,11 @@ git commit -m "feat: add global error handling and health check"
 - Create: `apps/mobile/package.json`
 - Create: `apps/mobile/tsconfig.json`
 
-- [ ] **Step 1: 使用 create-expo-app 初始化**
+- [x] **Step 1: 使用 create-expo-app 初始化**
 
 Run: `cd apps && npx create-expo-app@latest mobile --template blank-typescript`
 
-- [ ] **Step 2: 安装核心依赖**
+- [x] **Step 2: 安装核心依赖**
 
 Run:
 ```bash
@@ -1471,11 +1471,13 @@ pnpm add zustand @tanstack/react-query react-native-reanimated react-native-gest
 pnpm add @newme/shared@workspace:*
 ```
 
-- [ ] **Step 3: 配置 expo-router 文件系统路由**
+实际实现补充：为支持后续 Playwright/Expo Web 验证，C1 同步安装 `react-native-web`、`react-dom`、`@expo/metro-runtime`。
+
+- [x] **Step 3: 配置 expo-router 文件系统路由**
 
 修改 app.json 添加 `"scheme": "newme"` 和 router 插件配置。
 
-- [ ] **Step 4: 验证 App 启动**
+- [x] **Step 4: 验证 App 启动**
 
 Run: `cd apps/mobile && npx expo start`
 Expected: Metro bundler 启动，App 可在模拟器中打开
