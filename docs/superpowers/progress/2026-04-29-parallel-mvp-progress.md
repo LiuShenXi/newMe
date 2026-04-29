@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B10 Tree 已完成并合并到 main，下一步可继续 B11 Sync 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B11 Sync 已在 `feat/track-b-sync` 完成；Track B B1-B12/B3-B11 主体完成，下一步建议启动 C1-C4、D1-D2、E1 或进入集成点 1 验证
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -49,6 +49,7 @@ git worktree list
 | B8 Energy | DONE | feat/track-b-energy -> main | 956e0c8 | energy.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
 | B9 Settlement | DONE | feat/track-b-settlements -> main | 657344b | settlements.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
 | B10 Tree | DONE | feat/track-b-tree -> main | a687630 | tree.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 读取年度树阶段、果实和已有荣誉；不生成荣誉 |
+| B11 Sync | DONE | feat/track-b-sync | 本任务提交 | sync.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -57,7 +58,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B10 Tree 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B11 Sync 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/sync/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -137,6 +138,12 @@ git worktree list
 - B10 Tree 行为范围：`GET /tree/years/:year` 返回年度树阶段、该年果实列表和已有季度荣誉；树阶段按当前季度计算，荣誉只读取不生成。
 - B10 Tree 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-tree` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-sync` / `feat/track-b-sync`，继续 Batch 1 Track B 的 B11 Sync。
+- B11 Sync TDD 记录：先新增 `sync.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- sync.service.spec --runInBand`，确认因缺少 `../sync.service` 失败；实现后 SyncService 测试通过。
+- B11 Sync 实现完成：新增 `SyncModule`、`SyncController`、`SyncService`，并注册到 `AppModule`。
+- B11 Sync 行为范围：`POST /sync/push` 按表名映射 Prisma delegate，逐条处理 create/update/delete，服务端版本大于客户端版本时返回 conflict；`POST /sync/pull` 按 `updatedAt > lastPulledAt` 拉取远端变更，软删除记录返回 delete 操作。
+- B11 Sync 范围说明：当前为 MVP 级同步能力，不做字段级合并、操作日志回放或多设备复杂冲突合并。
+- B11 Sync 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -145,6 +152,7 @@ git worktree list
 - B3 Auth 的 refresh token 使用 Node `crypto` SHA-256 哈希，未使用 `bcrypt`，避免当前 pnpm 忽略 bcrypt build scripts 对登录链路造成运行风险。
 - B5 Goals 对外使用 `YYYY-Qn` 逻辑季度 ID，与 B4 `/me.currentQuarterId` 保持一致；服务端内部会映射到 Prisma `quarters.id` UUID，后续 Plans/Todos 若引用季度也应复用该转换策略。
 - B9 Settlement 尚未生成 QuarterHonor；不要把季度荣誉视为后端已完成能力，B10 或后续季度结算任务需要补齐。
+- B11 Sync 目前按整条记录版本冲突处理，符合 MVP 单设备优先策略；多端字段级合并仍是后续演进项。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
 - `feat/track-b-api` 已合并到 `main`；工作树仍保留，后续可清理或继续作为参考。
 
@@ -152,7 +160,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B11 Sync 模块，补齐端侧同步 push/pull 和基础冲突处理。
+1. Track B 后端主体已完成，建议下一步启动 C1-C4 Mobile Shell、D1-D2 SQLite 本地层、E1 AI 骨架，或先执行集成点 1 验证。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 

@@ -1402,7 +1402,7 @@ git commit -m "feat: add tree module with growth tree and honors"
 - Create: `apps/api/src/modules/sync/sync.service.ts`
 - Create: `apps/api/src/modules/sync/tests/sync.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - POST /sync/push — 端侧脏数据推送（批量，逐条返回结果）
@@ -1410,7 +1410,7 @@ git commit -m "feat: add tree module with growth tree and honors"
 
 冲突解决：版本号比较，服务端版本大的赢。批量推送部分失败返回逐条结果。
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add sync module with push/pull and conflict resolution"
