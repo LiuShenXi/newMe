@@ -1381,14 +1381,14 @@ git commit -m "feat: add settlement module with weekly settlement and fruit gene
 - Create: `apps/api/src/modules/tree/tree.service.ts`
 - Create: `apps/api/src/modules/tree/tests/tree.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - GET /tree/years/:year — 获取成长树（树阶段、果实、荣誉）
 
 树阶段由当前季度决定（Q1-Q4）。荣誉层只增不减。
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add tree module with growth tree and honors"

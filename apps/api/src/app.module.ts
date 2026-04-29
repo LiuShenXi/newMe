@@ -7,6 +7,7 @@ import { GoalsModule } from './modules/goals/goals.module';
 import { PlansModule } from './modules/plans/plans.module';
 import { SettlementsModule } from './modules/settlements/settlements.module';
 import { TodosModule } from './modules/todos/todos.module';
+import { TreeModule } from './modules/tree/tree.module';
 import { UsersModule } from './modules/users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -21,6 +22,7 @@ import { PrismaModule } from './prisma/prisma.module';
     TodosModule,
     EnergyModule,
     SettlementsModule,
+    TreeModule,
   ],
   controllers: [HealthController],
 })
