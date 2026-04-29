@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B9 Settlement 已在 `feat/track-b-settlements` 完成，下一步可继续 B10 Tree 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B9 Settlement 已完成并合并到 main，下一步可继续 B10 Tree 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -47,7 +47,7 @@ git worktree list
 | B6 Plans | DONE | feat/track-b-plans -> main | 16e3d3c | plans.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 获取有效本周重点；更新时确保 WeekPlan 存在、旧 AI 重点失效、新手动重点写入 |
 | B7 Todos | DONE | feat/track-b-todos -> main | 71fdc0d | todos.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 今日清单查询、手动创建、用户隔离更新、软删除 |
 | B8 Energy | DONE | feat/track-b-energy -> main | 956e0c8 | energy.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
-| B9 Settlement | DONE | feat/track-b-settlements | 本任务提交 | settlements.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
+| B9 Settlement | DONE | feat/track-b-settlements -> main | 657344b | settlements.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -56,7 +56,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- B9 Settlement 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/settlements/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
+- 无（B9 Settlement 已合并 main；本条交接日志提交后工作区应保持干净）。
 
 ## 最近工作记录
 
@@ -129,6 +129,7 @@ git worktree list
 - B9 Settlement 行为范围：`POST /settlements/weeks/:weekId` 在事务中读取本周能量与任务，计算建议周结果，保存结算快照，创建 WeeklySettlement，并生成 TreeFruit。
 - B9 Settlement 范围调整：季度完成检测与 QuarterHonor 生成未在 B9 中硬猜 `weekId` 实现，留给 B10 Tree/后续季度结算能力基于明确季度边界补齐。
 - B9 Settlement 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-b-settlements` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
