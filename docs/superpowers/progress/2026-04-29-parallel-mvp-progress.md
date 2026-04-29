@@ -37,7 +37,7 @@ git worktree list
 | A1 Monorepo 初始化 | DONE | feat/track-a-contract | 本提交 | pnpm install 通过 | Batch 0 |
 | A2 Shared 枚举和常量 | DONE | feat/track-a-contract | 本提交 | pnpm --filter @newme/shared typecheck 通过 | Batch 0 |
 | A3 Shared DTO 和 Zod Schema | DONE | feat/track-a-contract | 本提交 | pnpm --filter @newme/shared typecheck 通过 | Batch 0 |
-| A4 契约冻结 | TODO | 未分配 | 无 | 未运行 | Batch 0 闸门 |
+| A4 契约冻结 | DONE | feat/track-a-contract | 本提交 | shared typecheck + 契约 grep 通过 | Batch 0 闸门 |
 | B1 API 初始化 | TODO | 未分配 | 无 | 未运行 | A4 后可完整推进 |
 | B2 Prisma Schema | TODO | 未分配 | 无 | 未运行 | Track B 独占 Prisma |
 | B12 Health/Error | TODO | 未分配 | 无 | 未运行 | Week 1 必做闸门 |
@@ -62,6 +62,7 @@ git worktree list
 - A1 Monorepo 初始化完成：创建 root package、pnpm workspace、Node 版本、TypeScript 基础配置，扩展 `.gitignore`，并运行 `pnpm install` 通过。
 - A2 Shared 枚举和常量完成：创建 `@newme/shared` 包、目标/来源/同步/AI 场景枚举、核心常量和根导出，并运行 shared typecheck 通过。
 - A3 Shared DTO 和 Zod Schema 完成：安装 `zod`，补齐 auth/goal/plan/todo/energy/settlement/tree/ai/sync DTO，以及 7 个 AI 输出 schema，并运行 shared typecheck 通过。
+- A4 契约冻结完成：新增同步表名契约、AI 确认落库契约，收紧 sync DTO 的 `tableName` 类型，让 confirm 请求携带确认契约，并确认 7 个 AI 输出 schema 均存在。
 - 增强并行计划，加入 AI worker 必读、worktree、多批次并行、A4 契约冻结、Owned paths、B12 health 闸门、F7 optional、主控收口清单。
 - 新增技术总监续跑协议：用户只需说“技术总监，请按照当前进度和计划文档继续开发”，Director 应自动检查进度并续跑。
 - 新增额度保护收尾协议：小任务提交、定期更新本文件、额度不足时优先交接。

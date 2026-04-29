@@ -1,5 +1,7 @@
+import { SyncTableName } from '../contracts';
+
 export interface SyncPushItem {
-  tableName: string;
+  tableName: SyncTableName;
   localId: string;
   remoteId: string | null;
   operation: 'create' | 'update' | 'delete';
@@ -27,7 +29,7 @@ export interface SyncPullRequest {
 
 export interface SyncPullResponse {
   changes: {
-    tableName: string;
+    tableName: SyncTableName;
     remoteId: string;
     operation: 'create' | 'update' | 'delete';
     data: Record<string, unknown>;

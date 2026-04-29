@@ -1,4 +1,5 @@
 import { AiScenario } from '../enums';
+import { AiConfirmationContract } from '../contracts';
 
 export interface GenerateRequest {
   scenario: AiScenario;
@@ -15,9 +16,7 @@ export interface GenerationDto {
   createdAt: string;
 }
 
-export interface ConfirmGenerationRequest {
-  edits?: Record<string, unknown>;
-}
+export interface ConfirmGenerationRequest extends AiConfirmationContract {}
 
 export interface AssistRequest {
   level: 'annual' | 'quarter' | 'month' | 'week' | 'day';
