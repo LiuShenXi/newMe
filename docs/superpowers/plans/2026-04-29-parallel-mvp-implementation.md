@@ -1288,13 +1288,13 @@ git commit -m "feat: add goals module with vision, quarter, month goals"
 - Create: `apps/api/src/modules/plans/plans.service.ts`
 - Create: `apps/api/src/modules/plans/tests/plans.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - GET /plans/weeks/:weekId/focuses — 获取本周重点
 - PUT /plans/weeks/:weekId/focuses — 更新本周重点（标记旧 AI 建议失效）
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add plans module with weekly focuses"
