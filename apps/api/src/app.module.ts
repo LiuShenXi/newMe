@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { EnergyModule } from './modules/energy/energy.module';
 import { GoalsModule } from './modules/goals/goals.module';
 import { PlansModule } from './modules/plans/plans.module';
+import { SettlementsModule } from './modules/settlements/settlements.module';
 import { TodosModule } from './modules/todos/todos.module';
 import { UsersModule } from './modules/users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -19,6 +20,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PlansModule,
     TodosModule,
     EnergyModule,
+    SettlementsModule,
   ],
   controllers: [HealthController],
 })

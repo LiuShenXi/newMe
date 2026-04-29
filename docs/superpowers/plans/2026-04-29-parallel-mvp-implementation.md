@@ -1352,7 +1352,7 @@ git commit -m "feat: add energy module with daily recording and weekly summary"
 - Create: `apps/api/src/modules/settlements/settlements.service.ts`
 - Create: `apps/api/src/modules/settlements/tests/settlements.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - POST /settlements/weeks/:weekId — 创建周结算
@@ -1365,7 +1365,9 @@ git commit -m "feat: add energy module with daily recording and weekly summary"
 5. 创建 TreeFruit
 6. 检查季度是否完成，若完成则计算季度均值和荣誉
 
-- [ ] **Step 2: Commit**
+实现说明：当前 B9 已完成周结算事务、结算快照和 TreeFruit 生成；季度完成检测与荣誉生成不在本次 B9 提交中硬猜 `weekId`，后续由 B10 Tree/季度结算能力基于更明确的季度边界补齐。
+
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add settlement module with weekly settlement and fruit generation"
