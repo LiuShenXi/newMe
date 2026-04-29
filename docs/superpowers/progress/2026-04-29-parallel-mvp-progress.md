@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B11 Sync 已完成并合并到 main；Track B B1-B12/B3-B11 主体完成，下一步建议启动 C1-C4、D1-D2、E1 或进入集成点 1 验证
+- 当前阶段：Batch 1 / Track E1 AI 骨架已在 `feat/track-e-ai` 完成；下一步可继续 E2 Prompt 模板，或启动 C1-C4 / D1-D2
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -50,6 +50,7 @@ git worktree list
 | B9 Settlement | DONE | feat/track-b-settlements -> main | 657344b | settlements.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
 | B10 Tree | DONE | feat/track-b-tree -> main | a687630 | tree.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 读取年度树阶段、果实和已有荣誉；不生成荣誉 |
 | B11 Sync | DONE | feat/track-b-sync -> main | 21606c5 | sync.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
+| E1 AI 骨架 | DONE | feat/track-e-ai | 本任务提交 | ai.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -58,7 +59,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B11 Sync 已合并 main；本条交接日志提交后工作区应保持干净）。
+- E1 AI 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/ai/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -145,6 +146,12 @@ git worktree list
 - B11 Sync 范围说明：当前为 MVP 级同步能力，不做字段级合并、操作日志回放或多设备复杂冲突合并。
 - B11 Sync 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-sync` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-e-ai` / `feat/track-e-ai`，启动 Track E 的 E1 AI 骨架。
+- E1 AI TDD 记录：先新增 `ai.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- ai.service.spec --runInBand`，确认因缺少 AI 服务/限流/熔断/校验文件失败；实现后 AiService 测试通过。
+- E1 AI 实现完成：新增 `AiModule`、`AiController`、`AiService`、ProviderAdapter、OpenAI/DeepSeek adapter 骨架、PromptRegistry、OutputValidator、RateLimiter、CircuitBreaker，并注册到 `AppModule`。
+- E1 AI 行为范围：`POST /ai/generations` 走场景 prompt、provider 调用、JSON parse、shared Zod schema 校验、ai_generations 记录；同用户同场景每分钟 3 次限流；失败计入熔断；`POST /ai/generations/:id/confirm` 标记 confirmed；`POST /ai/assist` 走手动局部辅助场景。
+- E1 AI 范围说明：OpenAI/DeepSeek adapter 当前为可替换骨架，未在无密钥环境里直接发起真实外部调用；完整 7 场景 prompt 模板留给 E2。
+- E1 AI 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -154,6 +161,7 @@ git worktree list
 - B5 Goals 对外使用 `YYYY-Qn` 逻辑季度 ID，与 B4 `/me.currentQuarterId` 保持一致；服务端内部会映射到 Prisma `quarters.id` UUID，后续 Plans/Todos 若引用季度也应复用该转换策略。
 - B9 Settlement 尚未生成 QuarterHonor；不要把季度荣誉视为后端已完成能力，B10 或后续季度结算任务需要补齐。
 - B11 Sync 目前按整条记录版本冲突处理，符合 MVP 单设备优先策略；多端字段级合并仍是后续演进项。
+- E1 AI 的真实 provider 网络调用尚未启用；联调前需要配置 provider adapter、API Key 和 E2 prompt 模板。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
 - `feat/track-b-api` 已合并到 `main`；工作树仍保留，后续可清理或继续作为参考。
 
@@ -161,7 +169,8 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. Track B 后端主体已完成，建议下一步启动 C1-C4 Mobile Shell、D1-D2 SQLite 本地层、E1 AI 骨架，或先执行集成点 1 验证。
+1. 可继续 E2 Prompt 模板，补齐 7 个 AI 场景的 prompt 与 schema 匹配测试。
+2. 也可启动 C1-C4 Mobile Shell 或 D1-D2 SQLite 本地层，推进集成点 1 前置。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
