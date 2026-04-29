@@ -1,4 +1,13 @@
 import { AiScenario } from '@newme/shared';
+import {
+  annualToQuarterOkrTemplate,
+  manualLocalAssistTemplate,
+  quarterToFourWeeksTemplate,
+  quickQuarterPlanTemplate,
+  replanFutureWeeksTemplate,
+  visionToAnnualOkrTemplate,
+  weeklyFocusToTodosTemplate,
+} from './templates';
 
 export interface PromptTemplate {
   version: string;
@@ -7,22 +16,16 @@ export interface PromptTemplate {
 
 export class PromptRegistry {
   private readonly templates = new Map<AiScenario, PromptTemplate>([
+    [AiScenario.QUICK_QUARTER_PLAN, quickQuarterPlanTemplate],
+    [AiScenario.VISION_TO_ANNUAL_OKR, visionToAnnualOkrTemplate],
+    [AiScenario.ANNUAL_TO_QUARTER_OKR, annualToQuarterOkrTemplate],
     [
-      AiScenario.QUICK_QUARTER_PLAN,
-      {
-        version: 'quick_quarter_plan:v1',
-        build: (input) =>
-          `scenario=quick_quarter_plan\ninput=${JSON.stringify(input)}`,
-      },
+      AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
+      quarterToFourWeeksTemplate,
     ],
-    [
-      AiScenario.MANUAL_LOCAL_ASSIST,
-      {
-        version: 'manual_local_assist:v1',
-        build: (input) =>
-          `scenario=manual_local_assist\ninput=${JSON.stringify(input)}`,
-      },
-    ],
+    [AiScenario.WEEKLY_FOCUS_TO_TODOS, weeklyFocusToTodosTemplate],
+    [AiScenario.REPLAN_FUTURE_WEEKS, replanFutureWeeksTemplate],
+    [AiScenario.MANUAL_LOCAL_ASSIST, manualLocalAssistTemplate],
   ]);
 
   getTemplate(scenario: AiScenario): PromptTemplate {

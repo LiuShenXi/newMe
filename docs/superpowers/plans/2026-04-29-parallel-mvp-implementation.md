@@ -1962,17 +1962,17 @@ git commit -m "feat: add AI module with provider abstraction, rate limiting, cir
 - Create: `apps/api/src/modules/ai/prompt/templates/replan-future-weeks.ts`
 - Create: `apps/api/src/modules/ai/prompt/templates/manual-local-assist.ts`
 
-- [ ] **Step 1: 实现 7 个场景的 prompt 模板**
+- [x] **Step 1: 实现 7 个场景的 prompt 模板**
 
 每个模板包含：系统 prompt（角色设定 + 输出格式要求）、用户 prompt（上下文 + 输入）、修复 prompt（校验失败时的重试 prompt）。
 
 输出格式严格对应 @newme/shared 的 Zod schema。
 
-- [ ] **Step 2: 写集成测试验证 prompt + schema 匹配**
+- [x] **Step 2: 写集成测试验证 prompt + schema 匹配**
 
 使用 mock provider 返回符合 schema 的输出，验证端到端流程。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit -m "feat: add prompt templates for all 7 AI scenarios"
