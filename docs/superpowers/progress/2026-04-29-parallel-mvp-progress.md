@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B API 基础闸门已完成并合并到 main，下一步可继续 B3 Auth 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B3 Auth 已在 `feat/track-b-auth` 完成，下一步可继续 B4 Users 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -41,6 +41,7 @@ git worktree list
 | B1 API 初始化 | DONE | feat/track-b-api | 36994ca | pnpm --filter @newme/api test -- --runInBand；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api build；pnpm -r typecheck 均通过 | A4 后已推进 |
 | B2 Prisma Schema | DONE | feat/track-b-api | 78cd00d | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
 | B12 Health/Error | DONE | feat/track-b-api | b09dc70 | health controller RED/GREEN；api test/typecheck/build；pnpm -r typecheck；真实 /api/v1/health 验证均通过 | Week 1 必做闸门已通过 |
+| B3 Auth | DONE | feat/track-b-auth | 本任务提交 | auth.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -49,7 +50,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B1 提交后工作区应保持干净）
+- B3 Auth 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/auth/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -80,10 +81,17 @@ git worktree list
 - 新增技术总监续跑协议：用户只需说“技术总监，请按照当前进度和计划文档继续开发”，Director 应自动检查进度并续跑。
 - 新增额度保护收尾协议：小任务提交、定期更新本文件、额度不足时优先交接。
 - 明确前端 UI 还原标准：移动客户端必须以 `prototype/index.html` 终稿静态交互原型为视觉与交互基准做 1:1 还原；已同步更新实施计划和 `产品需求设计文档.md`。
+- 创建 `.worktrees/track-b-auth` / `feat/track-b-auth`，继续 Batch 1 Track B 的 B3 Auth。
+- B3 Auth TDD 记录：先新增 `auth.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- auth.service.spec --runInBand`，确认因缺少 `../auth.service` 失败；实现后 AuthService 测试通过。
+- B3 Auth 实现完成：新增 `AuthModule`、`AuthController`、`AuthService`、`JwtStrategy`、`JwtAuthGuard`、登录/刷新 DTO，并注册到 `AppModule`。
+- B3 Auth 行为范围：`POST /auth/code` 生成进程内 5 分钟验证码；`POST /auth/login` 校验验证码、创建/复用用户、签发 15 分钟 JWT 和 30 天 refresh token；`POST /auth/refresh` 校验并轮换 refresh token；`POST /auth/logout` 基于 JWT 吊销当前用户 refresh token。
+- B3 Auth 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
 - `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B2 已通过手动 `prisma generate/migrate` 验证，后续 bcrypt 使用前仍需关注构建脚本策略。
+- B3 Auth 的验证码为 MVP 进程内存储，服务重启会丢失；后续若接入真实短信或多实例部署，应迁移到 Redis/数据库验证码表。
+- B3 Auth 的 refresh token 使用 Node `crypto` SHA-256 哈希，未使用 `bcrypt`，避免当前 pnpm 忽略 bcrypt build scripts 对登录链路造成运行风险。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
 - `feat/track-b-api` 已合并到 `main`；工作树仍保留，后续可清理或继续作为参考。
 
@@ -91,7 +99,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B3 Auth 模块。
+1. 可继续 Track B：执行 B4 Users 模块，为 F1 Auth 联调准备 `/me` 用户上下文。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 

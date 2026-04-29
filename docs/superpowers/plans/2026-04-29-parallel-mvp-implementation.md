@@ -1206,32 +1206,32 @@ git commit -m "feat: add Prisma schema with all core entities"
 - Create: `apps/api/src/modules/auth/tests/auth.service.spec.ts`
 - Modify: `apps/api/src/app.module.ts`
 
-- [ ] **Step 1: 写 AuthService 的测试**
+- [x] **Step 1: 写 AuthService 的测试**
 
 测试登录流程：验证码校验、JWT 签发、Refresh Token 生成和轮换。
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 Run: `cd apps/api && pnpm test -- auth.service.spec`
 Expected: FAIL
 
-- [ ] **Step 3: 实现 AuthService**
+- [x] **Step 3: 实现 AuthService**
 
 包含：sendVerificationCode, verifyCode, login, refreshTokens, revokeAllTokens。
 Access Token: JWT 15 分钟。Refresh Token: 随机字符串 30 天，存 refresh_tokens 表。
 
-- [ ] **Step 4: 实现 JwtStrategy 和 JwtAuthGuard**
+- [x] **Step 4: 实现 JwtStrategy 和 JwtAuthGuard**
 
-- [ ] **Step 5: 实现 AuthController**
+- [x] **Step 5: 实现 AuthController**
 
 路由：POST /auth/login, POST /auth/refresh, POST /auth/logout
 
-- [ ] **Step 6: 运行测试确认通过**
+- [x] **Step 6: 运行测试确认通过**
 
 Run: `cd apps/api && pnpm test -- auth.service.spec`
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add apps/api/src/modules/auth/
