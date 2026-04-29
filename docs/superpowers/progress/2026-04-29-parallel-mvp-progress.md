@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B8 Energy 已完成并合并到 main，下一步可继续 B9 Settlement 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B9 Settlement 已在 `feat/track-b-settlements` 完成，下一步可继续 B10 Tree 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -47,6 +47,7 @@ git worktree list
 | B6 Plans | DONE | feat/track-b-plans -> main | 16e3d3c | plans.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 获取有效本周重点；更新时确保 WeekPlan 存在、旧 AI 重点失效、新手动重点写入 |
 | B7 Todos | DONE | feat/track-b-todos -> main | 71fdc0d | todos.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 今日清单查询、手动创建、用户隔离更新、软删除 |
 | B8 Energy | DONE | feat/track-b-energy -> main | 956e0c8 | energy.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
+| B9 Settlement | DONE | feat/track-b-settlements | 本任务提交 | settlements.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -55,7 +56,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B8 Energy 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B9 Settlement 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/settlements/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -122,6 +123,12 @@ git worktree list
 - B8 Energy 行为范围：`PUT /energy/days/:date` 按用户+日期 upsert 当日能量；`GET /energy/weeks/:weekId` 返回本周能量明细、已记录天数和平均值；平均值按已记录每日能量求均值，不按 7 天摊平。
 - B8 Energy 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-energy` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-settlements` / `feat/track-b-settlements`，继续 Batch 1 Track B 的 B9 Settlement。
+- B9 Settlement TDD 记录：先新增 `settlements.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- settlements.service.spec --runInBand`，确认因缺少 `../settlements.service` 失败；实现后 SettlementsService 测试通过。
+- B9 Settlement 实现完成：新增 `SettlementsModule`、`SettlementsController`、`SettlementsService`，并注册到 `AppModule`。
+- B9 Settlement 行为范围：`POST /settlements/weeks/:weekId` 在事务中读取本周能量与任务，计算建议周结果，保存结算快照，创建 WeeklySettlement，并生成 TreeFruit。
+- B9 Settlement 范围调整：季度完成检测与 QuarterHonor 生成未在 B9 中硬猜 `weekId` 实现，留给 B10 Tree/后续季度结算能力基于明确季度边界补齐。
+- B9 Settlement 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -129,6 +136,7 @@ git worktree list
 - B3 Auth 的验证码为 MVP 进程内存储，服务重启会丢失；后续若接入真实短信或多实例部署，应迁移到 Redis/数据库验证码表。
 - B3 Auth 的 refresh token 使用 Node `crypto` SHA-256 哈希，未使用 `bcrypt`，避免当前 pnpm 忽略 bcrypt build scripts 对登录链路造成运行风险。
 - B5 Goals 对外使用 `YYYY-Qn` 逻辑季度 ID，与 B4 `/me.currentQuarterId` 保持一致；服务端内部会映射到 Prisma `quarters.id` UUID，后续 Plans/Todos 若引用季度也应复用该转换策略。
+- B9 Settlement 尚未生成 QuarterHonor；不要把季度荣誉视为后端已完成能力，B10 或后续季度结算任务需要补齐。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
 - `feat/track-b-api` 已合并到 `main`；工作树仍保留，后续可清理或继续作为参考。
 
@@ -136,7 +144,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B9 Settlement 模块，补齐周结算和果实生成。
+1. 可继续 Track B：执行 B10 Tree 模块，补齐成长树读取、树阶段、果实和荣誉展示，并承接季度荣誉缺口。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
