@@ -1538,7 +1538,7 @@ git commit -m "feat: add 4-tab navigation and route structure"
 - Create: `apps/mobile/src/shared/components/Input.tsx`
 - Create: `apps/mobile/src/shared/components/LoadingOverlay.tsx`
 
-- [ ] **Step 1: 创建颜色 token**
+- [x] **Step 1: 创建颜色 token**
 
 参照原型的深色玻璃质感：背景深色、青绿色能量反馈、琥珀色果实反馈。
 
@@ -1560,9 +1560,9 @@ export const colors = {
 };
 ```
 
-- [ ] **Step 2: 创建排版和间距 token**
+- [x] **Step 2: 创建排版和间距 token**
 
-- [ ] **Step 3: 创建通用 Button、Card、Input、LoadingOverlay 组件**
+- [x] **Step 3: 创建通用 Button、Card、Input、LoadingOverlay 组件**
 
 - [ ] **Step 4: Commit**
 
