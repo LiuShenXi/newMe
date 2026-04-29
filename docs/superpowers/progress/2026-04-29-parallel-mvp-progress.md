@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track D1 SQLite 迁移框架正在收口；数据库初始化和 v1 表结构已完成静态验证
-- 当前主控：feat/track-d-sqlite
+- 当前阶段：Batch 1 / Track D1 SQLite 迁移框架已完成并合并到 main；下一步建议继续 D2 Repository 层
+- 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -56,14 +56,14 @@ git worktree list
 | C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成 |
 | C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
-| D1 SQLite 初始化与迁移 | IN_PROGRESS | feat/track-d-sqlite | 待提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
+| D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | TODO | 未分配 | 无 | 未运行 | D1 合并后推进 |
 
 ## 未提交改动记录
 
 当前已知未提交改动：
 
-- `.worktrees/track-d-sqlite` 中有 D1 待提交改动：`apps/mobile/src/db/**`、计划文档和进度日志。
+- 无（D1 已合并 main，主工作区保持干净）。
 
 ## 最近工作记录
 
@@ -192,6 +192,7 @@ git worktree list
 - D1 迁移框架完成：新增 `runMigrations()`，读取 `PRAGMA user_version`，按版本顺序在事务中执行 pending migration，并更新 user_version。
 - D1 v1 表结构完成：创建 `local_goals`、`local_weekly_focuses`、`local_todos`、`local_energy_entries`、`local_settlements`、`local_tree_data`、`local_ai_drafts`、`sync_queue`，本地业务表都包含 id、remote_id、created_at、updated_at、deleted_at、sync_status、version。
 - D1 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`pnpm -r typecheck` 通过；验证导出产物已清理。限制：`expo-sqlite` 无法在 Node 环境直接打开数据库，真实 DB open + migration smoke 建议在 D2 repository 接入后通过 App 运行态验证。
+- 主控已将 `feat/track-d-sqlite` 合并到 `main`；合并提交 `1f61a81`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
 
 ## 阻塞与风险
 

@@ -1692,7 +1692,7 @@ git commit -m "feat: add energy page with orb, slider, and weekly focus panel"
 
 - [ ] **Step 4: 组装清单页**
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git commit -m "feat: add todo page with CRUD and swipe delete"
