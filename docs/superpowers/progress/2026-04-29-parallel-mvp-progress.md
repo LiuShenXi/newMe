@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B3 Auth 已在 `feat/track-b-auth` 完成，下一步可继续 B4 Users 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B3 Auth 已完成并合并到 main，下一步可继续 B4 Users 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -41,7 +41,7 @@ git worktree list
 | B1 API 初始化 | DONE | feat/track-b-api | 36994ca | pnpm --filter @newme/api test -- --runInBand；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api build；pnpm -r typecheck 均通过 | A4 后已推进 |
 | B2 Prisma Schema | DONE | feat/track-b-api | 78cd00d | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
 | B12 Health/Error | DONE | feat/track-b-api | b09dc70 | health controller RED/GREEN；api test/typecheck/build；pnpm -r typecheck；真实 /api/v1/health 验证均通过 | Week 1 必做闸门已通过 |
-| B3 Auth | DONE | feat/track-b-auth | 本任务提交 | auth.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
+| B3 Auth | DONE | feat/track-b-auth -> main | fd9c1aa | auth.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -50,7 +50,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- B3 Auth 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/auth/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
+- 无（B3 Auth 已合并 main；本条交接日志提交后工作区应保持干净）。
 
 ## 最近工作记录
 
@@ -86,6 +86,7 @@ git worktree list
 - B3 Auth 实现完成：新增 `AuthModule`、`AuthController`、`AuthService`、`JwtStrategy`、`JwtAuthGuard`、登录/刷新 DTO，并注册到 `AppModule`。
 - B3 Auth 行为范围：`POST /auth/code` 生成进程内 5 分钟验证码；`POST /auth/login` 校验验证码、创建/复用用户、签发 15 分钟 JWT 和 30 天 refresh token；`POST /auth/refresh` 校验并轮换 refresh token；`POST /auth/logout` 基于 JWT 吊销当前用户 refresh token。
 - B3 Auth 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-b-auth` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
