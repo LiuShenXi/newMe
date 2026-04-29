@@ -1520,7 +1520,7 @@ git commit -m "feat: init Expo project with core dependencies"
 
 在模拟器中验证 4 个 tab 可切换，onboarding 路由可访问。
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git commit -m "feat: add 4-tab navigation and route structure"
