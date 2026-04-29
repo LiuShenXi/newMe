@@ -1246,11 +1246,11 @@ git commit -m "feat: add auth module with JWT + refresh token rotation"
 - Create: `apps/api/src/modules/users/users.service.ts`
 - Create: `apps/api/src/modules/users/tests/users.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 GET /me 返回 UserContext（userId, phone, timezone, currentWeekId, currentQuarterId, hasCompletedOnboarding）。
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add users module with /me endpoint"
