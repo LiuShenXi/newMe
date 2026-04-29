@@ -1502,21 +1502,21 @@ git commit -m "feat: init Expo project with core dependencies"
 - Create: `apps/mobile/app/onboarding/choose.tsx`
 - Create: `apps/mobile/app/settlement/_layout.tsx`
 
-- [ ] **Step 1: 创建根 _layout.tsx**
+- [x] **Step 1: 创建根 _layout.tsx**
 
 包含 QueryClientProvider、全局 SafeAreaProvider、导航容器。
 
-- [ ] **Step 2: 创建 (tabs)/_layout.tsx**
+- [x] **Step 2: 创建 (tabs)/_layout.tsx**
 
 4 个 tab：能量（首页）、清单、计划、成长树。使用深色主题配色。
 
-- [ ] **Step 3: 创建各 tab 页面占位**
+- [x] **Step 3: 创建各 tab 页面占位**
 
 每个 tab 页面先放一个标题文本占位，后续任务填充真实内容。
 
-- [ ] **Step 4: 创建 onboarding 和 settlement 路由组**
+- [x] **Step 4: 创建 onboarding 和 settlement 路由组**
 
-- [ ] **Step 5: 验证导航可切换**
+- [x] **Step 5: 验证导航可切换**
 
 在模拟器中验证 4 个 tab 可切换，onboarding 路由可访问。
 

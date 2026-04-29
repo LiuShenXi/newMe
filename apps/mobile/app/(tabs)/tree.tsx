@@ -1,13 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function EnergyScreen() {
+export default function TreeScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
-      <Text style={styles.eyebrow}>首页</Text>
-      <Text style={styles.title}>今日能量</Text>
-      <Text style={styles.subtitle}>能量球、今日能量条和本周重点概览会在 C6 接入。</Text>
+      <Text style={styles.eyebrow}>反馈</Text>
+      <Text style={styles.title}>成长树</Text>
+      <Text style={styles.subtitle}>年度成长树、果实和荣誉层会在 C9 接入。</Text>
     </View>
   );
 }

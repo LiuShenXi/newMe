@@ -1,13 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function EnergyScreen() {
+export default function TodoScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
-      <Text style={styles.eyebrow}>首页</Text>
-      <Text style={styles.title}>今日能量</Text>
-      <Text style={styles.subtitle}>能量球、今日能量条和本周重点概览会在 C6 接入。</Text>
+      <Text style={styles.eyebrow}>执行</Text>
+      <Text style={styles.title}>今日清单</Text>
+      <Text style={styles.subtitle}>今日任务、新增、勾选和本周入口会在 C7 接入。</Text>
     </View>
   );
 }

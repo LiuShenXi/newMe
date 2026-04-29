@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track C1 Mobile Shell 已完成并合并到 main；下一步建议继续 C2-C4 或 D1-D2
-- 当前主控：main
+- 当前阶段：Batch 1 / Track C2 Navigation 正在收口；4 Tab 导航、onboarding 路由和 settlement 路由壳已完成验证
+- 当前主控：feat/track-c-navigation
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -53,14 +53,15 @@ git worktree list
 | E1 AI 骨架 | DONE | feat/track-e-ai -> main | 4323f13 | ai.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
 | E2 Prompt 模板 | DONE | feat/track-e-prompts -> main | 38455eb | prompt registry RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 7 个场景模板接入 PromptRegistry；示例输出与 shared schema 匹配 |
 | C1 Mobile Shell 初始化 | DONE | feat/track-c-mobile-shell -> main | 4e85a49 / merge 5372cd9 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成 |
-| C2-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | C1 合并后推进导航、主题、状态管理 |
+| C2 Navigation | IN_PROGRESS | feat/track-c-navigation | 待提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成；提交后可合并 |
+| C3-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | C2 合并后推进主题、基础组件、状态管理 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 
 ## 未提交改动记录
 
 当前已知未提交改动：
 
-- 无（C1 已合并 main，主工作区保持干净）。
+- `.worktrees/track-c-navigation` 中有 C2 待提交改动：`apps/mobile/app/**`、`apps/mobile/package.json`、root `package.json`、`pnpm-lock.yaml`、计划文档和进度日志。
 
 ## 最近工作记录
 
@@ -167,6 +168,11 @@ git worktree list
 - C1 调试记录：`pnpm -r typecheck` 初次失败，根因是本 worktree 重新安装依赖后 Prisma Client 生成物缺失；运行 `pnpm --filter @newme/api exec prisma generate --schema prisma/schema.prisma` 后 workspace typecheck 通过。
 - C1 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；短启动 `expo start --web --port 19006 --non-interactive` 并请求 `http://127.0.0.1:19006` 返回 HTTP 200；清理启动进程和验证导出产物后，`pnpm -r typecheck` 通过。
 - 主控已将 `feat/track-c-mobile-shell` 合并到 `main`；合并提交 `5372cd9`。合并后在主目录执行 `pnpm install`、`pnpm --filter @newme/api exec prisma generate --schema prisma/schema.prisma`、`pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
+- 创建 `.worktrees/track-c-navigation` / `feat/track-c-navigation`，启动 Track C 的 C2 导航结构。
+- C2 导航结构完成：新增 `apps/mobile/app/_layout.tsx`，用 `GestureHandlerRootView`、`SafeAreaProvider`、`QueryClientProvider` 包住 Expo Router Stack；新增 `(tabs)/_layout.tsx` 和能量/清单/计划/成长树 4 个 Tab；首页默认重定向到能量页。
+- C2 路由组完成：新增 `onboarding/_layout.tsx`、`onboarding/choose.tsx`、`settlement/_layout.tsx`；onboarding choose 保留产品文档文案“你想怎样开始今年？”作为 C5 三路径入口占位。
+- C2 验证工具调整：为后续稳定执行 `npx playwright test`，root devDependency 增加 `@playwright/test`；移动端增加 `@expo/vector-icons` 用于 Tab 图标。
+- C2 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；启动 `expo start --web --port 19007 --non-interactive` 后运行 `npx playwright test .tmp/c2-navigation.spec.js --reporter=line`，1 个用例通过，覆盖 4 Tab 可见与切换、`/onboarding/choose` 可访问；清理临时产物后 `pnpm -r typecheck` 通过。
 
 ## 阻塞与风险
 
@@ -184,7 +190,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 合并 C1 后，建议继续 C2-C4：正式 4 Tab 导航、设计 token/基础组件、Zustand/React Query/API 客户端。
+1. 合并 C2 后，建议继续 C3-C4：设计 token/基础组件、Zustand/React Query/API 客户端。
 2. 也可并行启动 D1-D2 SQLite 本地层，为端侧离线能力打底。
 3. C2 开始必须以 `prototype/index.html` 终稿原型为视觉与交互基准，必要时用 `npx playwright` 截图做对照。
 4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
