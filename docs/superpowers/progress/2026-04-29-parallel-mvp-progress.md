@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B6 Plans 已完成并合并到 main，下一步可继续 B7 Todos 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B7 Todos 已在 `feat/track-b-todos` 完成，下一步可继续 B8 Energy 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -45,6 +45,7 @@ git worktree list
 | B4 Users | DONE | feat/track-b-users -> main | 0604318 | users.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | `/me` 返回 shared UserContext；周/季度 ID 按用户时区计算 |
 | B5 Goals | DONE | feat/track-b-goals -> main | 2ca2412 | goals.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 支持愿景 upsert、逻辑季度 ID 到 Quarter UUID、月目标独立创建、当前规划概览 |
 | B6 Plans | DONE | feat/track-b-plans -> main | 16e3d3c | plans.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 获取有效本周重点；更新时确保 WeekPlan 存在、旧 AI 重点失效、新手动重点写入 |
+| B7 Todos | DONE | feat/track-b-todos | 本任务提交 | todos.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 今日清单查询、手动创建、用户隔离更新、软删除 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -53,7 +54,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B6 Plans 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B7 Todos 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/todos/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -108,6 +109,11 @@ git worktree list
 - B6 Plans 行为范围：`GET /plans/weeks/:weekId/focuses` 返回当前有效本周重点；`PUT /plans/weeks/:weekId/focuses` 确保 WeekPlan 存在，标记旧 AI 重点为失效，并写入用户确认的新手动重点。
 - B6 Plans 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-plans` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-todos` / `feat/track-b-todos`，继续 Batch 1 Track B 的 B7 Todos。
+- B7 Todos TDD 记录：先新增 `todos.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- todos.service.spec --runInBand`，确认因缺少 `../todos.service` 失败；实现后 TodosService 测试通过。
+- B7 Todos 实现完成：新增 `TodosModule`、`TodosController`、`TodosService`，并注册到 `AppModule`。
+- B7 Todos 行为范围：`GET /todos/today` 获取指定日期今日清单；`POST /todos` 创建手动任务；`PATCH /todos/:id` 用户隔离更新并标记 `userEdited`；`DELETE /todos/:id` 软删除任务。
+- B7 Todos 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -122,7 +128,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B7 Todos 模块，补齐今日清单 CRUD。
+1. 可继续 Track B：执行 B8 Energy 模块，补齐每日能量记录和本周累计。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
