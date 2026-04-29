@@ -1713,19 +1713,19 @@ git commit -m "feat: add todo page with CRUD and swipe delete"
 - Create: `apps/mobile/src/features/plan/components/EmptyLevel.tsx`
 - Create: `apps/mobile/src/features/plan/hooks/usePlan.ts`
 
-- [ ] **Step 1: 实现月计划按周视图**
+- [x] **Step 1: 实现月计划按周视图**
 
 最近 4 周，当前周高亮。
 
-- [ ] **Step 2: 实现年计划按 Q 视图**
+- [x] **Step 2: 实现年计划按 Q 视图**
 
 Q1-Q4 目标、阶段说明、进度。
 
-- [ ] **Step 3: 实现空层级展示**
+- [x] **Step 3: 实现空层级展示**
 
 "暂未设置" + 补填入口。根据 source 显示不同动作。
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git commit -m "feat: add plan page with month/year views"
