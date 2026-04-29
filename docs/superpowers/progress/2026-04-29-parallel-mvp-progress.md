@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track E2 Prompt 模板已完成并合并到 main；下一步建议启动 C1-C4 Mobile Shell 或 D1-D2 SQLite 本地层
-- 当前主控：main
+- 当前阶段：Batch 1 / Track C1 Mobile Shell 实现完成，等待合并 main；下一步建议继续 C2-C4 或 D1-D2
+- 当前主控：feat/track-c-mobile-shell
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -52,15 +52,15 @@ git worktree list
 | B11 Sync | DONE | feat/track-b-sync -> main | 21606c5 | sync.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | MVP 级 push/pull、逐条结果、版本冲突；非字段级合并 |
 | E1 AI 骨架 | DONE | feat/track-e-ai -> main | 4323f13 | ai.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
 | E2 Prompt 模板 | DONE | feat/track-e-prompts -> main | 38455eb | prompt registry RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 7 个场景模板接入 PromptRegistry；示例输出与 shared schema 匹配 |
-| C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
+| C1 Mobile Shell 初始化 | REVIEW_PENDING | feat/track-c-mobile-shell | 本分支提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成；待合并 main |
+| C2-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | C1 合并后推进导航、主题、状态管理 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
-| E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 
 ## 未提交改动记录
 
 当前已知未提交改动：
 
-- 无（E2 Prompt 已合并 main；本条交接日志提交后工作区应保持干净）。
+- 无（C1 提交后 `feat/track-c-mobile-shell` 工作区应保持干净；合并 main 后需更新本行）。
 
 ## 最近工作记录
 
@@ -160,6 +160,12 @@ git worktree list
 - E2 Prompt 验证范围：每个模板包含 `scenario`、版本号、只输出 JSON、不要 Markdown 的结构化约束；示例输出全部通过 shared Zod schema。
 - E2 Prompt 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-e-prompts` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-c-mobile-shell` / `feat/track-c-mobile-shell`，启动 Track C 的 C1 Expo 初始化。
+- C1 Expo 初始化完成：使用 `create-expo-app` 生成 `apps/mobile`，改包名为 `@newme/mobile`，接入 pnpm workspace，配置 `expo-router/entry`、`scheme: newme` 和 Expo 插件。
+- C1 依赖范围：安装 `expo-router`、`expo-sqlite`、`expo-secure-store`、`expo-notifications`、`react-native-reanimated`、`react-native-gesture-handler`、`react-native-safe-area-context`、`zustand`、`@tanstack/react-query`、`@newme/shared@workspace:*`；为后续 Playwright/Expo Web 验证同步补齐 `react-native-web`、`react-dom`、`@expo/metro-runtime`。
+- C1 最小路由：新增 `apps/mobile/app/index.tsx` 和 `apps/mobile/app/(tabs)/energy.tsx` 作为 Expo Router 可启动壳；正式 4 Tab、主题和状态管理留给 C2-C4。
+- C1 调试记录：`pnpm -r typecheck` 初次失败，根因是本 worktree 重新安装依赖后 Prisma Client 生成物缺失；运行 `pnpm --filter @newme/api exec prisma generate --schema prisma/schema.prisma` 后 workspace typecheck 通过。
+- C1 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；短启动 `expo start --web --port 19006 --non-interactive` 并请求 `http://127.0.0.1:19006` 返回 HTTP 200；清理启动进程和验证导出产物后，`pnpm -r typecheck` 通过。
 
 ## 阻塞与风险
 
@@ -177,10 +183,10 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 建议启动 C1-C4 Mobile Shell，补齐 Expo App、导航、主题和基础状态，推进集成点 1 前置。
-2. 也可启动 D1-D2 SQLite 本地层，为端侧离线能力打底。
-2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
-3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
+1. 合并 C1 后，建议继续 C2-C4：正式 4 Tab 导航、设计 token/基础组件、Zustand/React Query/API 客户端。
+2. 也可并行启动 D1-D2 SQLite 本地层，为端侧离线能力打底。
+3. C2 开始必须以 `prototype/index.html` 终稿原型为视觉与交互基准，必要时用 `npx playwright` 截图做对照。
+4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
 ## 收尾模板
 
