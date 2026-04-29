@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B4 Users 已在 `feat/track-b-users` 完成，下一步可继续 B5 Goals 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B4 Users 已完成并合并到 main，下一步可继续 B5 Goals 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -42,7 +42,7 @@ git worktree list
 | B2 Prisma Schema | DONE | feat/track-b-api | 78cd00d | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
 | B12 Health/Error | DONE | feat/track-b-api | b09dc70 | health controller RED/GREEN；api test/typecheck/build；pnpm -r typecheck；真实 /api/v1/health 验证均通过 | Week 1 必做闸门已通过 |
 | B3 Auth | DONE | feat/track-b-auth -> main | fd9c1aa | auth.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
-| B4 Users | DONE | feat/track-b-users | 本任务提交 | users.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | `/me` 返回 shared UserContext；周/季度 ID 按用户时区计算 |
+| B4 Users | DONE | feat/track-b-users -> main | 0604318 | users.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | `/me` 返回 shared UserContext；周/季度 ID 按用户时区计算 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -51,7 +51,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- B4 Users 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/users/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
+- 无（B4 Users 已合并 main；本条交接日志提交后工作区应保持干净）。
 
 ## 最近工作记录
 
@@ -93,6 +93,7 @@ git worktree list
 - B4 Users 实现完成：新增 `UsersModule`、`UsersController`、`UsersService`，并注册到 `AppModule`；`GET /me` 使用 `JwtAuthGuard` 返回当前用户上下文。
 - B4 Users 行为范围：读取当前用户 id、手机号、时区、onboarding 状态；按用户时区计算 `currentWeekId`（如 `2026-W18`）和 `currentQuarterId`（如 `2026-Q2`）。
 - B4 Users 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-b-users` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
