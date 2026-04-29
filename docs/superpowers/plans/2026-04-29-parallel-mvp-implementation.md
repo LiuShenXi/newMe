@@ -1593,7 +1593,7 @@ git commit -m "feat: add design system with theme tokens and base components"
 
 管理 token 存储（expo-secure-store）、登录状态、用户上下文。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git commit -m "feat: add Zustand stores and React Query setup"

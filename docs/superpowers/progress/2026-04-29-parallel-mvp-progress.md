@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track C4 Mobile State 正在收口；API client、React Query 配置和基础 stores 已完成验证
-- 当前主控：feat/track-c-state
+- 当前阶段：Batch 1 / Track C1-C4 Mobile Shell 已完成并合并到 main；下一步建议启动 D1-D2 SQLite 本地层或 C5 冷启动 UI
+- 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -55,14 +55,14 @@ git worktree list
 | C1 Mobile Shell 初始化 | DONE | feat/track-c-mobile-shell -> main | 4e85a49 / merge 5372cd9 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成 |
 | C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成 |
 | C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
-| C4 Mobile State | IN_PROGRESS | feat/track-c-state | 待提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成；提交后可合并 |
+| C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 
 ## 未提交改动记录
 
 当前已知未提交改动：
 
-- `.worktrees/track-c-state` 中有 C4 待提交改动：`apps/mobile/src/shared/api/**`、`apps/mobile/src/stores/**`、`apps/mobile/app/_layout.tsx`、计划文档和进度日志。
+- 无（C4 已合并 main，主工作区保持干净）。
 
 ## 最近工作记录
 
@@ -185,6 +185,7 @@ git worktree list
 - C4 stores 完成：新增 `onboarding.store.ts` 管理三路径、层级输入、AI 草案和跳过层级；新增 `auth.store.ts` 管理 SecureStore token、水合、清会话、刷新 token 和 `/me` 加载；新增 `sync.store.ts` 管理在线状态、同步中、待同步数量、水位和错误。
 - C4 调试记录：移动端 typecheck 初次因直接读取 `process.env` 缺少 Node 类型失败；已改为从 `globalThis.process?.env` 安全读取 `EXPO_PUBLIC_API_BASE_URL`，避免引入 Node 类型污染 RN。
 - C4 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm -r typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；验证导出产物已清理。
+- 主控已将 `feat/track-c-state` 合并到 `main`；合并提交 `0961b89`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
 
 ## 阻塞与风险
 
