@@ -1887,13 +1887,13 @@ git commit -m "feat: add sync engine with conflict resolution"
 - Create: `apps/api/src/modules/ai/circuit-breaker.ts`
 - Create: `apps/api/src/modules/ai/tests/ai.service.spec.ts`
 
-- [ ] **Step 1: 写 AiService 测试**
+- [x] **Step 1: 写 AiService 测试**
 
 测试：场景调度、结构化输出校验、重试逻辑、频率限制、熔断。使用 mock provider。
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
-- [ ] **Step 3: 实现 ProviderAdapter 接口**
+- [x] **Step 3: 实现 ProviderAdapter 接口**
 
 ```typescript
 export interface ProviderAdapter {
@@ -1908,29 +1908,29 @@ export interface GenerateOptions {
 }
 ```
 
-- [ ] **Step 4: 实现 OpenAI 和 DeepSeek adapter**
+- [x] **Step 4: 实现 OpenAI 和 DeepSeek adapter**
 
-- [ ] **Step 5: 实现 PromptRegistry**
+- [x] **Step 5: 实现 PromptRegistry**
 
 按 scenario + version 管理 prompt 模板。
 
-- [ ] **Step 6: 实现 OutputValidator**
+- [x] **Step 6: 实现 OutputValidator**
 
 使用 @newme/shared 的 Zod schema 校验 AI 输出。
 
-- [ ] **Step 7: 实现 RateLimiter**
+- [x] **Step 7: 实现 RateLimiter**
 
 内存计数器，按 userId + scenario 维度。每分钟 3 次/场景，每小时 30 次/全局。
 
-- [ ] **Step 8: 实现 CircuitBreaker**
+- [x] **Step 8: 实现 CircuitBreaker**
 
 滑动窗口 10 分钟内 5 次失败触发熔断，暂停 5 分钟。
 
-- [ ] **Step 9: 实现 AiService**
+- [x] **Step 9: 实现 AiService**
 
 整合以上组件：场景调度 → 频率检查 → 熔断检查 → prompt 构造 → provider 调用 → 输出校验 → 重试 → 记录。
 
-- [ ] **Step 10: 实现 AiController**
+- [x] **Step 10: 实现 AiController**
 
 路由：
 - POST /ai/generations — 生成 AI 草案
@@ -1943,9 +1943,9 @@ export interface GenerateOptions {
 3. 正式业务写入委托给 Goals/Plans/Todos 等领域 service。
 4. 不允许 AI 草案自动覆盖用户已编辑内容。
 
-- [ ] **Step 11: 运行测试确认通过**
+- [x] **Step 11: 运行测试确认通过**
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git commit -m "feat: add AI module with provider abstraction, rate limiting, circuit breaker"
