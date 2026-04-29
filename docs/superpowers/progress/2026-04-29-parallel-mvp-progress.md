@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track C3 Design System 正在收口；主题 token 和基础组件已完成验证
-- 当前主控：feat/track-c-design-system
+- 当前阶段：Batch 1 / Track C3 Design System 已完成并合并到 main；下一步建议继续 C4 或 D1-D2
+- 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -54,7 +54,7 @@ git worktree list
 | E2 Prompt 模板 | DONE | feat/track-e-prompts -> main | 38455eb | prompt registry RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 7 个场景模板接入 PromptRegistry；示例输出与 shared schema 匹配 |
 | C1 Mobile Shell 初始化 | DONE | feat/track-c-mobile-shell -> main | 4e85a49 / merge 5372cd9 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成 |
 | C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成 |
-| C3 Design System | IN_PROGRESS | feat/track-c-design-system | 待提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成；提交后可合并 |
+| C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
 | C4 Mobile State | TODO | 未分配 | 无 | 未运行 | C3 合并后推进 Zustand、React Query、API 客户端 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 
@@ -62,7 +62,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- `.worktrees/track-c-design-system` 中有 C3 待提交改动：`apps/mobile/src/shared/theme/**`、`apps/mobile/src/shared/components/**`、计划文档和进度日志。
+- 无（C3 已合并 main，主工作区保持干净）。
 
 ## 最近工作记录
 
@@ -179,6 +179,7 @@ git worktree list
 - C3 主题 token 完成：新增 `colors`、`spacing/radii`、`typography` 和主题统一导出；颜色沿用计划中的深色背景、青绿色能量反馈、琥珀色果实反馈和玻璃态 surface/border。
 - C3 基础组件完成：新增 `Button`、`Card`、`Input`、`LoadingOverlay` 和组件统一导出；Button 支持 primary/secondary/ghost、loading、disabled 和 icon 插槽。
 - C3 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm -r typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；验证导出产物已清理。
+- 主控已将 `feat/track-c-design-system` 合并到 `main`；合并提交 `a9382f7`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
 
 ## 阻塞与风险
 

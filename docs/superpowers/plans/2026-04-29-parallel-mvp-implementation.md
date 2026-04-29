@@ -1564,7 +1564,7 @@ export const colors = {
 
 - [x] **Step 3: 创建通用 Button、Card、Input、LoadingOverlay 组件**
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git commit -m "feat: add design system with theme tokens and base components"
