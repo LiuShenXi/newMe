@@ -1,47 +1,45 @@
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+
+import { PathCard } from '../../src/features/onboarding/components/PathCard';
+import { OnboardingScreen } from '../../src/features/onboarding/components/OnboardingScreen';
+import { useOnboarding } from '../../src/features/onboarding/hooks/useOnboarding';
 
 export default function OnboardingChooseScreen() {
+  const { setPath } = useOnboarding();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.eyebrow}>冷启动</Text>
-      <Text style={styles.title}>你想怎样开始今年？</Text>
-      <Text style={styles.subtitle}>三条路径会在 C5 接入：深度愿景规划、快速规划、手动创建 OKR。</Text>
-      <Link href="/(tabs)/energy" style={styles.link}>
-        先进入今日能量
-      </Link>
-    </View>
+    <OnboardingScreen
+      eyebrow="New year map"
+      subtitle="可以从五年愿景倒推，也可以快速拆这个季度；如果你只想自己安排，也有完整手动 OKR 路径。"
+      title="你想怎样开始今年？"
+    >
+      <PathCard
+        description="从五年后的自己，倒推出今年、季度、首月和今天。"
+        icon="sparkles"
+        onPress={() => {
+          setPath('deep');
+          router.push('/onboarding/vision');
+        }}
+        title="体验深度愿景规划"
+      />
+      <PathCard
+        description="只输入这一季度想推进的一件事，让 AI 拆成本周行动。"
+        icon="flash-outline"
+        onPress={() => {
+          setPath('quick');
+          router.push('/onboarding/quick');
+        }}
+        title="快速规划这个季度"
+      />
+      <PathCard
+        description="年、季、月、周、日逐层填写；空着点下一步就行。"
+        icon="square-outline"
+        onPress={() => {
+          setPath('manual');
+          router.push('/onboarding/manual/annual');
+        }}
+        title="手动创建 OKR"
+      />
+    </OnboardingScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#0A0E1A',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  eyebrow: {
-    color: '#00E5A0',
-    fontSize: 13,
-    fontWeight: '800',
-    marginBottom: 10,
-  },
-  link: {
-    color: '#00E5A0',
-    fontSize: 16,
-    fontWeight: '800',
-    marginTop: 24,
-  },
-  subtitle: {
-    color: 'rgba(255, 255, 255, 0.62)',
-    fontSize: 16,
-    lineHeight: 24,
-    marginTop: 8,
-  },
-  title: {
-    color: '#FFFFFF',
-    fontSize: 32,
-    fontWeight: '800',
-  },
-});
