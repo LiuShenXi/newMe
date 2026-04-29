@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B API 基础闸门已完成，B1-B2-B12 已完成，下一步可继续 B3 Auth 或合并 Track B 基础
-- 当前主控：feat/track-b-api
+- 当前阶段：Batch 1 / Track B API 基础闸门已完成并合并到 main，下一步可继续 B3 Auth 或并行启动 C/D/E
+- 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -75,6 +75,7 @@ git worktree list
 - B12 运行态修正：真实启动 `node dist/main` 时发现 root tsconfig 的 ESNext 输出导致 Node 无法解析 `dist/app.module`，已在 `apps/api/tsconfig.json` 覆盖为 `CommonJS` + `node` module resolution，并同步更新计划文档。
 - B12 HTTP 验证：使用 `DATABASE_URL=postgresql://newme:newme@localhost:55432/newme_dev` 和 `PORT=3300` 启动构建产物，请求 `http://127.0.0.1:3300/api/v1/health` 返回 `{"status":"ok","database":"connected","version":"0.1.0"}`。
 - B12 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-b-api` 合并到 `main`，合并后在主目录执行 `prisma generate`、`pnpm --filter @newme/api test -- --runInBand` 和 `pnpm -r typecheck` 均通过。
 - 增强并行计划，加入 AI worker 必读、worktree、多批次并行、A4 契约冻结、Owned paths、B12 health 闸门、F7 optional、主控收口清单。
 - 新增技术总监续跑协议：用户只需说“技术总监，请按照当前进度和计划文档继续开发”，Director 应自动检查进度并续跑。
 - 新增额度保护收尾协议：小任务提交、定期更新本文件、额度不足时优先交接。
@@ -83,15 +84,15 @@ git worktree list
 
 - `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B2 已通过手动 `prisma generate/migrate` 验证，后续 bcrypt 使用前仍需关注构建脚本策略。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
-- `feat/track-b-api` 尚未合并到 `main`。
+- `feat/track-b-api` 已合并到 `main`；工作树仍保留，后续可清理或继续作为参考。
 
 ## 下次建议
 
 如果用户要求继续开发，建议按以下顺序：
 
 1. 可继续 Track B：执行 B3 Auth 模块。
-2. 也可先将 `feat/track-b-api` 合并回主控，让其他后端 worker 基于 B1-B2-B12 开发。
-3. 其他 worker 可基于已合并的 shared 契约并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
+2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
+3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
 ## 收尾模板
 
