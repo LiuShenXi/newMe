@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B API 基础已启动，B1 已完成，下一步推进 B2 后立即执行 B12
+- 当前阶段：Batch 1 / Track B API 基础继续推进，B1-B2 已完成，下一步立即执行 B12
 - 当前主控：feat/track-b-api
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -38,8 +38,8 @@ git worktree list
 | A2 Shared 枚举和常量 | DONE | feat/track-a-contract | 775d092 | pnpm --filter @newme/shared typecheck 通过 | Batch 0 |
 | A3 Shared DTO 和 Zod Schema | DONE | feat/track-a-contract | 8539966 | pnpm --filter @newme/shared typecheck 通过 | Batch 0 |
 | A4 契约冻结 | DONE | feat/track-a-contract | ede104e | shared typecheck + 契约 grep + pnpm -r typecheck 通过 | Batch 0 闸门已通过 |
-| B1 API 初始化 | DONE | feat/track-b-api | 本次提交 | pnpm --filter @newme/api test -- --runInBand；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api build；pnpm -r typecheck 均通过 | A4 后已推进 |
-| B2 Prisma Schema | TODO | 未分配 | 无 | 未运行 | Track B 独占 Prisma |
+| B1 API 初始化 | DONE | feat/track-b-api | 36994ca | pnpm --filter @newme/api test -- --runInBand；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api build；pnpm -r typecheck 均通过 | A4 后已推进 |
+| B2 Prisma Schema | DONE | feat/track-b-api | 本次提交 | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
 | B12 Health/Error | TODO | 未分配 | 无 | 未运行 | Week 1 必做闸门 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -66,21 +66,26 @@ git worktree list
 - B1 API 初始化完成：创建 NestJS API package、tsconfig、nest-cli、环境变量示例、`AppModule`、`main.ts`，并补充 AppModule smoke test。
 - B1 TDD 记录：先运行 `pnpm --filter @newme/api test -- --runInBand`，确认因 `Cannot find module './app.module'` 失败；实现后测试通过。
 - B1 验证完成：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build` 均通过。
+- B2 Prisma Schema 完成：创建 `apps/api/prisma/schema.prisma`、初始迁移、`PrismaService`、`PrismaModule`，并注册到 `AppModule`。
+- B2 TDD 记录：先运行 `pnpm --filter @newme/api test -- prisma.module.spec --runInBand`，确认因 `prisma.module` / `prisma.service` 缺失失败；实现后测试通过。
+- B2 迁移验证：使用临时 Docker Postgres `newme-b2-postgres`（`localhost:55432`）运行 `prisma migrate dev --name init` 成功，查询确认 19 张核心表均存在。
+- B2 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 增强并行计划，加入 AI worker 必读、worktree、多批次并行、A4 契约冻结、Owned paths、B12 health 闸门、F7 optional、主控收口清单。
 - 新增技术总监续跑协议：用户只需说“技术总监，请按照当前进度和计划文档继续开发”，Director 应自动检查进度并续跑。
 - 新增额度保护收尾协议：小任务提交、定期更新本文件、额度不足时优先交接。
 
 ## 阻塞与风险
 
-- `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B1 build/test 当前不受影响，但 B2 Prisma 迁移或 bcrypt 使用前需要关注 `pnpm approve-builds` 策略。
+- `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B2 已通过手动 `prisma generate/migrate` 验证，后续 bcrypt 使用前仍需关注构建脚本策略。
+- 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
 - `feat/track-b-api` 尚未合并到 `main`。
 
 ## 下次建议
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 继续 Track B：执行 B2 Prisma Schema + 数据库基础。
-2. B2 完成后立即执行 B12 全局错误处理 + `/health`，满足 Week 1 集成闸门。
+1. 立即执行 B12 全局错误处理 + `/health`，满足 Week 1 集成闸门。
+2. B12 完成并验证后，可继续 B3 Auth 或合并 `feat/track-b-api` 让其他后端 worker 基于 B1-B2-B12 开发。
 3. 其他 worker 可基于已合并的 shared 契约并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 
 ## 收尾模板

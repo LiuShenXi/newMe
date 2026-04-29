@@ -1134,13 +1134,13 @@ git commit -m "feat: init NestJS API project"
 - Create: `apps/api/src/prisma/prisma.service.ts`
 - Modify: `apps/api/src/app.module.ts`
 
-- [ ] **Step 1: 创建 prisma/schema.prisma**
+- [x] **Step 1: 创建 prisma/schema.prisma**
 
 完整 schema 包含所有核心实体：users, visions, annual_objectives, quarters, quarter_goals, month_goals, goal_classifications, month_plans, week_plans, weekly_focuses, todos, energy_entries, weekly_settlements, tree_fruits, quarter_honors, ai_generations, sync_devices, refresh_tokens, push_tokens。
 
 每个 model 包含 id (uuid), userId, createdAt, updatedAt, deletedAt, source, version 等基础字段。具体字段参照 `04-数据与AI架构.md` 的实体定义。
 
-- [ ] **Step 2: 创建 PrismaService**
+- [x] **Step 2: 创建 PrismaService**
 
 ```typescript
 // src/prisma/prisma.service.ts
@@ -1159,7 +1159,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 }
 ```
 
-- [ ] **Step 3: 创建 PrismaModule**
+- [x] **Step 3: 创建 PrismaModule**
 
 ```typescript
 // src/prisma/prisma.module.ts
@@ -1174,14 +1174,14 @@ import { PrismaService } from './prisma.service';
 export class PrismaModule {}
 ```
 
-- [ ] **Step 4: 注册 PrismaModule 到 AppModule**
+- [x] **Step 4: 注册 PrismaModule 到 AppModule**
 
-- [ ] **Step 5: 运行 prisma migrate dev 创建初始迁移**
+- [x] **Step 5: 运行 prisma migrate dev 创建初始迁移**
 
 Run: `cd apps/api && npx prisma migrate dev --name init`
 Expected: 迁移成功，数据库表创建
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/api/prisma/ apps/api/src/prisma/

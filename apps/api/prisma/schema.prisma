@@ -1,0 +1,455 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Source {
+  MANUAL @map("manual")
+  AI     @map("ai")
+  MIXED  @map("mixed")
+  SYSTEM @map("system")
+}
+
+enum GoalType {
+  RESULT  @map("result")
+  PROJECT @map("project")
+  HABIT   @map("habit")
+}
+
+enum AiScenario {
+  QUICK_QUARTER_PLAN                @map("quick_quarter_plan")
+  VISION_TO_ANNUAL_OKR              @map("vision_to_annual_okr")
+  ANNUAL_TO_QUARTER_OKR             @map("annual_to_quarter_okr")
+  QUARTER_TO_FOUR_WEEK_COMMITMENTS  @map("quarter_to_four_week_commitments")
+  WEEKLY_FOCUS_TO_TODOS             @map("weekly_focus_to_todos")
+  REPLAN_FUTURE_WEEKS               @map("replan_future_weeks")
+  MANUAL_LOCAL_ASSIST               @map("manual_local_assist")
+}
+
+enum AiGenerationStatus {
+  PENDING   @map("pending")
+  COMPLETED @map("completed")
+  FAILED    @map("failed")
+  CONFIRMED @map("confirmed")
+}
+
+enum PushPlatform {
+  IOS     @map("ios")
+  ANDROID @map("android")
+  WEB     @map("web")
+}
+
+model User {
+  id                     String   @id @default(uuid()) @db.Uuid
+  phone                  String   @unique
+  timezone               String   @default("Asia/Shanghai")
+  hasCompletedOnboarding Boolean  @default(false) @map("has_completed_onboarding")
+  preferencesJson        Json?    @map("preferences_json")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+  deletedAt              DateTime? @map("deleted_at")
+  version                Int      @default(1)
+
+  visions             Vision[]
+  annualObjectives    AnnualObjective[]
+  quarters            Quarter[]
+  quarterGoals        QuarterGoal[]
+  monthGoals          MonthGoal[]
+  goalClassifications GoalClassification[]
+  monthPlans          MonthPlan[]
+  weekPlans           WeekPlan[]
+  weeklyFocuses       WeeklyFocus[]
+  todos               Todo[]
+  energyEntries       EnergyEntry[]
+  weeklySettlements   WeeklySettlement[]
+  treeFruits          TreeFruit[]
+  quarterHonors       QuarterHonor[]
+  aiGenerations       AiGeneration[]
+  syncDevices         SyncDevice[]
+  refreshTokens       RefreshToken[]
+  pushTokens          PushToken[]
+
+  @@map("users")
+}
+
+model Vision {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  content   String
+  source    Source   @default(MANUAL)
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("visions")
+}
+
+model AnnualObjective {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  year       Int
+  objectives Json
+  source     Source   @default(MANUAL)
+  version    Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  user         User          @relation(fields: [userId], references: [id])
+  quarterGoals QuarterGoal[]
+
+  @@index([userId, year])
+  @@map("annual_objectives")
+}
+
+model Quarter {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  year      Int
+  quarter   Int
+  startsOn  DateTime @map("starts_on") @db.Date
+  endsOn    DateTime @map("ends_on") @db.Date
+  source    Source   @default(SYSTEM)
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user          User           @relation(fields: [userId], references: [id])
+  quarterGoals  QuarterGoal[]
+  quarterHonors QuarterHonor[]
+
+  @@unique([userId, year, quarter])
+  @@map("quarters")
+}
+
+model QuarterGoal {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  quarterId         String?   @map("quarter_id") @db.Uuid
+  annualObjectiveId String?   @map("annual_objective_id") @db.Uuid
+  title             String
+  goalType          GoalType? @map("goal_type")
+  source            Source    @default(MANUAL)
+  version           Int       @default(1)
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+
+  user            User             @relation(fields: [userId], references: [id])
+  quarter         Quarter?         @relation(fields: [quarterId], references: [id])
+  annualObjective AnnualObjective? @relation(fields: [annualObjectiveId], references: [id])
+  monthGoals      MonthGoal[]
+  classifications GoalClassification[]
+
+  @@index([userId, quarterId])
+  @@map("quarter_goals")
+}
+
+model MonthGoal {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  monthId       String   @map("month_id")
+  quarterGoalId String?  @map("quarter_goal_id") @db.Uuid
+  title         String
+  source        Source   @default(MANUAL)
+  version       Int      @default(1)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  user        User         @relation(fields: [userId], references: [id])
+  quarterGoal QuarterGoal? @relation(fields: [quarterGoalId], references: [id])
+  monthPlans  MonthPlan[]
+
+  @@index([userId, monthId])
+  @@map("month_goals")
+}
+
+model GoalClassification {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  quarterGoalId String   @map("quarter_goal_id") @db.Uuid
+  goalType      GoalType @map("goal_type")
+  confidence    Float?
+  reason        String?
+  source        Source   @default(AI)
+  version       Int      @default(1)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  quarterGoal QuarterGoal @relation(fields: [quarterGoalId], references: [id])
+
+  @@index([userId, quarterGoalId])
+  @@map("goal_classifications")
+}
+
+model MonthPlan {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  monthId     String   @map("month_id")
+  monthGoalId String?  @map("month_goal_id") @db.Uuid
+  source      Source   @default(MANUAL)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  user      User       @relation(fields: [userId], references: [id])
+  monthGoal MonthGoal? @relation(fields: [monthGoalId], references: [id])
+  weekPlans WeekPlan[]
+
+  @@index([userId, monthId])
+  @@map("month_plans")
+}
+
+model WeekPlan {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  weekId      String   @map("week_id")
+  monthPlanId String?  @map("month_plan_id") @db.Uuid
+  source      Source   @default(MANUAL)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  user     User          @relation(fields: [userId], references: [id])
+  monthPlan MonthPlan?   @relation(fields: [monthPlanId], references: [id])
+  focuses  WeeklyFocus[]
+  todos    Todo[]
+  energyEntries EnergyEntry[]
+  settlement WeeklySettlement?
+  treeFruit TreeFruit?
+
+  @@unique([userId, weekId])
+  @@map("week_plans")
+}
+
+model WeeklyFocus {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @map("user_id") @db.Uuid
+  weekPlanId    String?  @map("week_plan_id") @db.Uuid
+  weekId        String   @map("week_id")
+  title         String
+  reason        String?
+  invalidatedAt DateTime? @map("invalidated_at")
+  source        Source   @default(MANUAL)
+  version       Int      @default(1)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  weekPlan WeekPlan? @relation(fields: [weekPlanId], references: [id])
+  todos    Todo[]
+
+  @@index([userId, weekId])
+  @@map("weekly_focuses")
+}
+
+model Todo {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  weekPlanId       String?  @map("week_plan_id") @db.Uuid
+  sourceFocusId    String?  @map("source_focus_id") @db.Uuid
+  title            String
+  date             DateTime @db.Date
+  completed        Boolean  @default(false)
+  estimatedMinutes Int?     @map("estimated_minutes")
+  userEdited       Boolean  @default(false) @map("user_edited")
+  source           Source   @default(MANUAL)
+  version          Int      @default(1)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+
+  user        User         @relation(fields: [userId], references: [id])
+  weekPlan    WeekPlan?    @relation(fields: [weekPlanId], references: [id])
+  sourceFocus WeeklyFocus? @relation(fields: [sourceFocusId], references: [id])
+
+  @@index([userId, date])
+  @@map("todos")
+}
+
+model EnergyEntry {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  weekPlanId     String?  @map("week_plan_id") @db.Uuid
+  weekId         String   @map("week_id")
+  date           DateTime @db.Date
+  score          Int
+  hasViewedTodos Boolean @default(false) @map("has_viewed_todos")
+  source         Source  @default(MANUAL)
+  version        Int     @default(1)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  user     User      @relation(fields: [userId], references: [id])
+  weekPlan WeekPlan? @relation(fields: [weekPlanId], references: [id])
+
+  @@unique([userId, date])
+  @@index([userId, weekId])
+  @@map("energy_entries")
+}
+
+model WeeklySettlement {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  weekPlanId   String?  @unique @map("week_plan_id") @db.Uuid
+  weekId       String   @map("week_id")
+  suggestedScore Int    @map("suggested_score")
+  finalScore   Int      @map("final_score")
+  reflection   String?
+  snapshotJson Json     @map("snapshot_json")
+  confirmedAt  DateTime @map("confirmed_at")
+  source       Source   @default(MANUAL)
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  user      User      @relation(fields: [userId], references: [id])
+  weekPlan  WeekPlan? @relation(fields: [weekPlanId], references: [id])
+  treeFruit TreeFruit?
+
+  @@unique([userId, weekId])
+  @@map("weekly_settlements")
+}
+
+model TreeFruit {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  weekPlanId         String?  @unique @map("week_plan_id") @db.Uuid
+  weeklySettlementId String?  @unique @map("weekly_settlement_id") @db.Uuid
+  weekId             String   @map("week_id")
+  score              Int
+  label              String
+  capsuleSummary     String   @map("capsule_summary")
+  source             Source   @default(SYSTEM)
+  version            Int      @default(1)
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+
+  user             User              @relation(fields: [userId], references: [id])
+  weekPlan         WeekPlan?         @relation(fields: [weekPlanId], references: [id])
+  weeklySettlement WeeklySettlement? @relation(fields: [weeklySettlementId], references: [id])
+
+  @@index([userId, weekId])
+  @@map("tree_fruits")
+}
+
+model QuarterHonor {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  quarterId    String?  @map("quarter_id") @db.Uuid
+  averageScore Float    @map("average_score")
+  earnedAt     DateTime @map("earned_at")
+  source       Source   @default(SYSTEM)
+  version      Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  user    User     @relation(fields: [userId], references: [id])
+  quarter Quarter? @relation(fields: [quarterId], references: [id])
+
+  @@index([userId, quarterId])
+  @@map("quarter_honors")
+}
+
+model AiGeneration {
+  id               String             @id @default(uuid()) @db.Uuid
+  userId           String             @map("user_id") @db.Uuid
+  scenario         AiScenario
+  promptVersion    String             @map("prompt_version")
+  model            String
+  inputHash        String             @map("input_hash")
+  inputJson        Json               @map("input_json")
+  outputJson       Json?              @map("output_json")
+  status           AiGenerationStatus @default(PENDING)
+  errorCode        String?            @map("error_code")
+  contextVersion   String?            @map("context_version")
+  regenerateFromId String?            @map("regenerate_from_id") @db.Uuid
+  confirmedAt      DateTime?          @map("confirmed_at")
+  source           Source             @default(AI)
+  version          Int                @default(1)
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  deletedAt        DateTime?          @map("deleted_at")
+
+  user           User            @relation(fields: [userId], references: [id])
+  regenerateFrom AiGeneration?   @relation("AiRegeneration", fields: [regenerateFromId], references: [id])
+  regenerations  AiGeneration[]  @relation("AiRegeneration")
+
+  @@index([userId, scenario, status])
+  @@map("ai_generations")
+}
+
+model SyncDevice {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  deviceId    String   @map("device_id")
+  deviceName  String?  @map("device_name")
+  platform    String?
+  pullCursor  String?  @map("pull_cursor")
+  lastSyncedAt DateTime? @map("last_synced_at")
+  source      Source   @default(SYSTEM)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, deviceId])
+  @@map("sync_devices")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  source    Source   @default(SYSTEM)
+  version   Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model PushToken {
+  id        String       @id @default(uuid()) @db.Uuid
+  userId    String       @map("user_id") @db.Uuid
+  token     String       @unique
+  platform  PushPlatform
+  enabled   Boolean      @default(true)
+  source    Source       @default(SYSTEM)
+  version   Int          @default(1)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("push_tokens")
+}
