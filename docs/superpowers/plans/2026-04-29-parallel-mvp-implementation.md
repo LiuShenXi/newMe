@@ -1330,7 +1330,7 @@ git commit -m "feat: add todos module with CRUD"
 - Create: `apps/api/src/modules/energy/energy.service.ts`
 - Create: `apps/api/src/modules/energy/tests/energy.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - PUT /energy/days/:date — 记录今日能量（当天可多次修改）
@@ -1338,7 +1338,7 @@ git commit -m "feat: add todos module with CRUD"
 
 计算规则：本周累计 = 已记录每日能量之和 / 已记录天数
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add energy module with daily recording and weekly summary"
