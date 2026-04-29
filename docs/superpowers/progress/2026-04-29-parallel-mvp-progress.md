@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B3 Auth 已完成并合并到 main，下一步可继续 B4 Users 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B4 Users 已在 `feat/track-b-users` 完成，下一步可继续 B5 Goals 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -42,6 +42,7 @@ git worktree list
 | B2 Prisma Schema | DONE | feat/track-b-api | 78cd00d | prisma validate；prisma migrate dev；19 表存在性查询；api test/typecheck/build；pnpm -r typecheck 均通过 | Track B 独占 Prisma |
 | B12 Health/Error | DONE | feat/track-b-api | b09dc70 | health controller RED/GREEN；api test/typecheck/build；pnpm -r typecheck；真实 /api/v1/health 验证均通过 | Week 1 必做闸门已通过 |
 | B3 Auth | DONE | feat/track-b-auth -> main | fd9c1aa | auth.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
+| B4 Users | DONE | feat/track-b-users | 本任务提交 | users.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | `/me` 返回 shared UserContext；周/季度 ID 按用户时区计算 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -50,7 +51,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B3 Auth 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B4 Users 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/users/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -87,6 +88,11 @@ git worktree list
 - B3 Auth 行为范围：`POST /auth/code` 生成进程内 5 分钟验证码；`POST /auth/login` 校验验证码、创建/复用用户、签发 15 分钟 JWT 和 30 天 refresh token；`POST /auth/refresh` 校验并轮换 refresh token；`POST /auth/logout` 基于 JWT 吊销当前用户 refresh token。
 - B3 Auth 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-auth` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-users` / `feat/track-b-users`，继续 Batch 1 Track B 的 B4 Users。
+- B4 Users TDD 记录：先新增 `users.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- users.service.spec --runInBand`，确认因缺少 `../users.service` 失败；实现后 UsersService 测试通过。
+- B4 Users 实现完成：新增 `UsersModule`、`UsersController`、`UsersService`，并注册到 `AppModule`；`GET /me` 使用 `JwtAuthGuard` 返回当前用户上下文。
+- B4 Users 行为范围：读取当前用户 id、手机号、时区、onboarding 状态；按用户时区计算 `currentWeekId`（如 `2026-W18`）和 `currentQuarterId`（如 `2026-Q2`）。
+- B4 Users 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -100,7 +106,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B4 Users 模块，为 F1 Auth 联调准备 `/me` 用户上下文。
+1. 可继续 Track B：执行 B5 Goals 模块，开始愿景与年/季/月目标能力。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
