@@ -1862,7 +1862,7 @@ git commit -m "feat: add local SQLite repositories with sync queue"
 
 版本号比较，服务端版本大的赢。结算数据以首次确认为准。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit -m "feat: add sync engine with conflict resolution"

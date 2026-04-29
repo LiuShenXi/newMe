@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track D3 Sync Engine 正在收口；同步引擎与冲突解析已完成静态验证
-- 当前主控：feat/track-d-sync-engine
+- 当前阶段：Batch 1 / Track D3 Sync Engine 已完成并合并到 main；下一步建议进入 C5 冷启动 UI 或 F5 前置运行态 smoke
+- 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
 
@@ -58,13 +58,13 @@ git worktree list
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
-| D3 Sync Engine | IN_PROGRESS | feat/track-d-sync-engine | 待提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
+| D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
 
 ## 未提交改动记录
 
 当前已知未提交改动：
 
-- `.worktrees/track-d-sync-engine` 中有 D3 待提交改动：`apps/mobile/src/db/sync/**`、计划文档和进度日志。
+- 无（D3 已合并 main，主工作区保持干净）。
 
 ## 最近工作记录
 
@@ -205,6 +205,7 @@ git worktree list
 - D3 拉取能力完成：新增 `pullRemoteChanges()` 调用 `/sync/pull` 返回远端 changes；当前不盲目覆盖本地表，后续 F5/业务联调按表处理应用策略。
 - D3 冲突解析完成：新增 `conflict-resolver.ts`，按版本号判断 remote_wins/local_wins/same_version；服务端返回 conflict 时保留队列失败原因，避免无提示覆盖用户本地修改。
 - D3 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm -r typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；验证导出产物已清理。限制：真实 API + SQLite 联调需等认证态和运行时设备环境，留到 F5。
+- 主控已将 `feat/track-d-sync-engine` 合并到 `main`；合并提交 `889b700`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
 
 ## 阻塞与风险
 
