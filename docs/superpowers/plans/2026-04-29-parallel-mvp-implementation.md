@@ -1308,7 +1308,7 @@ git commit -m "feat: add plans module with weekly focuses"
 - Create: `apps/api/src/modules/todos/todos.service.ts`
 - Create: `apps/api/src/modules/todos/tests/todos.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - GET /todos/today — 获取今日任务
@@ -1316,7 +1316,7 @@ git commit -m "feat: add plans module with weekly focuses"
 - PATCH /todos/:id — 更新任务
 - DELETE /todos/:id — 软删除任务
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add todos module with CRUD"
