@@ -1,13 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function EnergyScreen() {
+export default function PlanScreen() {
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
-      <Text style={styles.eyebrow}>首页</Text>
-      <Text style={styles.title}>今日能量</Text>
-      <Text style={styles.subtitle}>能量球、今日能量条和本周重点概览会在 C6 接入。</Text>
+      <Text style={styles.eyebrow}>回看</Text>
+      <Text style={styles.title}>计划</Text>
+      <Text style={styles.subtitle}>周/月计划与年/季度计划切换会在 C8 接入。</Text>
     </View>
   );
 }
