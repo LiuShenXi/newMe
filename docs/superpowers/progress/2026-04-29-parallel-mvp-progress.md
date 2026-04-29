@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B9 Settlement 已完成并合并到 main，下一步可继续 B10 Tree 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B10 Tree 已在 `feat/track-b-tree` 完成，下一步可继续 B11 Sync 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -48,6 +48,7 @@ git worktree list
 | B7 Todos | DONE | feat/track-b-todos -> main | 71fdc0d | todos.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 今日清单查询、手动创建、用户隔离更新、软删除 |
 | B8 Energy | DONE | feat/track-b-energy -> main | 956e0c8 | energy.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
 | B9 Settlement | DONE | feat/track-b-settlements -> main | 657344b | settlements.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 周结算事务、建议分、快照和 TreeFruit 已完成；季度荣誉留给 B10/后续 |
+| B10 Tree | DONE | feat/track-b-tree | 本任务提交 | tree.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 读取年度树阶段、果实和已有荣誉；不生成荣誉 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -56,7 +57,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B9 Settlement 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B10 Tree 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/tree/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -130,6 +131,11 @@ git worktree list
 - B9 Settlement 范围调整：季度完成检测与 QuarterHonor 生成未在 B9 中硬猜 `weekId` 实现，留给 B10 Tree/后续季度结算能力基于明确季度边界补齐。
 - B9 Settlement 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-settlements` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-tree` / `feat/track-b-tree`，继续 Batch 1 Track B 的 B10 Tree。
+- B10 Tree TDD 记录：先新增 `tree.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- tree.service.spec --runInBand`，确认因缺少 `../tree.service` 失败；实现后 TreeService 测试通过。
+- B10 Tree 实现完成：新增 `TreeModule`、`TreeController`、`TreeService`，并注册到 `AppModule`。
+- B10 Tree 行为范围：`GET /tree/years/:year` 返回年度树阶段、该年果实列表和已有季度荣誉；树阶段按当前季度计算，荣誉只读取不生成。
+- B10 Tree 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -145,7 +151,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B10 Tree 模块，补齐成长树读取、树阶段、果实和荣誉展示，并承接季度荣誉缺口。
+1. 可继续 Track B：执行 B11 Sync 模块，补齐端侧同步 push/pull 和基础冲突处理。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
