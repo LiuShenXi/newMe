@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B5 Goals 已完成并合并到 main，下一步可继续 B6 Plans 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B6 Plans 已在 `feat/track-b-plans` 完成，下一步可继续 B7 Todos 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -44,6 +44,7 @@ git worktree list
 | B3 Auth | DONE | feat/track-b-auth -> main | fd9c1aa | auth.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
 | B4 Users | DONE | feat/track-b-users -> main | 0604318 | users.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | `/me` 返回 shared UserContext；周/季度 ID 按用户时区计算 |
 | B5 Goals | DONE | feat/track-b-goals -> main | 2ca2412 | goals.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 支持愿景 upsert、逻辑季度 ID 到 Quarter UUID、月目标独立创建、当前规划概览 |
+| B6 Plans | DONE | feat/track-b-plans | 本任务提交 | plans.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 获取有效本周重点；更新时确保 WeekPlan 存在、旧 AI 重点失效、新手动重点写入 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -52,7 +53,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B5 Goals 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B6 Plans 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/plans/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -101,6 +102,11 @@ git worktree list
 - B5 Goals 行为范围：`PUT /goals/vision` 创建/更新当前愿景；`POST /goals/quarters/:quarterId/goals` 支持 `YYYY-Qn` 逻辑季度 ID 并自动 upsert Quarter；`POST /goals/months/:monthId/goals` 支持无上层目标时独立创建月目标；`GET /goals/current` 返回当前愿景、当前季度目标和当前月目标概览。
 - B5 Goals 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-goals` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-plans` / `feat/track-b-plans`，继续 Batch 1 Track B 的 B6 Plans。
+- B6 Plans TDD 记录：先新增 `plans.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- plans.service.spec --runInBand`，确认因缺少 `../plans.service` 失败；实现后 PlansService 测试通过。
+- B6 Plans 实现完成：新增 `PlansModule`、`PlansController`、`PlansService`，并注册到 `AppModule`。
+- B6 Plans 行为范围：`GET /plans/weeks/:weekId/focuses` 返回当前有效本周重点；`PUT /plans/weeks/:weekId/focuses` 确保 WeekPlan 存在，标记旧 AI 重点为失效，并写入用户确认的新手动重点。
+- B6 Plans 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
@@ -115,7 +121,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B6 Plans 模块，补齐月计划和本周重点能力。
+1. 可继续 Track B：执行 B7 Todos 模块，补齐今日清单 CRUD。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
