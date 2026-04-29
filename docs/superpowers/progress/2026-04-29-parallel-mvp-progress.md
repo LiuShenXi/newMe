@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B4 Users 已完成并合并到 main，下一步可继续 B5 Goals 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B5 Goals 已在 `feat/track-b-goals` 完成，下一步可继续 B6 Plans 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -43,6 +43,7 @@ git worktree list
 | B12 Health/Error | DONE | feat/track-b-api | b09dc70 | health controller RED/GREEN；api test/typecheck/build；pnpm -r typecheck；真实 /api/v1/health 验证均通过 | Week 1 必做闸门已通过 |
 | B3 Auth | DONE | feat/track-b-auth -> main | fd9c1aa | auth.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 验证码为 MVP 进程内短期存储；Refresh Token 使用 SHA-256 哈希存储并轮换 |
 | B4 Users | DONE | feat/track-b-users -> main | 0604318 | users.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | `/me` 返回 shared UserContext；周/季度 ID 按用户时区计算 |
+| B5 Goals | DONE | feat/track-b-goals | 本任务提交 | goals.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 支持愿景 upsert、逻辑季度 ID 到 Quarter UUID、月目标独立创建、当前规划概览 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -51,7 +52,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（B4 Users 已合并 main；本条交接日志提交后工作区应保持干净）。
+- B5 Goals 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/goals/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
 
 ## 最近工作记录
 
@@ -94,12 +95,18 @@ git worktree list
 - B4 Users 行为范围：读取当前用户 id、手机号、时区、onboarding 状态；按用户时区计算 `currentWeekId`（如 `2026-W18`）和 `currentQuarterId`（如 `2026-Q2`）。
 - B4 Users 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 - 主控已将 `feat/track-b-users` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 创建 `.worktrees/track-b-goals` / `feat/track-b-goals`，继续 Batch 1 Track B 的 B5 Goals。
+- B5 Goals TDD 记录：先新增 `goals.service.spec.ts` 并运行 `pnpm --filter @newme/api test -- goals.service.spec --runInBand`，确认因缺少 `../goals.service` 失败；实现后 GoalsService 测试通过。
+- B5 Goals 实现完成：新增 `GoalsModule`、`GoalsController`、`GoalsService`，并注册到 `AppModule`。
+- B5 Goals 行为范围：`PUT /goals/vision` 创建/更新当前愿景；`POST /goals/quarters/:quarterId/goals` 支持 `YYYY-Qn` 逻辑季度 ID 并自动 upsert Quarter；`POST /goals/months/:monthId/goals` 支持无上层目标时独立创建月目标；`GET /goals/current` 返回当前愿景、当前季度目标和当前月目标概览。
+- B5 Goals 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
 - `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B2 已通过手动 `prisma generate/migrate` 验证，后续 bcrypt 使用前仍需关注构建脚本策略。
 - B3 Auth 的验证码为 MVP 进程内存储，服务重启会丢失；后续若接入真实短信或多实例部署，应迁移到 Redis/数据库验证码表。
 - B3 Auth 的 refresh token 使用 Node `crypto` SHA-256 哈希，未使用 `bcrypt`，避免当前 pnpm 忽略 bcrypt build scripts 对登录链路造成运行风险。
+- B5 Goals 对外使用 `YYYY-Qn` 逻辑季度 ID，与 B4 `/me.currentQuarterId` 保持一致；服务端内部会映射到 Prisma `quarters.id` UUID，后续 Plans/Todos 若引用季度也应复用该转换策略。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
 - `feat/track-b-api` 已合并到 `main`；工作树仍保留，后续可清理或继续作为参考。
 
@@ -107,7 +114,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 可继续 Track B：执行 B5 Goals 模块，开始愿景与年/季/月目标能力。
+1. 可继续 Track B：执行 B6 Plans 模块，补齐月计划和本周重点能力。
 2. 其他 worker 可基于已合并的 shared/API 基础并行启动 C1-C4、D1-D2、E1，但需严格遵守 Owned paths。
 3. 如需释放目录，可清理 `.worktrees/track-b-api`；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 

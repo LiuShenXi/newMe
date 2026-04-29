@@ -1264,7 +1264,7 @@ git commit -m "feat: add users module with /me endpoint"
 - Create: `apps/api/src/modules/goals/goals.service.ts`
 - Create: `apps/api/src/modules/goals/tests/goals.service.spec.ts`
 
-- [ ] **Step 1: 写测试 → 实现 → 验证**
+- [x] **Step 1: 写测试 → 实现 → 验证**
 
 路由：
 - PUT /goals/vision — 创建/更新愿景
@@ -1274,7 +1274,7 @@ git commit -m "feat: add users module with /me endpoint"
 
 支持手动路径：各层级可独立存在，外键允许 null。
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git commit -m "feat: add goals module with vision, quarter, month goals"
