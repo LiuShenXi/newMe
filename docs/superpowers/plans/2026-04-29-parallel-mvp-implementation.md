@@ -974,13 +974,16 @@ git commit -m "chore: freeze shared contracts for parallel workers"
 - Create: `apps/api/nest-cli.json`
 - Create: `apps/api/src/main.ts`
 - Create: `apps/api/src/app.module.ts`
+- Create: `apps/api/src/app.module.spec.ts`
 - Create: `apps/api/.env.example`
 
-- [ ] **Step 1: 创建 apps/api 目录并初始化**
+**实际执行补充：** B1 增加 `AppModule` smoke test，用于满足测试先行；先确认测试因 `./app.module` 缺失失败，再实现 `AppModule` 与启动入口。
+
+- [x] **Step 1: 创建 apps/api 目录并初始化**
 
 Run: `mkdir -p apps/api/src`
 
-- [ ] **Step 2: 创建 package.json**
+- [x] **Step 2: 创建 package.json**
 
 ```json
 {
@@ -1029,7 +1032,7 @@ Run: `mkdir -p apps/api/src`
 }
 ```
 
-- [ ] **Step 3: 创建 tsconfig.json 和 tsconfig.build.json**
+- [x] **Step 3: 创建 tsconfig.json 和 tsconfig.build.json**
 
 ```json
 // tsconfig.json
@@ -1053,7 +1056,7 @@ Run: `mkdir -p apps/api/src`
 }
 ```
 
-- [ ] **Step 4: 创建 nest-cli.json**
+- [x] **Step 4: 创建 nest-cli.json**
 
 ```json
 {
@@ -1066,7 +1069,7 @@ Run: `mkdir -p apps/api/src`
 }
 ```
 
-- [ ] **Step 5: 创建 .env.example**
+- [x] **Step 5: 创建 .env.example**
 
 ```text
 NODE_ENV=development
@@ -1080,7 +1083,7 @@ AI_API_KEY=sk-xxx
 AI_MODEL=gpt-4o
 ```
 
-- [ ] **Step 6: 创建 src/main.ts**
+- [x] **Step 6: 创建 src/main.ts**
 
 ```typescript
 import { NestFactory } from '@nestjs/core';
@@ -1097,7 +1100,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-- [ ] **Step 7: 创建 src/app.module.ts**
+- [x] **Step 7: 创建 src/app.module.ts**
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -1111,12 +1114,12 @@ import { ConfigModule } from '@nestjs/config';
 export class AppModule {}
 ```
 
-- [ ] **Step 8: 安装依赖并验证构建**
+- [x] **Step 8: 安装依赖并验证构建**
 
 Run: `cd apps/api && pnpm install && pnpm build`
 Expected: 构建成功
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add apps/api/
