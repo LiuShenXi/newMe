@@ -10,19 +10,170 @@
 
 ---
 
+## AI worker 必读与启动规则
+
+下次启动多个 Codex/AI 对话并行开发时，**每个 worker 在写代码前必须先阅读本文件和下列架构文档**：
+
+1. `docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md`
+2. `docs/architecture/00-技术架构总览.md`
+3. `docs/architecture/04-数据与AI架构.md`
+4. `docs/architecture/05-部署与运维方案.md`
+5. `docs/architecture/06-技术风险与演进路线.md`
+6. `产品需求设计文档.md`
+
+推荐采用 **一个主控对话 + 多个 worker 对话 + 每个 worker 一个 git worktree/branch** 的方式。不要让多个 Codex 对话同时在 `c:\WORK-SPACE\newMe` 主目录里写代码。
+
+### 手动多开 Codex 的 worktree 建议
+
+```powershell
+git worktree add .worktrees/track-a-contract -b feat/track-a-contract
+git worktree add .worktrees/track-b-api -b feat/track-b-api
+git worktree add .worktrees/track-c-mobile-shell -b feat/track-c-mobile-shell
+git worktree add .worktrees/track-d-local-db -b feat/track-d-local-db
+git worktree add .worktrees/track-e-ai -b feat/track-e-ai
+```
+
+每个 worker 对话只打开自己的 worktree，并严格遵守本计划里的 **Owned paths**。完成后提交 commit，由主控对话负责合并、冲突处理、端到端验证和文档收口。
+
+### Worker 通用执行协议
+
+- 启动后先确认自己的任务、依赖、Owned paths 和禁止修改范围。
+- 不要回滚或重写其他 worker 的代码。
+- 不要跨轨道抢核心契约；共享类型、AI schema、同步 payload 只能由 Track A 契约任务先定义，其他轨道引用。
+- 每个任务先写测试或最小验证，再实现，再运行本任务验证命令。
+- 每次完成一个 task 都要提交 commit，并在最终回复里列出修改文件、验证命令和残余风险。
+- 如果发现计划和架构文档不一致，暂停当前任务并回报主控对话，不要自行发散。
+
+### Worker 分发模板
+
+复制下面模板给每个手动开启的 Codex 对话：
+
+```text
+你是本仓库并行开发 worker。请先阅读：
+1. docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md
+2. docs/architecture/00-技术架构总览.md
+3. docs/architecture/04-数据与AI架构.md
+4. docs/architecture/05-部署与运维方案.md
+5. docs/architecture/06-技术风险与演进路线.md
+6. 产品需求设计文档.md
+
+你的任务：[填写 Track/Task 编号和标题]
+你的 Owned paths：[填写允许修改的路径]
+禁止修改：[填写其他 worker 的路径]
+依赖条件：[填写必须先完成的任务或 commit]
+
+按计划执行。完成后提交 commit，回复：
+- 完成内容
+- 修改文件
+- 运行过的验证命令和结果
+- 未解决风险或需要主控集成的事项
+```
+
+### 并行启动批次
+
+**Batch 0：契约冻结（必须最先完成）**
+
+- Track A1-A3：Monorepo + shared 基础。
+- Track A4：冻结数据/AI/同步契约。
+
+**Batch 1：基础并行（A4 完成后启动）**
+
+| Worker | 任务范围 | Owned paths | 依赖 |
+| --- | --- | --- | --- |
+| A | 共享契约维护、计划文档收口 | `packages/shared/**`, `docs/superpowers/plans/**` | 无 |
+| B | API 基础、Prisma、Auth、Health | `apps/api/**` | A4 |
+| C | Expo App、导航、主题、基础状态 | `apps/mobile/app/**`, `apps/mobile/src/shared/**`, `apps/mobile/src/stores/**` | A4 |
+| D | SQLite、本地 repository、sync queue | `apps/mobile/src/db/**` | A4 |
+| E | AI 编排、mock provider、prompt/schema 测试 | `apps/api/src/modules/ai/**` | A4 |
+
+**Batch 2：业务闭环并行（集成点 1 通过后启动）**
+
+- B：Goals / Plans / Todos / Energy / Settlement / Tree / Sync API。
+- C：冷启动三路径、能量页、清单页、计划页、成长树、周结算 UI。
+- D：同步引擎、冲突处理、离线验证。
+- E：7 个 AI 场景 prompt、confirm 写入对接。
+- 主控：端到端联调、Playwright 原型对照、文档一致性收口。
+
+## 技术总监续跑协议
+
+当用户输入类似下面的口令时：
+
+```text
+技术总监，请按照当前进度和计划文档继续开发
+```
+
+AI 必须自动进入 **Director 续跑模式**，先检查当前真实进度，再决定下一步任务。不要直接从计划开头重做，也不要凭聊天记忆判断进度。
+
+### Director 续跑模式步骤
+
+1. 阅读本计划、架构文档、产品需求文档和进度交接日志：`docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`。
+2. 检查 git 状态：`git status --short`、`git branch --show-current`、`git log --oneline -5`。
+3. 检查 worktree 状态：`git worktree list`。
+4. 检查计划 checkbox、最近 commit、未提交文件和进度日志，判断每个 task 是 `未开始 / 进行中 / 已完成 / 阻塞 / 待 review`。
+5. 如果工作区有未提交改动，先识别改动归属，不覆盖、不回滚，必要时先做交接记录。
+6. 选择依赖已满足、Owned paths 不冲突、能在当前额度内完成并验证的最小下一任务。
+7. 派发 worker 子 agent 或自己执行任务；完成后必须更新进度日志。
+8. 若额度或上下文可能不足，优先执行“额度保护收尾协议”，不要继续开新任务。
+
+### 额度保护收尾协议
+
+为了防止开发到一半额度耗尽导致停摆，任何 Director/Worker 都必须遵守：
+
+- 每完成一个小任务就提交 commit；不要把多个大功能堆在一个未提交工作区。
+- 每次准备进入较大改动前，先更新进度日志的“当前状态”和“下一步建议”。
+- 每 30 分钟、每个 task 完成后、每次遇到阻塞时，都更新一次进度日志。
+- 如果不能完成当前任务，必须至少留下：
+  - 已改文件列表
+  - 当前做到哪一步
+  - 已运行验证命令及结果
+  - 未完成事项
+  - 下次建议从哪里继续
+- 不确定是否有足够额度时，优先做文档交接和小型验证，不启动新模块。
+
+### 进度状态枚举
+
+任务状态统一使用：
+
+| 状态 | 含义 |
+| --- | --- |
+| `TODO` | 未开始 |
+| `IN_PROGRESS` | 正在实现，有未合并或未验证改动 |
+| `DONE` | 已实现、已验证、已提交 |
+| `REVIEW_PENDING` | 实现完成，等待 spec/code review |
+| `CHANGES_REQUESTED` | review 未通过，需要返工 |
+| `BLOCKED` | 阻塞，需要用户或主控决策 |
+
+### Director 下次续跑最小汇报格式
+
+Director 完成自动检查后，先用下面格式汇报，再继续开发：
+
+```text
+当前进度：
+- 已完成：
+- 进行中：
+- 阻塞：
+- 未提交改动：
+
+我将继续：
+- 下一任务：
+- 选择原因：
+- 验证方式：
+- 收尾点：
+```
+
 ## 并行轨道总览
 
-本计划拆分为 **5 条并行轨道**，每条轨道可由独立的 agent/开发者执行。轨道之间通过 `packages/shared` 的类型契约解耦，在关键节点汇合集成。
+本计划拆分为 **5 条主要并行轨道 + 1 条集成轨道**。轨道之间通过 `packages/shared` 的类型契约解耦，在关键节点汇合集成。真正并行前必须先完成 Track A 的契约冻结任务。
 
 ```text
 时间线（大致）：
 
 Week 1:
-  Track A: Monorepo + Shared 包 ──────────────────────┐
-  Track B: 后端基础 + Auth + 核心业务模块 ─────────────┤
+  Track A: Monorepo + Shared + 契约冻结 ───────────────┐
+  Track B: 后端基础 + Prisma + Health + Auth ─────────┤
   Track C: 前端基础 + 导航 + 静态页面骨架 ─────────────┤
-  Track D: 数据库 Schema + 本地 SQLite ────────────────┤
-  Track E: AI 编排层 ─────────────────────────────────┘
+  Track D: 本地 SQLite + sync queue ──────────────────┤
+  Track E: AI 编排层 + mock provider ─────────────────┘
                                                        │
 Week 2:                                          集成点 1
   Track B: 结算 + 成长树 + 同步 ───────────────────────┤
@@ -39,12 +190,13 @@ Week 2:                                          集成点 1
 | 轨道 | 依赖 | 产出 |
 | --- | --- | --- |
 | A: Monorepo + Shared | 无 | 项目骨架、共享类型、构建配置 |
-| B: 后端 | A 的共享类型 | REST API、业务逻辑、数据持久化 |
+| B: 后端 | A 的共享类型和契约 | Prisma schema、REST API、业务逻辑、数据持久化 |
 | C: 前端 | A 的共享类型 | App UI、导航、交互 |
-| D: 数据库 | A 的共享类型 | Prisma schema、SQLite 本地层 |
-| E: AI 编排 | A 的共享类型、D 的 schema | AI 调用、prompt、结构化输出 |
+| D: 本地数据层 | A 的共享类型和同步契约 | SQLite 本地层、sync_queue、端侧同步引擎 |
+| E: AI 编排 | A 的 AI schema、B 的 ai_generations 表 | AI 调用、prompt、结构化输出 |
+| F: 集成验证 | B/C/D/E 阶段产物 | 端到端联调、部署验证、文档收口 |
 
-**关键原则：Track A 必须最先完成（约 2-3 小时），之后 B/C/D/E 可完全并行。**
+**关键原则：Track A 必须最先完成 A1-A4，之后 B/C/D/E 才能并行。Track B 拥有 Prisma schema；Track D 只拥有端侧 SQLite，不改服务端 schema。**
 
 ---
 
@@ -631,6 +783,21 @@ export const fourWeekCommitmentsOutputSchema = z.object({
   })).min(1).max(4),
 });
 
+export const weeklyFocusToTodosOutputSchema = z.object({
+  days: z.array(z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    todos: z.array(todoOutputSchema).min(0).max(10),
+  })).min(1).max(7),
+});
+
+export const replanFutureWeeksOutputSchema = z.object({
+  reason: z.string().min(1).max(300),
+  weeks: z.array(z.object({
+    weekNumber: z.number().int().min(1).max(4),
+    focuses: z.array(weeklyFocusOutputSchema).min(3).max(5),
+  })).min(1).max(4),
+});
+
 export const localAssistOutputSchema = z.object({
   suggestions: z.array(z.object({
     title: z.string().min(1).max(100),
@@ -665,9 +832,138 @@ git add packages/shared/
 git commit -m "feat: add shared DTOs, Zod validators for AI output"
 ```
 
+### Task A4: 契约冻结 — 数据 / AI / 同步 / Worker 边界
+
+**Purpose:** 这是并行开发的闸门任务。A4 完成前，B/C/D/E 只能做环境初始化，不能实现依赖共享 DTO、AI 输出或同步协议的业务逻辑。
+
+**Files:**
+- Modify: `packages/shared/src/dto/ai.ts`
+- Modify: `packages/shared/src/dto/sync.ts`
+- Modify: `packages/shared/src/validators/ai-output.ts`
+- Create: `packages/shared/src/contracts/tables.ts`
+- Create: `packages/shared/src/contracts/ai-confirmation.ts`
+- Create: `packages/shared/src/contracts/index.ts`
+- Modify: `packages/shared/src/index.ts`
+- Modify: `docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md`
+
+- [ ] **Step 1: 创建业务表名契约**
+
+```typescript
+// packages/shared/src/contracts/tables.ts
+export const SYNC_TABLES = [
+  'visions',
+  'annual_objectives',
+  'quarter_goals',
+  'month_goals',
+  'month_plans',
+  'week_plans',
+  'weekly_focuses',
+  'todos',
+  'energy_entries',
+  'weekly_settlements',
+  'tree_fruits',
+  'quarter_honors',
+  'ai_generations',
+] as const;
+
+export type SyncTableName = (typeof SYNC_TABLES)[number];
+```
+
+- [ ] **Step 2: 创建 AI 确认落库契约**
+
+AI confirm 不允许 AiModule 直接写正式业务表。Confirm 请求必须携带 `target`，由对应业务模块事务落库。
+
+```typescript
+// packages/shared/src/contracts/ai-confirmation.ts
+import { AiScenario } from '../enums';
+
+export type AiConfirmationTarget =
+  | 'vision'
+  | 'annual_objective'
+  | 'quarter_goals'
+  | 'month_goals'
+  | 'month_plan'
+  | 'week_plan'
+  | 'todos';
+
+export interface AiConfirmationContract {
+  generationId: string;
+  scenario: AiScenario;
+  target: AiConfirmationTarget;
+  contextVersion: string;
+  edits?: Record<string, unknown>;
+}
+```
+
+- [ ] **Step 3: 收紧 sync DTO**
+
+`tableName` 使用 `SyncTableName`，`/sync/pull` 使用 POST body，不用 GET query 承载水位。
+
+```typescript
+// packages/shared/src/dto/sync.ts
+import { SyncTableName } from '../contracts';
+
+export interface SyncPushItem {
+  tableName: SyncTableName;
+  localId: string;
+  remoteId: string | null;
+  operation: 'create' | 'update' | 'delete';
+  data: Record<string, unknown>;
+  version: number;
+}
+```
+
+- [ ] **Step 4: 确认 7 个 AI 场景都有 Zod schema**
+
+必须包含：
+- `quickPlanOutputSchema`
+- `annualOkrOutputSchema`
+- `quarterOkrOutputSchema`
+- `fourWeekCommitmentsOutputSchema`
+- `weeklyFocusToTodosOutputSchema`
+- `replanFutureWeeksOutputSchema`
+- `localAssistOutputSchema`
+
+- [ ] **Step 5: 导出 contracts**
+
+```typescript
+// packages/shared/src/contracts/index.ts
+export * from './tables';
+export * from './ai-confirmation';
+```
+
+```typescript
+// packages/shared/src/index.ts
+export * from './enums';
+export * from './constants';
+export * from './dto';
+export * from './validators';
+export * from './contracts';
+```
+
+- [ ] **Step 6: 运行验证**
+
+Run: `pnpm --filter @newme/shared typecheck`
+
+Expected: 无错误
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add packages/shared/ docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md
+git commit -m "chore: freeze shared contracts for parallel workers"
+```
+
 ---
 
 ## Track B: 后端 — NestJS API
+
+**Worker owned paths:** `apps/api/**`
+
+**执行顺序约束：**
+- B1 → B2 → B12 必须在 Week 1 集成点前完成，确保 API 能启动且 `/health` 可检查。
+- B3-B11 可以在 B12 后继续推进。
+- Track B 拥有 `apps/api/prisma/schema.prisma`。Track D 不修改 Prisma schema。
 
 ### Task B1: 初始化 NestJS 项目
 
@@ -837,7 +1133,7 @@ git commit -m "feat: init NestJS API project"
 
 - [ ] **Step 1: 创建 prisma/schema.prisma**
 
-完整 schema 包含所有核心实体：users, visions, annual_objectives, quarters, quarter_goals, month_goals, month_plans, week_plans, weekly_focuses, todos, energy_entries, weekly_settlements, tree_fruits, quarter_honors, ai_generations, sync_devices, refresh_tokens, push_tokens。
+完整 schema 包含所有核心实体：users, visions, annual_objectives, quarters, quarter_goals, month_goals, goal_classifications, month_plans, week_plans, weekly_focuses, todos, energy_entries, weekly_settlements, tree_fruits, quarter_honors, ai_generations, sync_devices, refresh_tokens, push_tokens。
 
 每个 model 包含 id (uuid), userId, createdAt, updatedAt, deletedAt, source, version 等基础字段。具体字段参照 `04-数据与AI架构.md` 的实体定义。
 
@@ -1099,7 +1395,7 @@ git commit -m "feat: add tree module with growth tree and honors"
 
 路由：
 - POST /sync/push — 端侧脏数据推送（批量，逐条返回结果）
-- GET /sync/pull — 按水位拉取远端变更
+- POST /sync/pull — 按水位拉取远端变更
 
 冲突解决：版本号比较，服务端版本大的赢。批量推送部分失败返回逐条结果。
 
@@ -1109,7 +1405,9 @@ git commit -m "feat: add tree module with growth tree and honors"
 git commit -m "feat: add sync module with push/pull and conflict resolution"
 ```
 
-### Task B12: 全局错误处理 + 健康检查
+### Task B12: 全局错误处理 + 健康检查（Week 1 必做闸门）
+
+**执行提示：** 虽然编号在 B11 之后，但后端 worker 必须在完成 B2 后立即执行 B12，再继续 B3-B11。集成点 1 依赖 `/health`。
 
 **Files:**
 - Create: `apps/api/src/common/filters/http-exception.filter.ts`
@@ -1135,6 +1433,10 @@ git commit -m "feat: add global error handling and health check"
 ---
 
 ## Track C: 前端 — React Native + Expo
+
+**Worker owned paths:** `apps/mobile/app/**`, `apps/mobile/src/shared/**`, `apps/mobile/src/stores/**`, `apps/mobile/src/features/**`
+
+**禁止修改:** `apps/mobile/src/db/**` 由 Track D 负责；`packages/shared/**` 由 Track A 负责。
 
 ### Task C1: 初始化 Expo 项目
 
@@ -1462,6 +1764,10 @@ git commit -m "feat: add weekly settlement flow with fruit animation"
 
 ## Track D: 本地数据层 — expo-sqlite
 
+**Worker owned paths:** `apps/mobile/src/db/**`
+
+**禁止修改:** `apps/api/prisma/**`、`apps/api/src/**`、`packages/shared/**`。Track D 只实现端侧 SQLite、本地 repository、sync queue 和同步引擎。
+
 ### Task D1: SQLite 初始化 + 迁移框架
 
 **Files:**
@@ -1551,6 +1857,10 @@ git commit -m "feat: add sync engine with conflict resolution"
 
 ## Track E: AI 编排层
 
+**Worker owned paths:** `apps/api/src/modules/ai/**`
+
+**禁止修改:** `packages/shared/**` 的 AI schema 由 Track A 冻结；业务表落库由 Track B 的领域模块负责。AiModule 只能保存/更新 `ai_generations`，不能直接写 goals/plans/todos 等正式业务表。
+
 ### Task E1: AI 模块基础架构
 
 **Files:**
@@ -1613,8 +1923,14 @@ export interface GenerateOptions {
 
 路由：
 - POST /ai/generations — 生成 AI 草案
-- POST /ai/generations/:id/confirm — 确认草案
+- POST /ai/generations/:id/confirm — 确认草案状态，并把确认 payload 交给对应业务模块事务落库
 - POST /ai/assist — 局部 AI 辅助
+
+确认约束：
+1. 请求必须符合 `AiConfirmationContract`。
+2. AiService 校验 generation、scenario、contextVersion 和 schema。
+3. 正式业务写入委托给 Goals/Plans/Todos 等领域 service。
+4. 不允许 AI 草案自动覆盖用户已编辑内容。
 
 - [ ] **Step 11: 运行测试确认通过**
 
@@ -1715,7 +2031,9 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 git commit -m "feat: add Docker deployment with compose and nginx"
 ```
 
-### Task F7: 推送通知模块（阶段 2 可提前启动）
+### Task F7: 推送通知模块（Phase 2 optional，不阻塞 Week 2 MVP）
+
+**范围说明：** 推送通知属于体验稳定版能力。只有当 F1-F6 全部稳定、且不会影响冷启动 → 日常执行 → 周结算 → 成长树闭环时，才允许提前启动。本任务不计入 Week 2 最终验收。
 
 **Files:**
 - Create: `apps/api/src/modules/notifications/notifications.module.ts`
@@ -1763,7 +2081,7 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 
 ### 集成点 1（Week 1 末）
 
-**前置条件：** Track A 全部完成，Track B (B1-B8)、Track C (C1-C4)、Track D (D1-D2)、Track E (E1) 基本完成。
+**前置条件：** Track A (A1-A4) 全部完成，Track B (B1-B2+B12+B3-B8)、Track C (C1-C4)、Track D (D1-D2)、Track E (E1) 基本完成。
 
 **验证项：**
 
@@ -1775,7 +2093,7 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 
 ### 集成点 2（Week 2 中）
 
-**前置条件：** Track B 全部完成，Track C (C5-C10)、Track D (D3)、Track E (E2) 完成。
+**前置条件：** Track B (B1-B12) 完成，Track C (C5-C10)、Track D (D3)、Track E (E2) 完成。F7 不作为前置条件。
 
 **验证项：**
 
@@ -1792,3 +2110,18 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 - [ ] 手动路径空层级不阻断闭环
 - [ ] Docker 部署可用
 - [ ] 核心路径无崩溃
+- [ ] F7 推送通知未完成时，不阻塞 MVP 验收；若提前完成，必须有独立验证记录
+
+## 主控收口清单
+
+主控对话在合并所有 worker 结果后执行：
+
+- [ ] 检查 `git status`，确认没有未解释的跨轨道改动。
+- [ ] 运行 `pnpm install`。
+- [ ] 运行 `pnpm -r typecheck`。
+- [ ] 运行后端测试：`pnpm --filter @newme/api test`。
+- [ ] 运行前端可用性验证：启动 Expo，检查 4 tab 和关键页面。
+- [ ] 运行数据库迁移验证：`pnpm --filter @newme/api prisma migrate dev` 或对应项目脚本。
+- [ ] 运行 SQLite 初始化验证。
+- [ ] 使用 `npx playwright` 对 `prototype/index.html` 做原型页面检查、截图、视觉验证，确认产品体验表达仍与实现一致。
+- [ ] 若实现与 `产品需求设计文档.md` 或架构文档不一致，按真实实现同步更新文档。
