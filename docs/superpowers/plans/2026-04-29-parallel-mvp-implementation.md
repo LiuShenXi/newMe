@@ -1579,17 +1579,17 @@ git commit -m "feat: add design system with theme tokens and base components"
 - Create: `apps/mobile/src/shared/api/client.ts`
 - Create: `apps/mobile/src/shared/api/query-client.ts`
 
-- [ ] **Step 1: 创建 API 客户端**
+- [x] **Step 1: 创建 API 客户端**
 
 基于 fetch 封装，自动附加 JWT、处理 401 刷新、超时控制。
 
-- [ ] **Step 2: 创建 React Query 配置**
+- [x] **Step 2: 创建 React Query 配置**
 
-- [ ] **Step 3: 创建 onboarding store**
+- [x] **Step 3: 创建 onboarding store**
 
 管理冷启动三路径的多步骤状态：当前路径、每层输入、AI 草案、跳过标记。
 
-- [ ] **Step 4: 创建 auth store**
+- [x] **Step 4: 创建 auth store**
 
 管理 token 存储（expo-secure-store）、登录状态、用户上下文。
 
