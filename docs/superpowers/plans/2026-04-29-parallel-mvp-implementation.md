@@ -8,6 +8,8 @@
 
 **Tech Stack:** React Native (Expo) · TypeScript · NestJS · PostgreSQL · Prisma · Zustand · React Query · expo-sqlite · expo-router · react-native-reanimated · @shopify/react-native-skia · Zod
 
+**Frontend UI Source of Truth:** 移动客户端 UI 必须以 `prototype/index.html` 终稿静态交互原型为视觉与交互基准做 1:1 还原。除非产品需求设计文档明确变更，worker 不得把原型仅作为风格参考，也不得自行改动信息架构、视觉层级、关键交互或文案表达。移动端实现完成后，主控必须用 `npx playwright` 对原型关键状态截图，并与 Expo 客户端关键页面做视觉/交互对照验收。
+
 ---
 
 ## AI worker 必读与启动规则
@@ -85,6 +87,8 @@ git worktree add .worktrees/track-e-ai -b feat/track-e-ai
 | C | Expo App、导航、主题、基础状态 | `apps/mobile/app/**`, `apps/mobile/src/shared/**`, `apps/mobile/src/stores/**` | A4 |
 | D | SQLite、本地 repository、sync queue | `apps/mobile/src/db/**` | A4 |
 | E | AI 编排、mock provider、prompt/schema 测试 | `apps/api/src/modules/ai/**` | A4 |
+
+Track C 前端 worker 的 UI 验收基准是 `prototype/index.html`，要求按终稿原型做 1:1 还原；若移动端技术限制导致无法完全一致，必须记录差异、原因和替代实现，并同步更新 `产品需求设计文档.md` 与本计划。
 
 **Batch 2：业务闭环并行（集成点 1 通过后启动）**
 
@@ -2128,5 +2132,5 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 - [ ] 运行前端可用性验证：启动 Expo，检查 4 tab 和关键页面。
 - [ ] 运行数据库迁移验证：`pnpm --filter @newme/api prisma migrate dev` 或对应项目脚本。
 - [ ] 运行 SQLite 初始化验证。
-- [ ] 使用 `npx playwright` 对 `prototype/index.html` 做原型页面检查、截图、视觉验证，确认产品体验表达仍与实现一致。
+- [ ] 使用 `npx playwright` 对 `prototype/index.html` 做原型页面检查、截图、视觉验证，并与 Expo 客户端关键页面对照，确认移动端 UI 按终稿原型 1:1 还原；任何无法还原的差异都要记录原因并同步文档。
 - [ ] 若实现与 `产品需求设计文档.md` 或架构文档不一致，按真实实现同步更新文档。
