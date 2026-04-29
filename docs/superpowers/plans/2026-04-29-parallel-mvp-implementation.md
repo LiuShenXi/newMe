@@ -974,13 +974,16 @@ git commit -m "chore: freeze shared contracts for parallel workers"
 - Create: `apps/api/nest-cli.json`
 - Create: `apps/api/src/main.ts`
 - Create: `apps/api/src/app.module.ts`
+- Create: `apps/api/src/app.module.spec.ts`
 - Create: `apps/api/.env.example`
 
-- [ ] **Step 1: 创建 apps/api 目录并初始化**
+**实际执行补充：** B1 增加 `AppModule` smoke test，用于满足测试先行；先确认测试因 `./app.module` 缺失失败，再实现 `AppModule` 与启动入口。
+
+- [x] **Step 1: 创建 apps/api 目录并初始化**
 
 Run: `mkdir -p apps/api/src`
 
-- [ ] **Step 2: 创建 package.json**
+- [x] **Step 2: 创建 package.json**
 
 ```json
 {
@@ -1029,7 +1032,7 @@ Run: `mkdir -p apps/api/src`
 }
 ```
 
-- [ ] **Step 3: 创建 tsconfig.json 和 tsconfig.build.json**
+- [x] **Step 3: 创建 tsconfig.json 和 tsconfig.build.json**
 
 ```json
 // tsconfig.json
@@ -1038,6 +1041,8 @@ Run: `mkdir -p apps/api/src`
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
@@ -1053,7 +1058,7 @@ Run: `mkdir -p apps/api/src`
 }
 ```
 
-- [ ] **Step 4: 创建 nest-cli.json**
+- [x] **Step 4: 创建 nest-cli.json**
 
 ```json
 {
@@ -1066,7 +1071,7 @@ Run: `mkdir -p apps/api/src`
 }
 ```
 
-- [ ] **Step 5: 创建 .env.example**
+- [x] **Step 5: 创建 .env.example**
 
 ```text
 NODE_ENV=development
@@ -1080,7 +1085,7 @@ AI_API_KEY=sk-xxx
 AI_MODEL=gpt-4o
 ```
 
-- [ ] **Step 6: 创建 src/main.ts**
+- [x] **Step 6: 创建 src/main.ts**
 
 ```typescript
 import { NestFactory } from '@nestjs/core';
@@ -1097,7 +1102,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-- [ ] **Step 7: 创建 src/app.module.ts**
+- [x] **Step 7: 创建 src/app.module.ts**
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -1111,12 +1116,12 @@ import { ConfigModule } from '@nestjs/config';
 export class AppModule {}
 ```
 
-- [ ] **Step 8: 安装依赖并验证构建**
+- [x] **Step 8: 安装依赖并验证构建**
 
 Run: `cd apps/api && pnpm install && pnpm build`
 Expected: 构建成功
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add apps/api/
@@ -1131,13 +1136,13 @@ git commit -m "feat: init NestJS API project"
 - Create: `apps/api/src/prisma/prisma.service.ts`
 - Modify: `apps/api/src/app.module.ts`
 
-- [ ] **Step 1: 创建 prisma/schema.prisma**
+- [x] **Step 1: 创建 prisma/schema.prisma**
 
 完整 schema 包含所有核心实体：users, visions, annual_objectives, quarters, quarter_goals, month_goals, goal_classifications, month_plans, week_plans, weekly_focuses, todos, energy_entries, weekly_settlements, tree_fruits, quarter_honors, ai_generations, sync_devices, refresh_tokens, push_tokens。
 
 每个 model 包含 id (uuid), userId, createdAt, updatedAt, deletedAt, source, version 等基础字段。具体字段参照 `04-数据与AI架构.md` 的实体定义。
 
-- [ ] **Step 2: 创建 PrismaService**
+- [x] **Step 2: 创建 PrismaService**
 
 ```typescript
 // src/prisma/prisma.service.ts
@@ -1156,7 +1161,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 }
 ```
 
-- [ ] **Step 3: 创建 PrismaModule**
+- [x] **Step 3: 创建 PrismaModule**
 
 ```typescript
 // src/prisma/prisma.module.ts
@@ -1171,14 +1176,14 @@ import { PrismaService } from './prisma.service';
 export class PrismaModule {}
 ```
 
-- [ ] **Step 4: 注册 PrismaModule 到 AppModule**
+- [x] **Step 4: 注册 PrismaModule 到 AppModule**
 
-- [ ] **Step 5: 运行 prisma migrate dev 创建初始迁移**
+- [x] **Step 5: 运行 prisma migrate dev 创建初始迁移**
 
 Run: `cd apps/api && npx prisma migrate dev --name init`
 Expected: 迁移成功，数据库表创建
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/api/prisma/ apps/api/src/prisma/
@@ -1414,17 +1419,17 @@ git commit -m "feat: add sync module with push/pull and conflict resolution"
 - Create: `apps/api/src/common/interceptors/request-id.interceptor.ts`
 - Create: `apps/api/src/health/health.controller.ts`
 
-- [ ] **Step 1: 实现统一错误响应格式**
+- [x] **Step 1: 实现统一错误响应格式**
 
 ```json
 { "code": "ERROR_CODE", "message": "用户友好文案", "requestId": "req_xxx" }
 ```
 
-- [ ] **Step 2: 实现健康检查 GET /health**
+- [x] **Step 2: 实现健康检查 GET /health**
 
 返回 API 状态、数据库连接、版本号。
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit -m "feat: add global error handling and health check"
