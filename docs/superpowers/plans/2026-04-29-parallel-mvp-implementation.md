@@ -1834,11 +1834,11 @@ git commit -m "feat: add SQLite database with migration framework"
 - Create: `apps/mobile/src/db/repositories/settlement.repository.ts`
 - Create: `apps/mobile/src/db/repositories/sync-queue.repository.ts`
 
-- [ ] **Step 1: 实现各 repository 的 CRUD 操作**
+- [x] **Step 1: 实现各 repository 的 CRUD 操作**
 
 每个 repository 封装对应本地表的增删改查。写入时自动设置 syncStatus = 'pending' 并加入 sync_queue。
 
-- [ ] **Step 2: 实现 sync-queue repository**
+- [x] **Step 2: 实现 sync-queue repository**
 
 管理待同步队列：入队、出队、标记成功/失败、重试。
 
