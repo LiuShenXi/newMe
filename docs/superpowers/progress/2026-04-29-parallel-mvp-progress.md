@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track D3 Sync Engine 已完成并合并到 main；下一步建议进入 C5 冷启动 UI 或 F5 前置运行态 smoke
+- 当前阶段：Batch 2 / Track C5 冷启动三路径已在 `feat/track-c-onboarding` 完成实现与验证，待合并 main
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -56,6 +56,7 @@ git worktree list
 | C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成 |
 | C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
+| C5 Onboarding 三路径 | REVIEW_PENDING | feat/track-c-onboarding | 待提交/待合并 | pnpm -r typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test .tmp/c5-onboarding.spec.js --reporter=line 均通过 | 三路径入口、快速/深度输入页、手动 OKR 五层流转完成；真实 AI 生成与确认写入留到 F2 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
@@ -64,7 +65,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（D3 已合并 main，主工作区保持干净）。
+- `feat/track-c-onboarding` 当前包含 C5 实现与文档更新，待提交后合并 main；主工作区保持干净。
 
 ## 最近工作记录
 
@@ -206,6 +207,11 @@ git worktree list
 - D3 冲突解析完成：新增 `conflict-resolver.ts`，按版本号判断 remote_wins/local_wins/same_version；服务端返回 conflict 时保留队列失败原因，避免无提示覆盖用户本地修改。
 - D3 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm -r typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；验证导出产物已清理。限制：真实 API + SQLite 联调需等认证态和运行时设备环境，留到 F5。
 - 主控已将 `feat/track-d-sync-engine` 合并到 `main`；合并提交 `889b700`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过；验证导出产物已清理。
+- 创建 `.worktrees/track-c-onboarding` / `feat/track-c-onboarding`，启动 Track C 的 C5 冷启动三路径。
+- C5 原型对照记录：使用 `npx playwright test .tmp/prototype-onboarding.spec.js --reporter=line` 打开 `prototype/index.html`，确认原型首屏需点击 `开始规划` 后出现三路径卡片，并截图对照。
+- C5 实现完成：新增三路径选择页、快速规划输入页、深度愿景输入页、手动 OKR 年/季/月/周/日五层页面，以及 `PathCard`、`OnboardingScreen`、`ManualStepScreen`、`ManualInput`、`AiDraftView`、`useOnboarding`。
+- C5 范围说明：当前先完成导航、输入留存、AI 草案预览占位和进入执行闭环；快速/深度路径真实 AI 生成、确认写入、本周重点和今日清单落库留到 F2 联调。
+- C5 验证记录：`pnpm -r typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；启动 Expo Web 后运行 `npx playwright test .tmp/c5-onboarding.spec.js --reporter=line`，1 个用例通过，覆盖三路径入口、quick/vision 页面和手动五层流转。
 
 ## 阻塞与风险
 
@@ -223,10 +229,9 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 合并 D3 后，建议进入 C5 冷启动三路径 UI，或启动 F5 前置的运行态 SQLite/API 联调 smoke。
-2. 也可并行启动 D1-D2 SQLite 本地层，为端侧离线能力打底。
-3. C2 开始必须以 `prototype/index.html` 终稿原型为视觉与交互基准，必要时用 `npx playwright` 截图做对照。
-4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
+1. C5 合并 main 后，建议进入 C6 能量页，继续按 `prototype/index.html` 做视觉/交互对照。
+2. F2 冷启动联调时补齐快速/深度路径的真实 AI 生成、确认写入、本周重点和今日清单落库。
+3. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
 ## 收尾模板
 

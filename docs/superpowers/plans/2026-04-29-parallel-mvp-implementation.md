@@ -1613,29 +1613,32 @@ git commit -m "feat: add Zustand stores and React Query setup"
 - Create: `apps/mobile/src/features/onboarding/components/PathCard.tsx`
 - Create: `apps/mobile/src/features/onboarding/components/AiDraftView.tsx`
 - Create: `apps/mobile/src/features/onboarding/components/ManualInput.tsx`
+- Create: `apps/mobile/src/features/onboarding/components/OnboardingScreen.tsx`
+- Create: `apps/mobile/src/features/onboarding/components/ManualStepScreen.tsx`
 - Create: `apps/mobile/src/features/onboarding/hooks/useOnboarding.ts`
 
-- [ ] **Step 1: 实现路径选择页**
+- [x] **Step 1: 实现路径选择页**
 
 三路径并列：深度愿景规划（推荐）、快速规划、手动创建 OKR。
 
-- [ ] **Step 2: 实现手动 OKR 五层引导**
+- [x] **Step 2: 实现手动 OKR 五层引导**
 
 年目标 → 季度目标 → 本月目标 → 本周计划 → 今日 ToDo。
 每层：继续（留空即跳过）、返回（保留内容）、AI 辅助（可选）。
 
-- [ ] **Step 3: 实现快速规划流程**
+- [x] **Step 3: 实现快速规划流程**
 
-季度目标输入 → AI 生成本周重点 + 今日清单 → 确认。
+季度目标输入 → AI 草案预览占位 → 确认进入执行闭环。
+真实 AI 生成、确认写入和本周重点/今日清单落库在 F2 冷启动联调中完成。
 
-- [ ] **Step 4: 实现深度愿景规划流程**
+- [x] **Step 4: 实现深度愿景规划流程**
 
-愿景输入 → 认可 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划。
-每层可返回、可重新生成、可编辑。
+愿景输入 → AI 草案预览占位 → 确认进入执行闭环。
+完整的年度 OKR、季度 OKR、4 周承诺和天计划级联生成在 F2 冷启动联调中接入。
 
-- [ ] **Step 5: 验证三条路径导航和状态保持**
+- [x] **Step 5: 验证三条路径导航和状态保持**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git commit -m "feat: add cold start onboarding with 3 paths"
