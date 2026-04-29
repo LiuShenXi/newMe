@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 1
-- 当前阶段：Batch 1 / Track B B8 Energy 已在 `feat/track-b-energy` 完成，下一步可继续 B9 Settlement 或并行启动 C/D/E
+- 当前阶段：Batch 1 / Track B B8 Energy 已完成并合并到 main，下一步可继续 B9 Settlement 或并行启动 C/D/E
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -46,7 +46,7 @@ git worktree list
 | B5 Goals | DONE | feat/track-b-goals -> main | 2ca2412 | goals.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 支持愿景 upsert、逻辑季度 ID 到 Quarter UUID、月目标独立创建、当前规划概览 |
 | B6 Plans | DONE | feat/track-b-plans -> main | 16e3d3c | plans.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 获取有效本周重点；更新时确保 WeekPlan 存在、旧 AI 重点失效、新手动重点写入 |
 | B7 Todos | DONE | feat/track-b-todos -> main | 71fdc0d | todos.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 今日清单查询、手动创建、用户隔离更新、软删除 |
-| B8 Energy | DONE | feat/track-b-energy | 本任务提交 | energy.service RED/GREEN；api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
+| B8 Energy | DONE | feat/track-b-energy -> main | 956e0c8 | energy.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 每日能量 upsert；本周平均值只按已记录天数计算 |
 | C1-C4 Mobile Shell | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | D1-D2 SQLite 本地层 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
 | E1 AI 骨架 | TODO | 未分配 | 无 | 未运行 | A4 后推进 |
@@ -55,7 +55,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- B8 Energy 改动随本任务提交；提交后工作区应保持干净。涉及文件为 `apps/api/src/modules/energy/**`、`apps/api/src/app.module.ts`、实施计划和本进度日志。
+- 无（B8 Energy 已合并 main；本条交接日志提交后工作区应保持干净）。
 
 ## 最近工作记录
 
@@ -121,6 +121,7 @@ git worktree list
 - B8 Energy 实现完成：新增 `EnergyModule`、`EnergyController`、`EnergyService`，并注册到 `AppModule`。
 - B8 Energy 行为范围：`PUT /energy/days/:date` 按用户+日期 upsert 当日能量；`GET /energy/weeks/:weekId` 返回本周能量明细、已记录天数和平均值；平均值按已记录每日能量求均值，不按 7 天摊平。
 - B8 Energy 收口验证：`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
+- 主控已将 `feat/track-b-energy` 合并到 `main`；合并后在主目录执行 `pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck` 均通过。
 
 ## 阻塞与风险
 
