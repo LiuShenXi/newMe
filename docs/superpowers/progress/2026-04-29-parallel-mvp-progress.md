@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2
-- 当前阶段：Batch 2 / Track C6 能量页已完成并合并到 main；下一步进入 C7 清单页
+- 当前阶段：Batch 2 / Track C7 清单页已在 `feat/track-c-todo` 完成实现与验证，待合并 main
 - 当前主控：main
 - 最近更新时间：2026-04-29
 - 最近更新人：Codex
@@ -58,6 +58,7 @@ git worktree list
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
 | C5 Onboarding 三路径 | DONE | feat/track-c-onboarding -> main | 4df1237 / merge 38fab3c | pnpm -r typecheck；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test .tmp/c5-onboarding.spec.js --reporter=line；main 上 api test/typecheck/build 均通过 | 三路径入口、快速/深度输入页、手动 OKR 五层流转完成；真实 AI 生成与确认写入留到 F2 |
 | C6 Energy Page | DONE | feat/track-c-energy -> main | 604d2df / merge 1c58f93 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 能量球、本周进度概览、今日能量条、确认提醒和注入反馈完成；Skia 粒子留体验增强 |
+| C7 Todo Page | REVIEW_PENDING | feat/track-c-todo | 待提交/待合并 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web 均通过 | 本周重点标签、今日清单 CRUD、本周 7 天概览完成；左滑删除留体验增强 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
@@ -66,7 +67,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（C6 已合并 main，主工作区验证产物已清理）。
+- `feat/track-c-todo` 当前包含 C7 实现与文档更新，待提交后合并 main；主工作区保持干净。
 
 ## 最近工作记录
 
@@ -220,6 +221,11 @@ git worktree list
 - C6 范围说明：当前动效使用 React Native Animated/View 实现基础发光、气泡和充能状态，未引入 Skia；Skia 自绘粒子和更复杂涌入效果留体验增强阶段。
 - C6 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；启动 Expo Web 后运行 `npx playwright test .tmp/c6-energy.spec.js --reporter=line`，1 个用例通过，并生成 `.tmp/c6-energy.png` 做视觉检查。
 - 主控已将 `feat/track-c-energy` 合并到 `main`；合并提交 `1c58f93`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web`、`npx playwright test .tmp/c6-energy.spec.js --reporter=line` 均通过；验证导出产物和临时测试目录已清理。
+- 创建 `.worktrees/track-c-todo` / `feat/track-c-todo`，启动 Track C 的 C7 清单页。
+- C7 TDD 记录：先新增 Playwright 用例 `.tmp/c7-todo.spec.js` 并运行，确认当前占位页因缺少本周重点标签失败；实现后同一用例通过。中途截图发现 Modal 层级混入底层内容，已改为页面内 absolute overlay 并重新验证。
+- C7 实现完成：新增 `useTodos`、`TodoItem`、`TodoList`、`AddTodoInput`，并组装清单页。清单页支持本周重点标签、今日完成数、勾选、新增、编辑、删除和本周 7 天概览。
+- C7 范围说明：当前删除采用显式垃圾桶按钮保证 Web/移动端一致可测；左滑删除手势留体验增强阶段。
+- C7 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；启动 Expo Web 后运行 `npx playwright test .tmp/c7-todo.spec.js --reporter=line`，1 个用例通过，并生成 `.tmp/c7-todo.png` 做视觉检查。
 
 ## 阻塞与风险
 
@@ -237,9 +243,9 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. C6 合并 main 后，建议进入 C7 清单页，继续对齐原型中的新增、勾选、编辑和左滑删除能力。
+1. C7 合并 main 后，建议进入 C8 计划页，继续对齐月/年视图和手动来源下的“暂未设置”展示。
 2. F2 冷启动联调时补齐快速/深度路径的真实 AI 生成、确认写入、本周重点和今日清单落库。
-3. C6 的 Skia 自绘粒子与复杂充电涌入效果留体验增强阶段，不阻塞 MVP 闭环。
+3. C6 的 Skia 自绘粒子与复杂充电涌入效果、C7 的左滑删除手势留体验增强阶段，不阻塞 MVP 闭环。
 4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
 ## 收尾模板

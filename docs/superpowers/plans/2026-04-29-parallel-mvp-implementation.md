@@ -1688,13 +1688,15 @@ git commit -m "feat: add energy page with orb, slider, and weekly focus panel"
 - Create: `apps/mobile/src/features/todo/components/AddTodoInput.tsx`
 - Create: `apps/mobile/src/features/todo/hooks/useTodos.ts`
 
-- [ ] **Step 1: 实现 TodoItem（勾选、左滑删除）**
+- [x] **Step 1: 实现 TodoItem（勾选、删除）**
 
-- [ ] **Step 2: 实现 TodoList + AddTodoInput**
+C7 当前完成勾选、编辑和显式删除按钮；左滑露出垃圾桶手势留到体验增强阶段接入。
 
-- [ ] **Step 3: 实现顶部本周重点摘要**
+- [x] **Step 2: 实现 TodoList + AddTodoInput**
 
-- [ ] **Step 4: 组装清单页**
+- [x] **Step 3: 实现顶部本周重点摘要**
+
+- [x] **Step 4: 组装清单页**
 
 - [x] **Step 5: Commit**
 
