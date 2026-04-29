@@ -1788,7 +1788,7 @@ git commit -m "feat: add weekly settlement flow with fruit animation"
 - Create: `apps/mobile/src/db/migrations/index.ts`
 - Create: `apps/mobile/src/db/migrations/v1.ts`
 
-- [ ] **Step 1: 创建数据库初始化模块**
+- [x] **Step 1: 创建数据库初始化模块**
 
 ```typescript
 // database.ts
@@ -1804,17 +1804,19 @@ export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
 }
 ```
 
-- [ ] **Step 2: 创建迁移框架**
+- [x] **Step 2: 创建迁移框架**
 
 使用 PRAGMA user_version 管理版本。按版本号顺序执行迁移。迁移在事务中执行。
 
-- [ ] **Step 3: 创建 v1 迁移 — 初始表结构**
+- [x] **Step 3: 创建 v1 迁移 — 初始表结构**
 
 创建所有本地表：local_goals, local_weekly_focuses, local_todos, local_energy_entries, local_settlements, local_tree_data, local_ai_drafts, sync_queue。
 
 每条记录包含：id (UUID), remoteId, createdAt, updatedAt, deletedAt, syncStatus, version。
 
 - [ ] **Step 4: 验证迁移执行**
+
+当前 D1 验证已覆盖 TypeScript 与 Expo Web 打包；`expo-sqlite` 无法在 Node 环境直接打开数据库，首次真实 DB open + migration smoke 留到 D2 repository 接入时通过 App 运行态验证。
 
 - [ ] **Step 5: Commit**
 
