@@ -1654,25 +1654,26 @@ git commit -m "feat: add cold start onboarding with 3 paths"
 - Create: `apps/mobile/src/features/energy/components/ConfirmButton.tsx`
 - Create: `apps/mobile/src/features/energy/hooks/useEnergy.ts`
 
-- [ ] **Step 1: 实现能量球组件（Skia 自绘）**
+- [x] **Step 1: 实现能量球组件（MVP 发光动效）**
 
 发光脉冲 + 气泡粒子。MVP 先实现基础发光效果，粒子后续优化。
+C6 当前使用 React Native Animated/View 实现跨端基础发光和充能状态；Skia 自绘粒子留到体验增强阶段接入。
 
-- [ ] **Step 2: 实现本周重点概览面板**
+- [x] **Step 2: 实现本周重点概览面板**
 
 展示 3-5 条本周重点。本周重点为空时隐藏面板。
 
-- [ ] **Step 3: 实现能量滑条**
+- [x] **Step 3: 实现能量滑条**
 
 0-100 滑条，青色发光轨道。
 
-- [ ] **Step 4: 实现确认按钮**
+- [x] **Step 4: 实现确认按钮**
 
 未查看清单时触发温和提醒。确认后播放充电动效。
 
-- [ ] **Step 5: 组装能量页**
+- [x] **Step 5: 组装能量页**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git commit -m "feat: add energy page with orb, slider, and weekly focus panel"
