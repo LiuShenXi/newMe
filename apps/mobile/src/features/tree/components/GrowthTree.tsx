@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, LayoutChangeEvent, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
+import { PrototypeTreeTool } from '../../../shared/components';
 import type { TreeFruit } from '../data/fruits';
 
 interface GrowthTreeProps {
@@ -37,6 +38,11 @@ const groundGradient = {
 const canopyGradient = {
   backgroundImage:
     'radial-gradient(circle at 42% 38%, rgba(129, 255, 188, .30), rgba(22, 83, 62, .55) 55%, rgba(8, 30, 25, .88))',
+} as unknown as ViewStyle;
+
+const trunkGradient = {
+  backgroundImage: 'linear-gradient(90deg, #1c120c, #4d3521, #1a110d)',
+  boxShadow: 'inset -7px 0 20px rgba(0, 0, 0, .35)',
 } as unknown as ViewStyle;
 
 const fruitGradient = {
@@ -89,7 +95,7 @@ export function GrowthTree({ fruits, onDetailPress, onFruitPress }: GrowthTreePr
           },
         ]}
       />
-      <View style={styles.trunk} />
+      <View style={[styles.trunk, trunkGradient]} />
 
       {branches.map((branch, index) => (
         <View
@@ -148,18 +154,9 @@ export function GrowthTree({ fruits, onDetailPress, onFruitPress }: GrowthTreePr
       ))}
 
       <View style={styles.tools}>
-        <Pressable accessibilityRole="button" onPress={() => onDetailPress?.('fruit')} style={[styles.tool, styles.fruitTool, glassBlur]}>
-          <Text style={styles.toolStrong}>{fruits.length}</Text>
-          <Text style={styles.toolText}>果实</Text>
-        </Pressable>
-        <Pressable accessibilityRole="button" onPress={() => onDetailPress?.('quarter')} style={[styles.tool, styles.quarterTool, glassBlur]}>
-          <Text style={styles.toolStrong}>Q2</Text>
-          <Text style={styles.toolText}>阶段</Text>
-        </Pressable>
-        <Pressable accessibilityRole="button" onPress={() => onDetailPress?.('honor')} style={[styles.tool, styles.honorTool, glassBlur]}>
-          <Text style={styles.toolStrong}>1</Text>
-          <Text style={styles.toolText}>荣誉</Text>
-        </Pressable>
+        <PrototypeTreeTool label="果实" onPress={() => onDetailPress?.('fruit')} tone="fruit" value={`${fruits.length}`} />
+        <PrototypeTreeTool label="阶段" onPress={() => onDetailPress?.('quarter')} tone="quarter" value="Q2" />
+        <PrototypeTreeTool label="荣誉" onPress={() => onDetailPress?.('honor')} tone="honor" value="1" />
       </View>
 
       <View style={[styles.tip, glassBlur]}>
@@ -213,9 +210,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 22,
   },
-  fruitTool: {
-    borderColor: 'rgba(254, 243, 199, 0.20)',
-  },
   groundGlow: {
     backgroundColor: 'rgba(12, 30, 20, 0.62)',
     bottom: 0,
@@ -224,12 +218,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     zIndex: 2,
-  },
-  honorTool: {
-    borderColor: 'rgba(209, 250, 229, 0.20)',
-  },
-  quarterTool: {
-    borderColor: 'rgba(207, 250, 254, 0.20)',
   },
   tip: {
     backgroundColor: 'rgba(0, 0, 0, 0.30)',
@@ -246,25 +234,6 @@ const styles = StyleSheet.create({
   tipText: {
     color: '#CBD5E1',
     fontSize: 12,
-  },
-  tool: {
-    alignItems: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.36)',
-    borderRadius: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  toolStrong: {
-    color: '#FFFBEB',
-    fontSize: 14,
-    fontWeight: '900',
-    lineHeight: 18,
-  },
-  toolText: {
-    color: '#FFFBEB',
-    fontSize: 12,
-    lineHeight: 16,
   },
   tools: {
     gap: 8,
@@ -289,7 +258,8 @@ const styles = StyleSheet.create({
   },
   trunk: {
     backgroundColor: '#4D3521',
-    borderRadius: 999,
+    borderTopLeftRadius: 999,
+    borderTopRightRadius: 999,
     bottom: 40,
     height: 310,
     left: '50%',

@@ -2,9 +2,21 @@ import { LinearGradient } from 'expo-linear-gradient';
 import type { PropsWithChildren } from 'react';
 import { ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
+import {
+  prototype,
+  prototypeGlassBlur,
+  prototypeGlassShadow,
+  prototypeGridBackground,
+  prototypePhoneBackground,
+} from '../theme';
+import { PrototypeBottomNav, type PrototypeNavTab } from './PrototypePrimitives';
+
 interface PrototypeScreenProps extends PropsWithChildren {
+  activeTab?: PrototypeNavTab;
+  contentMode?: 'fixed' | 'scroll';
   contentStyle?: StyleProp<ViewStyle>;
   scroll?: boolean;
+  showNav?: boolean;
 }
 
 export function PrototypeStatusBar() {
@@ -17,27 +29,36 @@ export function PrototypeStatusBar() {
   );
 }
 
-export function PrototypeScreen({ children, contentStyle, scroll = true }: PrototypeScreenProps) {
+export function PrototypeScreen({
+  activeTab,
+  children,
+  contentMode,
+  contentStyle,
+  scroll = true,
+  showNav,
+}: PrototypeScreenProps) {
+  const shouldShowNav = showNav ?? Boolean(activeTab);
+  const shouldScroll = contentMode ? contentMode === 'scroll' : scroll;
   const content = (
-    <View style={[styles.content, contentStyle]}>
+    <View style={styles.content}>
       <PrototypeStatusBar />
-      {children}
+      <View style={[styles.main, shouldShowNav ? styles.mainWithNav : null, contentStyle]}>{children}</View>
     </View>
   );
 
   return (
     <View style={styles.root}>
       <LinearGradient colors={['#091411', '#060B0A', '#030605']} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
-      <View style={styles.cyanBloomTop} />
-      <View style={styles.greenBloomBottom} />
-      <View style={styles.gridLayer} />
-      {scroll ? (
+      <View style={[StyleSheet.absoluteFill, prototypePhoneBackground]} />
+      <View style={[styles.gridLayer, prototypeGridBackground]} />
+      {shouldScroll ? (
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           {content}
         </ScrollView>
       ) : (
         content
       )}
+      {shouldShowNav && activeTab ? <PrototypeBottomNav activeTab={activeTab} /> : null}
     </View>
   );
 }
@@ -52,45 +73,35 @@ export function GlassCard({ children, style }: PropsWithChildren<{ style?: Style
 
 const styles = StyleSheet.create({
   content: {
-    gap: 12,
-    paddingBottom: 106,
-    paddingHorizontal: 20,
-    paddingTop: 16,
+    minHeight: '100%',
+    paddingBottom: 20,
+    paddingHorizontal: prototype.size.contentX,
+    paddingTop: prototype.size.contentTop,
   },
   glassCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.045)',
-    borderColor: 'rgba(167, 243, 208, 0.10)',
-    borderRadius: 26,
+    ...prototypeGlassBlur,
+    ...prototypeGlassShadow,
+    backgroundColor: prototype.color.glass,
+    borderColor: prototype.color.glassBorder,
+    borderRadius: prototype.radius.card,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
-    shadowColor: '#000000',
-    shadowOpacity: 0.22,
-    shadowRadius: 48,
-  },
-  cyanBloomTop: {
-    backgroundColor: 'rgba(37, 255, 219, 0.12)',
-    borderRadius: 180,
-    height: 250,
-    left: '18%',
-    position: 'absolute',
-    top: -70,
-    width: 250,
-  },
-  greenBloomBottom: {
-    backgroundColor: 'rgba(20, 184, 166, 0.10)',
-    borderRadius: 170,
-    bottom: -100,
-    height: 250,
-    left: -90,
-    position: 'absolute',
-    width: 250,
   },
   gridLayer: {
     ...StyleSheet.absoluteFillObject,
     opacity: 0.15,
   },
+  main: {
+    flex: 1,
+    gap: 12,
+    minHeight: 0,
+    paddingTop: prototype.size.mainTop,
+  },
+  mainWithNav: {
+    paddingBottom: prototype.size.bottomNavHeight + 32,
+  },
   root: {
-    backgroundColor: '#07110F',
+    backgroundColor: prototype.color.phone,
     flex: 1,
     overflow: 'hidden',
   },
@@ -100,22 +111,21 @@ const styles = StyleSheet.create({
   },
   speaker: {
     alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.48)',
-    borderRadius: 999,
-    height: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    borderRadius: prototype.radius.pill,
+    height: 16,
     width: 112,
   },
   statusBar: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: 20,
-    marginBottom: 12,
+    height: prototype.size.statusHeight,
     paddingHorizontal: 1,
   },
   statusText: {
-    color: 'rgba(226, 232, 240, 0.78)',
-    fontSize: 13,
-    lineHeight: 18,
+    color: 'rgba(203, 213, 225, 0.70)',
+    fontSize: 12,
+    lineHeight: 16,
   },
 });

@@ -30,6 +30,6 @@ export function TodoList({ onDelete, onEdit, onToggle, todos }: TodoListProps) {
 
 const styles = StyleSheet.create({
   list: {
-    gap: spacing[2],
+    gap: spacing[3],
   },
 });

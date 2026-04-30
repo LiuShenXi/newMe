@@ -20,6 +20,25 @@ test('mobile screens expose prototype-level chrome and copy', async ({ page }) =
   await expect(page.getByRole('tab', { name: /能量/ })).toBeVisible();
 });
 
+test('energy page keeps prototype vertical rhythm', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  const energyLabel = await page.getByText('本周能量').boundingBox();
+  const sliderLabel = await page.getByText('今日能量条').boundingBox();
+  const confirmButton = await page.getByText('确认今日能量').boundingBox();
+
+  expect(energyLabel).not.toBeNull();
+  expect(sliderLabel).not.toBeNull();
+  expect(confirmButton).not.toBeNull();
+
+  expect(energyLabel.y).toBeGreaterThan(178);
+  expect(energyLabel.y).toBeLessThan(215);
+  expect(sliderLabel.y).toBeGreaterThan(500);
+  expect(sliderLabel.y).toBeLessThan(545);
+  expect(confirmButton.y).toBeGreaterThan(620);
+  expect(confirmButton.y).toBeLessThan(680);
+});
+
 test('growth tree is no longer a placeholder', async ({ page }) => {
   await page.goto(`${baseUrl}/tree`, { waitUntil: 'networkidle' });
   await expect(page.getByText('6')).toBeVisible();

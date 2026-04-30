@@ -1,16 +1,8 @@
 import type { ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { ActivityIndicator, StyleProp, TextStyle, ViewStyle } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../theme';
+import { colors } from '../theme';
+import { PrototypeButton } from './PrototypePrimitives';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 
@@ -38,65 +30,15 @@ export function Button({
   const isDisabled = disabled || loading;
 
   return (
-    <Pressable
-      accessibilityRole="button"
+    <PrototypeButton
       disabled={isDisabled}
+      icon={loading ? <ActivityIndicator color={variant === 'primary' ? colors.background : colors.primary} /> : icon}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.base,
-        styles[variant],
-        pressed && !isDisabled ? styles.pressed : null,
-        isDisabled ? styles.disabled : null,
-        style,
-      ]}
+      style={style}
+      textStyle={textStyle}
+      variant={variant === 'primary' ? 'primary' : variant === 'secondary' ? 'secondary' : 'ghost'}
     >
-      {loading ? <ActivityIndicator color={variant === 'primary' ? colors.background : colors.primary} /> : icon}
-      <Text style={[styles.label, styles[`${variant}Label`], textStyle]}>{children}</Text>
-    </Pressable>
+      {children}
+    </PrototypeButton>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    alignItems: 'center',
-    borderRadius: radii.control,
-    flexDirection: 'row',
-    gap: spacing[2],
-    justifyContent: 'center',
-    minHeight: 48,
-    paddingHorizontal: spacing[5],
-  },
-  disabled: {
-    opacity: 0.44,
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-  },
-  ghostLabel: {
-    color: colors.textSecondary,
-  },
-  label: {
-    fontSize: fontSizes.md,
-    fontWeight: fontWeights.bold,
-    lineHeight: lineHeights.md,
-  },
-  pressed: {
-    opacity: 0.82,
-  },
-  primary: {
-    backgroundColor: colors.primaryDim,
-    borderColor: colors.cyanBorder,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  primaryLabel: {
-    color: '#ECFEFF',
-  },
-  secondary: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderWidth: StyleSheet.hairlineWidth,
-  },
-  secondaryLabel: {
-    color: colors.text,
-  },
-});

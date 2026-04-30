@@ -15,6 +15,8 @@ const demoFocuses: WeeklyFocusProgress[] = [
   { id: 'focus-3', note: '第 2 章进行中', title: '读完两章社会学', value: 40 },
 ];
 
+const demoWeekEnergyValues = [72, 84, 66, 88, 78, 0, 0];
+
 export function useEnergy() {
   const [charging, setCharging] = useState(false);
   const [energyValue, setEnergyValue] = useState(82);
@@ -25,9 +27,9 @@ export function useEnergy() {
   const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
 
   const weekEnergy = useMemo(() => {
-    const focusAverage = demoFocuses.reduce((sum, item) => sum + item.value, 0) / demoFocuses.length;
-    return Math.round((focusAverage + energyValue) / 2);
-  }, [energyValue]);
+    const recorded = demoWeekEnergyValues.filter(Boolean);
+    return Math.round(recorded.reduce((sum, value) => sum + value, 0) / recorded.length);
+  }, []);
 
   useEffect(() => {
     return () => {

@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { GlassCard, PrototypeScreen } from '../../src/shared/components/PrototypeShell';
+import { GlassCard, PrototypeButton, PrototypeScreen, PrototypeTextarea } from '../../src/shared/components';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 import { usePrototypeStore } from '../../src/stores/prototype.store';
 
@@ -34,7 +34,7 @@ export default function SettlementScreen() {
   const displayScore = confirmed ? score : suggestedScore;
 
   return (
-    <PrototypeScreen contentStyle={styles.content}>
+    <PrototypeScreen activeTab="tree" contentStyle={styles.content}>
       <GlassCard style={styles.heroCard}>
         <Text style={styles.heroCopy}>这一周辛苦了，{'\n'}我们一起看看这周的收获吧。</Text>
         <View style={[styles.fruit, confirmed ? styles.fruitBorn : null]}>
@@ -80,15 +80,12 @@ export default function SettlementScreen() {
             <View style={[styles.scoreFill, { width: `${score}%` }]} />
           </Pressable>
         </View>
-        <TextInput
-          multiline
+        <PrototypeTextarea
           placeholder="这一周有什么值得树记住？"
-          placeholderTextColor="#64748B"
           style={styles.note}
           defaultValue="这一周虽然有几次节奏被打断，但关键推进没有断线。"
         />
-        <Pressable
-          accessibilityRole="button"
+        <PrototypeButton
           onPress={() => {
             setConfirmed(true);
             addFruit({
@@ -106,8 +103,8 @@ export default function SettlementScreen() {
           }}
           style={styles.settleButton}
         >
-          <Text style={styles.settleButtonText}>{confirmed ? '果实已生成' : '确认并生成果实'}</Text>
-        </Pressable>
+          {confirmed ? '果实已生成' : '确认并生成果实'}
+        </PrototypeButton>
       </GlassCard>
     </PrototypeScreen>
   );
@@ -210,17 +207,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   note: {
-    backgroundColor: 'rgba(0, 0, 0, 0.22)',
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 14,
-    borderWidth: StyleSheet.hairlineWidth,
-    color: '#FFFFFF',
     fontSize: 13,
     lineHeight: 21,
     marginTop: spacing[3],
     minHeight: 82,
-    padding: spacing[3],
-    textAlignVertical: 'top',
   },
   resultCard: {
     padding: spacing[4],
@@ -262,17 +252,7 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.sm,
   },
   settleButton: {
-    alignItems: 'center',
     backgroundColor: 'rgba(254, 243, 199, 0.15)',
-    borderRadius: radii.control,
-    justifyContent: 'center',
     marginTop: spacing[4],
-    minHeight: 44,
-  },
-  settleButtonText: {
-    color: '#FFFBEB',
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.sm,
   },
 });

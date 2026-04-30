@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2
-- 当前阶段：Batch 2 / C5-C10 原型代码级还原补强完成；下一步进入 F2 冷启动 AI 联调或继续补齐跨页状态
+- 当前阶段：Batch 2 / 客户端 UI 已完成原型原语级复刻修正；下一步进入 F2 冷启动 AI 联调或继续逐页压实剩余像素差异
 - 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Codex
@@ -60,7 +60,7 @@ git worktree list
 | C6 Energy Page | DONE | feat/track-c-energy -> main | 604d2df / merge 1c58f93 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 能量球、本周进度概览、今日能量条、确认提醒和注入反馈完成；Skia 粒子留体验增强 |
 | C7 Todo Page | DONE | feat/track-c-todo -> main | 85177ee / merge f0d0f63 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 本周重点标签、今日清单 CRUD、本周 7 天概览完成；本轮已补左滑露出垃圾桶 |
 | C8 Plan Page | DONE | feat/track-c-plan -> main | 02d73b0 / merge 56fea2f | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 月/年双视图、4 周节点、Q1-Q4 卡片、手动空层级补全入口完成 |
-| C5-C9 Prototype Visual Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 均通过 | 补齐原型状态栏、深绿玻璃背景、胶囊底栏、冷启动卡片、能量/清单/计划视觉层级；C9 成长树、6 果实、Q2 阶段、1 荣誉和果实时间胶囊已完成 |
+| C5-C10 Prototype Primitive Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line；npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line 均通过 | 已纠正此前“视觉还原完成”过宽口径，新增 prototype 原语层，底栏、按钮、胶囊、modal、sheet、toast、输入框、树侧工具统一按 `prototype/index.html` 复刻；默认 Expo tabbar 已隐藏 |
 | C9 Growth Tree Page | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 通过 | View/CSS-style 基础树形、果实点击时间胶囊、荣誉/阶段/果实统计完成；Skia 留体验增强 |
 | C10 Settlement UI + Prototype Interaction Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 均通过 | 不使用视觉工具；补能量提醒原型文案/跳清单/已查看状态、清单默认日期与左滑删除、计划默认 AI 来源与 AI 重规划状态机、成长树详情按钮、`/settlement` 周结算生成第 17 周果实并跳树 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
@@ -71,7 +71,8 @@ git worktree list
 
 当前已知未提交改动：
 
-- 本轮 C10 / 原型交互还原补强改动待提交；另有用户已有 `AGENTS.md` 未提交改动，不属于本轮修改，收口时不要覆盖。
+- 本轮原型原语级复刻改动待提交：移动端 `PrototypePrimitives`、共享壳、底栏、按钮、弹窗/sheet/toast、能量/清单/计划/成长树/周结算引用改造、视觉回归测试、产品文档与计划/进度文档。
+- 用户已有 `AGENTS.md` 未提交改动和系统 `.DS_Store` 改动不属于本轮修改，收口时不要覆盖。
 
 ## 最近工作记录
 
@@ -255,6 +256,19 @@ git worktree list
 - 成长树补强：树旁 `果实 / Q2 阶段 / 1 荣誉` 按钮可进入详情页并返回；果实时间胶囊维持原型 `time capsule`、本周结果和重点回顾。
 - C10 周结算 UI 完成：新增 `apps/mobile/app/settlement/index.tsx`，覆盖周结算开场语、每日能量柱状图、本周重点推进、最终周结果微调、周感悟和确认生成果实按钮；确认后写入 `prototype.store` 的第 17 周果实，并延迟跳转成长树。
 - 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 3 个用例通过。
+- 原型真源重构补强完成：新增 `apps/mobile/src/shared/theme/prototype.ts` 抽取 phone 尺寸、深林绿背景、玻璃卡、底栏、按钮阴影等原型 token；`PrototypeShell` 和 Tab 底栏改为统一使用 prototype 背景/网格/玻璃模糊，避免页面散落重复样式。
+- 能量页视觉锚点补强：先新增 `energy page keeps prototype vertical rhythm` 红测并确认现状失败，再将能量球回到原型 242/224 尺寸、7 个气泡、58px 数字、进度卡去除非原型 note 行、氮气条补金色填充/青色拖尾/发光头，确认按钮回到原型 49px 高度。
+- 清单/计划/成长树补强：清单标题字号回到原型 16px，完成勾选态改为低亮青色描边；计划分段控件、月计划 intro、当前周卡片改回原型半透明层级；成长树树干补原型横向渐变和内阴影。
+- 新增视觉回归脚本 `apps/mobile/tests/prototype-visual-regression.spec.js`：自动打开 `prototype/index.html` 和 Expo Web，分别截图能量、清单、计划、成长树，并对关键文本锚点坐标做容差对照，避免只测文案导致视觉漂移。
+- 文档同步：`产品需求设计文档.md` 更新为客户端以 `prototype/index.html` 为唯一视觉与交互基准；实施计划主控收口清单标记已完成，并记录新增视觉回归脚本。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 4 个用例通过。
+- 用户复核后修正口径：此前“视觉还原完成”不准确，实际只是页面级视觉锚点靠拢，底栏之外的按钮、胶囊、弹窗、sheet、toast 等 UI 原语仍与 `prototype/index.html` 差异明显。本轮验收标准改为“原型原语级复刻”。
+- TDD 记录：先升级 `apps/mobile/tests/prototype-visual-regression.spec.js`，将底部 nav 几何容差从 60px 收紧到 2px，并新增 `prototype-bottom-nav`、`prototype-button-primary`、`prototype-button-pill`、`prototype-modal-card`、`prototype-edit-sheet`、`prototype-button-replan`、`prototype-button-tree-tool`、`prototype-toast` 等结构断言；红测初始失败于缺失自绘原语/编辑 sheet 几何。
+- 原语层实现：新增 `apps/mobile/src/shared/components/PrototypePrimitives.tsx`，统一 `PrototypeBottomNav`、`PrototypeButton`、`PrototypeModalLayer`、`PrototypeModalCard`、`PrototypeEditSheet`、`PrototypeActionRow`、`PrototypeToast`、`PrototypeInput`、`PrototypeTextarea`、`PrototypeTreeTool`；`apps/mobile/app/(tabs)/_layout.tsx` 隐藏 Expo Router 默认 tabbar，由自绘底栏接管视觉。
+- 页面引用改造：能量提醒、清单本周弹窗、编辑底部 sheet、添加待办、计划 `AI 重规划`、成长树侧边工具、周结算输入与按钮均切到 prototype 原语；`PrototypeScreen` 修正状态栏与 `phone-main` 的 12px 顶距，避免页面首屏整体下沉；清单卡片恢复原型主区域填充，待办条目回到 58px 节奏。
+- Demo 数据校准：能量页 `weekEnergy` 改为按原型本周已记录能量均值计算，默认首屏回到 78%，避免视觉截图与原型主数值不一致。
+- 文档同步：`产品需求设计文档.md` 与本进度日志均已说明“视觉还原完成”旧表述不准确，当前改为“原型原语级复刻”；剩余差异主要来自 RN Web 与原生 HTML/CSS 的字体渲染、Ionicons 图标路径和滤镜能力差异。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 4 个用例通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 1 个用例通过。
 
 ## 阻塞与风险
 

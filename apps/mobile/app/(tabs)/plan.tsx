@@ -13,7 +13,7 @@ export default function PlanScreen() {
 
   return (
     <View style={styles.root}>
-      <PrototypeScreen contentStyle={styles.content}>
+      <PrototypeScreen activeTab="plan" contentStyle={styles.content}>
         <View style={styles.segmented}>
           <Pressable
             accessibilityRole="button"
@@ -92,32 +92,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   segmented: {
-    backgroundColor: 'rgba(3, 12, 10, 0.58)',
-    borderColor: 'rgba(207, 250, 254, 0.14)',
-    borderRadius: 28,
+    backgroundColor: 'rgba(0, 0, 0, 0.22)',
+    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderRadius: 22,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[2],
     padding: spacing[1],
   },
   segmentActive: {
-    backgroundColor: 'rgba(56, 91, 82, 0.85)',
+    backgroundColor: 'rgba(207, 250, 254, 0.12)',
   },
   segmentButton: {
     alignItems: 'center',
-    borderRadius: radii.md,
+    borderRadius: 17,
     flex: 1,
     minHeight: 42,
     justifyContent: 'center',
   },
   segmentText: {
-    color: colors.textSecondary,
+    color: colors.textDim,
     fontSize: fontSizes.sm,
     fontWeight: fontWeights.bold,
     lineHeight: lineHeights.sm,
   },
   segmentTextActive: {
-    color: colors.text,
+    color: '#ECFEFF',
   },
   sourcePill: {
     backgroundColor: 'rgba(245, 166, 35, 0.14)',

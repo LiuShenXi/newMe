@@ -31,7 +31,7 @@ export default function TreeScreen() {
     <View style={[styles.phone, phoneGradient]}>
       <View style={[styles.grid, gridBackground]} />
 
-      <PrototypeScreen contentStyle={styles.content} scroll={false}>
+      <PrototypeScreen activeTab="tree" contentStyle={styles.content} scroll={false}>
         <View style={styles.main}>
           {detail ? (
             <View style={styles.detail}>

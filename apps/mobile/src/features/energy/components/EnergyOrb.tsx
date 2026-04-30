@@ -1,20 +1,39 @@
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, radii } from '../../../shared/theme';
+import { fontWeights, radii, prototypeNumberFont } from '../../../shared/theme';
 
 interface EnergyOrbProps {
   charging: boolean;
   value: number;
 }
 
-const bubbleSpecs = Array.from({ length: 10 }, (_, index) => ({
-  bottom: 14 + (index % 5) * 18,
-  delay: index * 80,
-  left: 44 + (index % 4) * 38,
-  opacity: 0.46 - index * 0.026,
-  size: 10 + (index % 4) * 7,
+const bubbleSpecs = Array.from({ length: 7 }, (_, index) => ({
+  bottom: 12 + (index % 5) * 20,
+  left: 42 + (index % 4) * 40,
+  opacity: 0.42 - index * 0.026,
+  size: 16 + index * 5,
 }));
+
+const coreGradient = {
+  backgroundImage:
+    'radial-gradient(circle at 45% 38%, rgba(121, 255, 234, .22), rgba(15, 32, 38, .70) 50%, rgba(5, 12, 13, .95) 72%)',
+  boxShadow:
+    '0 0 42px rgba(77, 255, 230, .28), inset 0 -28px 42px rgba(95, 255, 215, .22), inset 0 18px 60px rgba(255, 255, 255, .07)',
+  filter: 'none',
+} as never;
+
+const auraBlur = {
+  filter: 'blur(40px)',
+} as never;
+
+const shadowBlur = {
+  filter: 'blur(20px)',
+} as never;
+
+const bubbleShadow = {
+  boxShadow: 'inset 0 -8px 18px rgba(74, 255, 224, .24), 0 0 20px rgba(74, 255, 224, .25)',
+} as never;
 
 export function EnergyOrb({ charging, value }: EnergyOrbProps) {
   const pulse = useRef(new Animated.Value(0)).current;
@@ -43,9 +62,9 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
 
   return (
     <View style={styles.wrap}>
-      <Animated.View style={[styles.aura, charging ? styles.auraCharging : null, { transform: [{ scale: auraScale }] }]} />
-      <Animated.View style={[styles.core, charging ? styles.coreCharging : null, { transform: [{ scale: coreScale }] }]} />
-      <View style={styles.shadow} />
+      <Animated.View style={[styles.aura, auraBlur, charging ? styles.auraCharging : null, { transform: [{ scale: auraScale }] }]} />
+      <Animated.View style={[styles.core, coreGradient, charging ? styles.coreCharging : null, { transform: [{ scale: coreScale }] }]} />
+      <View style={[styles.shadow, shadowBlur]} />
       {bubbleSpecs.map((bubble) => (
         <View
           key={`${bubble.left}-${bubble.bottom}`}
@@ -58,6 +77,7 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
               opacity: charging ? bubble.opacity + 0.18 : bubble.opacity,
               width: bubble.size,
             },
+            bubbleShadow,
           ]}
         />
       ))}
@@ -77,11 +97,11 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
 
 const styles = StyleSheet.create({
   aura: {
-    backgroundColor: 'rgba(104, 211, 190, 0.13)',
+    backgroundColor: 'rgba(165, 243, 252, 0.10)',
     borderRadius: radii.pill,
-    height: 250,
+    height: 242,
     position: 'absolute',
-    width: 250,
+    width: 242,
   },
   auraCharging: {
     backgroundColor: 'rgba(254, 240, 138, 0.16)',
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   core: {
-    backgroundColor: 'rgba(18, 42, 37, 0.62)',
+    backgroundColor: 'rgba(15, 32, 38, 0.70)',
     borderColor: 'rgba(207, 250, 254, 0.42)',
     borderRadius: radii.pill,
     borderWidth: StyleSheet.hairlineWidth,
@@ -113,17 +133,17 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'rgba(253, 230, 138, 0.90)',
-    fontSize: fontSizes.xs,
+    fontSize: 13,
     fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.xs,
-    marginTop: 10,
+    lineHeight: 16,
+    marginTop: 12,
   },
   percent: {
     color: 'rgba(207, 250, 254, 0.90)',
     fontSize: 24,
   },
   shadow: {
-    backgroundColor: 'rgba(94, 234, 212, 0.20)',
+    backgroundColor: 'rgba(165, 243, 252, 0.40)',
     borderRadius: radii.pill,
     bottom: 8,
     height: 32,
@@ -136,9 +156,9 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
     color: 'rgba(236, 254, 255, 0.70)',
-    fontSize: fontSizes.xs,
-    lineHeight: lineHeights.xs,
-    marginTop: 10,
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 12,
     paddingHorizontal: 12,
     paddingVertical: 4,
   },
@@ -152,17 +172,17 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   value: {
-    color: colors.text,
-    fontSize: 64,
-    fontWeight: fontWeights.regular,
-    lineHeight: 68,
+    ...prototypeNumberFont,
+    color: '#FFFFFF',
+    fontSize: 58,
+    lineHeight: 58,
   },
   wrap: {
     alignItems: 'center',
-    height: 270,
+    height: 242,
     justifyContent: 'center',
     alignSelf: 'center',
     position: 'relative',
-    width: 270,
+    width: 242,
   },
 });

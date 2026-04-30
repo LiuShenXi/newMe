@@ -1,12 +1,20 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AddTodoInput } from '../../src/features/todo/components/AddTodoInput';
 import { TodoList } from '../../src/features/todo/components/TodoList';
 import { TodoItemModel, useTodos } from '../../src/features/todo/hooks/useTodos';
-import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
-import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
+import {
+  PrototypeActionRow,
+  PrototypeButton,
+  PrototypeEditSheet,
+  PrototypeModalCard,
+  PrototypeModalLayer,
+  PrototypeScreen,
+  PrototypeTextarea,
+} from '../../src/shared/components';
+import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassBlur, prototypeGlassShadow, radii, spacing } from '../../src/shared/theme';
 import { usePrototypeStore } from '../../src/stores/prototype.store';
 
 export default function TodoScreen() {
@@ -46,7 +54,7 @@ export default function TodoScreen() {
 
   return (
     <View style={styles.root}>
-      <PrototypeScreen contentStyle={styles.content}>
+      <PrototypeScreen activeTab="todo" contentStyle={styles.content}>
         <View style={styles.chipRow}>
           {focusChips.map((chip) => (
             <Text key={chip} style={styles.chip}>
@@ -61,14 +69,13 @@ export default function TodoScreen() {
               <Text style={styles.title}>4 月 26 日</Text>
               <Text style={styles.subtitle}>已完成 {completedCount} / {totalCount}</Text>
             </View>
-            <Pressable
+            <PrototypeButton
               accessibilityLabel="打开本周概览"
-              accessibilityRole="button"
               onPress={() => setWeekVisible(true)}
-              style={styles.weekButton}
+              variant="pill"
             >
-              <Text style={styles.weekButtonText}>本周</Text>
-            </Pressable>
+              本周
+            </PrototypeButton>
           </View>
 
           <TodoList onDelete={deleteTodo} onEdit={openEdit} onToggle={toggleTodo} todos={todos} />
@@ -77,16 +84,16 @@ export default function TodoScreen() {
       </PrototypeScreen>
 
       {weekVisible ? (
-        <View style={styles.modalBackdrop}>
-          <View style={styles.weekPanel}>
+        <PrototypeModalLayer onBackdropPress={() => setWeekVisible(false)}>
+          <PrototypeModalCard style={styles.weekPanel}>
             <View style={styles.modalHeader}>
               <View>
                 <Text style={styles.eyebrow}>week overview</Text>
                 <Text style={styles.modalTitle}>本周 7 天概览</Text>
               </View>
-              <Pressable accessibilityRole="button" onPress={() => setWeekVisible(false)} style={styles.closeButton}>
-                <Text style={styles.closeText}>关闭</Text>
-              </Pressable>
+              <PrototypeButton onPress={() => setWeekVisible(false)} variant="pill">
+                关闭
+              </PrototypeButton>
             </View>
             <ScrollView contentContainerStyle={styles.weekList}>
               {weekDays.map((day) => {
@@ -115,31 +122,30 @@ export default function TodoScreen() {
                 );
               })}
             </ScrollView>
-          </View>
-        </View>
+          </PrototypeModalCard>
+        </PrototypeModalLayer>
       ) : null}
 
       {editingTodo ? (
-        <View style={styles.modalBackdrop}>
-          <View style={styles.editPanel}>
-            <Text style={styles.modalTitle}>编辑今日待办</Text>
+        <PrototypeModalLayer kind="sheet" onBackdropPress={() => setEditingTodo(null)}>
+          <PrototypeEditSheet>
+            <Text style={styles.sheetTitle}>调整这件小事</Text>
             <Text style={styles.modalCopy}>只改今天要执行的表述，不影响本周重点。</Text>
-            <TextInput
+            <PrototypeTextarea
               accessibilityLabel="编辑待办内容"
               onChangeText={setEditDraft}
-              style={styles.editInput}
               value={editDraft}
             />
-            <View style={styles.editActions}>
-              <Pressable accessibilityRole="button" onPress={() => setEditingTodo(null)} style={styles.secondaryButton}>
-                <Text style={styles.secondaryLabel}>取消</Text>
-              </Pressable>
-              <Pressable accessibilityRole="button" onPress={saveEdit} style={styles.primaryButton}>
-                <Text style={styles.primaryLabel}>保存</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
+            <PrototypeActionRow>
+              <PrototypeButton onPress={saveEdit} style={styles.sheetAction}>
+                保存
+              </PrototypeButton>
+              <PrototypeButton onPress={() => setEditingTodo(null)} style={styles.sheetAction} variant="secondary">
+                取消
+              </PrototypeButton>
+            </PrototypeActionRow>
+          </PrototypeEditSheet>
+        </PrototypeModalLayer>
       ) : null}
     </View>
   );
@@ -147,10 +153,13 @@ export default function TodoScreen() {
 
 const styles = StyleSheet.create({
   card: {
+    ...prototypeGlassBlur,
+    ...prototypeGlassShadow,
     backgroundColor: 'rgba(255, 255, 255, 0.045)',
     borderColor: 'rgba(167, 243, 208, 0.10)',
     borderRadius: 26,
     borderWidth: StyleSheet.hairlineWidth,
+    flex: 1,
     gap: spacing[3],
     padding: spacing[4],
   },
@@ -170,19 +179,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing[2],
-  },
-  closeButton: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-  },
-  closeText: {
-    color: colors.text,
-    fontSize: fontSizes.xs,
-    lineHeight: lineHeights.xs,
+    paddingTop: spacing[1],
   },
   content: {
     gap: 16,
@@ -214,31 +211,6 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.bold,
     lineHeight: lineHeights.sm,
   },
-  editActions: {
-    flexDirection: 'row',
-    gap: spacing[3],
-    marginTop: spacing[4],
-  },
-  editInput: {
-    backgroundColor: 'rgba(0, 0, 0, 0.24)',
-    borderColor: colors.border,
-    borderRadius: radii.md,
-    borderWidth: StyleSheet.hairlineWidth,
-    color: colors.text,
-    fontSize: fontSizes.sm,
-    lineHeight: lineHeights.sm,
-    minHeight: 48,
-    paddingHorizontal: spacing[3],
-  },
-  editPanel: {
-    backgroundColor: 'rgba(7, 17, 15, 0.95)',
-    borderColor: 'rgba(207, 250, 254, 0.15)',
-    borderRadius: radii.panel,
-    borderWidth: StyleSheet.hairlineWidth,
-    maxWidth: 360,
-    padding: spacing[5],
-    width: '100%',
-  },
   emptyDay: {
     color: colors.textTertiary,
     fontSize: fontSizes.xs,
@@ -255,21 +227,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  modalBackdrop: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.58)',
-    bottom: 0,
-    justifyContent: 'center',
-    left: 0,
-    padding: spacing[5],
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    zIndex: 20,
-  },
   modalCopy: {
-    color: colors.textSecondary,
-    fontSize: fontSizes.sm,
+    color: colors.textTertiary,
+    fontSize: fontSizes.xs,
     lineHeight: lineHeights.sm,
     marginBottom: spacing[3],
     marginTop: spacing[1],
@@ -285,38 +245,17 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.bold,
     lineHeight: lineHeights.lg,
   },
-  primaryButton: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radii.md,
-    flex: 1,
-    minHeight: 44,
-    justifyContent: 'center',
-  },
-  primaryLabel: {
-    color: colors.background,
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.bold,
-    lineHeight: lineHeights.sm,
-  },
   root: {
     flex: 1,
   },
-  secondaryButton: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.md,
-    borderWidth: StyleSheet.hairlineWidth,
+  sheetAction: {
     flex: 1,
-    minHeight: 44,
-    justifyContent: 'center',
   },
-  secondaryLabel: {
-    color: colors.text,
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.sm,
+  sheetTitle: {
+    color: '#F8FAFC',
+    fontSize: 17,
+    fontWeight: fontWeights.bold,
+    lineHeight: 24,
   },
   subtitle: {
     color: colors.textSecondary,
@@ -326,38 +265,16 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.text,
-    fontSize: fontSizes.xl,
-    fontWeight: fontWeights.heavy,
-    lineHeight: lineHeights.xl,
-  },
-  weekButton: {
-    backgroundColor: 'rgba(207, 250, 254, 0.10)',
-    borderColor: 'rgba(207, 250, 254, 0.16)',
-    borderRadius: radii.pill,
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: spacing[4],
-    paddingVertical: spacing[2],
-  },
-  weekButtonText: {
-    color: '#ECFEFF',
-    fontSize: fontSizes.xs,
+    fontSize: 16,
     fontWeight: fontWeights.bold,
-    lineHeight: lineHeights.xs,
+    lineHeight: 22,
   },
   weekList: {
     gap: spacing[2],
     paddingTop: spacing[4],
   },
   weekPanel: {
-    backgroundColor: 'rgba(7, 17, 15, 0.95)',
-    borderColor: 'rgba(207, 250, 254, 0.15)',
-    borderRadius: radii.panel,
-    borderWidth: StyleSheet.hairlineWidth,
     maxWidth: 360,
-    padding: spacing[5],
-    shadowColor: '#000000',
-    shadowOpacity: 0.34,
-    shadowRadius: 24,
     width: '100%',
   },
   weekTodo: {

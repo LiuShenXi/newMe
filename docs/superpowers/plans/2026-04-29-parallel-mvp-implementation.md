@@ -1751,7 +1751,7 @@ git commit -m "feat: add plan page with month/year views"
 
 - [x] **Step 4: 原型级视觉返工与验证**
 
-2026-04-30 设计总监返工：C5-C9 按 `prototype/index.html` phone 内界面补齐原型状态栏、深绿玻璃背景、胶囊底栏、冷启动卡片、能量页、清单页、计划页和成长树页。验证：`pnpm --filter @newme/mobile typecheck`、`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 通过。
+2026-04-30 设计总监返工：C5-C9 按 `prototype/index.html` phone 内界面补齐原型状态栏、深绿玻璃背景、胶囊底栏、冷启动卡片、能量页、清单页、计划页和成长树页。用户复核后确认“视觉还原完成”旧口径过宽，页面级锚点不等于控件 1:1；本轮已追加原型原语级复刻，新增统一 `PrototypeBottomNav`、`PrototypeButton`、`PrototypeModalLayer`、`PrototypeModalCard`、`PrototypeEditSheet`、`PrototypeToast`、输入框和树侧工具，并替换能量/清单/计划/成长树/周结算页面散落样式。验证：`pnpm --filter @newme/mobile typecheck`、`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line`、`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 通过。
 
 - [x] **Step 5: Commit**
 
@@ -2149,5 +2149,7 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 - [ ] 运行前端可用性验证：启动 Expo，检查 4 tab 和关键页面。
 - [ ] 运行数据库迁移验证：`pnpm --filter @newme/api prisma migrate dev` 或对应项目脚本。
 - [ ] 运行 SQLite 初始化验证。
-- [ ] 使用 `npx playwright` 对 `prototype/index.html` 做原型页面检查、截图、视觉验证，并与 Expo 客户端关键页面对照，确认移动端 UI 按终稿原型 1:1 还原；任何无法还原的差异都要记录原因并同步文档。
-- [ ] 若实现与 `产品需求设计文档.md` 或架构文档不一致，按真实实现同步更新文档。
+- [x] 使用 `npx playwright` 对 `prototype/index.html` 做原型页面检查、截图、视觉验证，并与 Expo 客户端关键页面对照；当前验收口径已从页面级锚点升级为原型原语级复刻，覆盖底栏、按钮、胶囊、modal、sheet、toast、输入框和树侧工具。任何无法还原的差异都要记录原因并同步文档。
+- [x] 若实现与 `产品需求设计文档.md` 或架构文档不一致，按真实实现同步更新文档。
+
+2026-04-30 补充：已新增 `apps/mobile/tests/prototype-visual-regression.spec.js`，自动打开静态原型和 Expo Web，截取能量、清单、计划、成长树关键状态，并用结构级几何断言检查底栏、按钮、胶囊、modal、sheet、toast 和树侧工具；`prototype-parity.spec.js` 也补充能量页原型垂直节奏断言。客户端新增原型 token 桥接层和原型原语层，重做共享壳、自绘底栏、按钮、弹窗/sheet/toast、能量球、氮气条、清单字号、计划卡片和成长树渐变，文档已同步到 `产品需求设计文档.md` 与进度日志。

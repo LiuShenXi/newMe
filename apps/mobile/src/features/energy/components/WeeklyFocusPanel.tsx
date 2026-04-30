@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
+import { colors, fontSizes, fontWeights, lineHeights, prototype, prototypeGlassBlur, prototypeGlassShadow, radii, spacing } from '../../../shared/theme';
 import type { WeeklyFocusProgress } from '../hooks/useEnergy';
 
 interface WeeklyFocusPanelProps {
@@ -27,9 +27,6 @@ export function WeeklyFocusPanel({ focuses }: WeeklyFocusPanelProps) {
               <View style={styles.track}>
                 <View style={[styles.fill, { width: `${item.value}%` }]} />
               </View>
-              <Text numberOfLines={1} style={styles.note}>
-                {item.note}
-              </Text>
             </View>
           ))
         ) : (
@@ -74,7 +71,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing[3],
   },
   item: {
-    gap: spacing[1],
+    gap: 6,
   },
   itemTitle: {
     color: '#E2E8F0',
@@ -91,18 +88,15 @@ const styles = StyleSheet.create({
     gap: spacing[3],
     justifyContent: 'space-between',
   },
-  note: {
-    color: colors.textTertiary,
-    fontSize: fontSizes.xs,
-    lineHeight: lineHeights.xs,
-  },
   panel: {
-    backgroundColor: 'rgba(18, 36, 31, 0.72)',
-    borderColor: 'rgba(207, 250, 254, 0.15)',
-    borderRadius: 22,
+    ...prototypeGlassBlur,
+    ...prototypeGlassShadow,
+    backgroundColor: prototype.color.glass,
+    borderColor: prototype.color.glassBorder,
+    borderRadius: prototype.radius.card,
     borderWidth: StyleSheet.hairlineWidth,
     opacity: 1,
-    padding: spacing[4],
+    padding: 16,
   },
   title: {
     color: colors.text,

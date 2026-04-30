@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
+import { PrototypeButton } from '../../../shared/components';
+import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassBlur, prototypeGlassShadow, radii, spacing } from '../../../shared/theme';
 import type { MonthWeek, PlanSource } from '../hooks/usePlan';
 
 interface MonthViewProps {
@@ -49,9 +50,9 @@ export function MonthView({ planSource, weeks }: MonthViewProps) {
           <Text style={styles.eyebrow}>April · 4 weeks</Text>
           <Text style={styles.introTitle}>{isAiSource ? '只规划最近一个月，避免计划过远失效' : '本周先能执行，月目标可以后补'}</Text>
         </View>
-        <Pressable accessibilityRole="button" onPress={() => setCoachOpen(true)} style={styles.aiPill}>
-          <Text style={styles.aiPillText}>{isAiSource ? (planning ? '生成中' : 'AI 重规划') : '局部 AI'}</Text>
-        </Pressable>
+        <PrototypeButton onPress={() => setCoachOpen(true)} variant="replan">
+          {isAiSource ? (planning ? '生成中' : 'AI 重规划') : '局部 AI'}
+        </PrototypeButton>
         {coachOpen ? (
           <View style={styles.coachPanel}>
             <Text style={styles.coachCopy}>告诉 AI 这周哪里变了，它会只改后续计划。第 {rounds + 1} / 3 轮</Text>
@@ -99,20 +100,6 @@ export function MonthView({ planSource, weeks }: MonthViewProps) {
 }
 
 const styles = StyleSheet.create({
-  aiPill: {
-    backgroundColor: 'rgba(0, 229, 160, 0.12)',
-    borderRadius: radii.pill,
-    borderColor: 'rgba(254, 240, 138, 0.17)',
-    borderWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
-  },
-  aiPillText: {
-    color: '#FEF3C7',
-    fontSize: fontSizes.xs,
-    fontWeight: fontWeights.bold,
-    lineHeight: lineHeights.xs,
-  },
   coachActions: {
     flexDirection: 'row',
     gap: spacing[2],
@@ -172,19 +159,22 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.bold,
   },
   currentWeek: {
-    borderColor: 'rgba(0, 229, 160, 0.34)',
+    borderColor: 'rgba(207, 250, 254, 0.30)',
+    backgroundColor: 'rgba(207, 250, 254, 0.08)',
   },
   eyebrow: {
-    color: colors.primary,
+    color: 'rgba(209, 250, 229, 0.50)',
     fontSize: fontSizes.xs,
     fontWeight: fontWeights.heavy,
     lineHeight: lineHeights.xs,
   },
   intro: {
+    ...prototypeGlassBlur,
+    ...prototypeGlassShadow,
     alignItems: 'center',
-    backgroundColor: 'rgba(18, 36, 31, 0.72)',
-    borderColor: 'rgba(207, 250, 254, 0.15)',
-    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.045)',
+    borderColor: 'rgba(254, 240, 138, 0.14)',
+    borderRadius: 26,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -228,9 +218,9 @@ const styles = StyleSheet.create({
     gap: spacing[2],
   },
   weekCard: {
-    backgroundColor: 'rgba(12, 26, 22, 0.82)',
-    borderColor: 'rgba(207, 250, 254, 0.18)',
-    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.035)',
+    borderColor: 'rgba(255, 255, 255, 0.07)',
+    borderRadius: 26,
     borderWidth: StyleSheet.hairlineWidth,
     gap: spacing[3],
     padding: spacing[4],

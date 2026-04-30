@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GestureResponderEvent, LayoutChangeEvent, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
+import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassShadow, radii, spacing } from '../../../shared/theme';
 
 interface EnergySliderProps {
   onChange: (value: number) => void;
@@ -47,18 +47,21 @@ export function EnergySlider({ onChange, value }: EnergySliderProps) {
 
 const styles = StyleSheet.create({
   card: {
+    ...prototypeGlassShadow,
     backgroundColor: 'rgba(58, 55, 15, 0.38)',
-    borderColor: 'rgba(250, 204, 21, 0.25)',
-    borderRadius: 22,
+    borderColor: 'rgba(250, 204, 21, 0.18)',
+    borderRadius: 26,
     borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
     paddingHorizontal: spacing[4],
-    paddingVertical: spacing[3],
+    paddingBottom: 14,
+    paddingTop: 15,
     shadowColor: '#FACC15',
     shadowOpacity: 0.12,
     shadowRadius: 24,
   },
   fill: {
-    backgroundColor: '#FFF7AD',
+    backgroundColor: '#FFF27A',
     borderRadius: radii.pill,
     height: 11,
     left: 4,
@@ -72,8 +75,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing[1],
   },
   rail: {
-    backgroundColor: 'rgba(236, 254, 255, 0.11)',
-    borderColor: 'rgba(236, 254, 255, 0.30)',
+    backgroundColor: 'rgba(236, 254, 255, 0.08)',
+    borderColor: 'rgba(236, 254, 255, 0.16)',
     borderRadius: radii.pill,
     borderWidth: StyleSheet.hairlineWidth,
     height: 13,
@@ -89,13 +92,14 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   tail: {
-    backgroundColor: 'rgba(103, 232, 249, 0.24)',
+    backgroundColor: 'rgba(103, 232, 249, 0.28)',
     borderRadius: radii.pill,
-    height: 34,
-    marginLeft: -120,
+    height: 46,
+    marginLeft: -148,
     position: 'absolute',
-    top: 12,
-    width: 132,
+    opacity: 0.94,
+    top: 6,
+    width: 166,
   },
   thumb: {
     backgroundColor: '#FFB020',
