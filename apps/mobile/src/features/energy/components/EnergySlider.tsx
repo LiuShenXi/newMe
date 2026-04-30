@@ -47,9 +47,9 @@ export function EnergySlider({ onChange, value }: EnergySliderProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.055)',
-    borderColor: 'rgba(250, 204, 21, 0.18)',
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(58, 55, 15, 0.38)',
+    borderColor: 'rgba(250, 204, 21, 0.25)',
+    borderRadius: 22,
     borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: spacing[4],
     paddingVertical: spacing[3],
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     shadowRadius: 24,
   },
   fill: {
-    backgroundColor: '#FACC15',
+    backgroundColor: '#FFF7AD',
     borderRadius: radii.pill,
     height: 11,
     left: 4,
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing[1],
   },
   rail: {
-    backgroundColor: 'rgba(236, 254, 255, 0.10)',
-    borderColor: 'rgba(236, 254, 255, 0.16)',
+    backgroundColor: 'rgba(236, 254, 255, 0.11)',
+    borderColor: 'rgba(236, 254, 255, 0.30)',
     borderRadius: radii.pill,
     borderWidth: StyleSheet.hairlineWidth,
     height: 13,

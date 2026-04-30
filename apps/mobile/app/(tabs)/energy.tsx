@@ -1,11 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ConfirmButton } from '../../src/features/energy/components/ConfirmButton';
 import { EnergyOrb } from '../../src/features/energy/components/EnergyOrb';
 import { EnergySlider } from '../../src/features/energy/components/EnergySlider';
 import { WeeklyFocusPanel } from '../../src/features/energy/components/WeeklyFocusPanel';
 import { useEnergy } from '../../src/features/energy/hooks/useEnergy';
+import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 
 export default function EnergyScreen() {
@@ -24,13 +24,12 @@ export default function EnergyScreen() {
 
   return (
     <View style={styles.root}>
-      <StatusBar style="light" />
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <PrototypeScreen contentStyle={styles.content}>
         <EnergyOrb charging={charging} value={weekEnergy} />
         <WeeklyFocusPanel focuses={focuses} />
         <EnergySlider onChange={setTodayEnergy} value={energyValue} />
         <ConfirmButton onPress={requestConfirm} />
-      </ScrollView>
+      </PrototypeScreen>
 
       {toastVisible ? (
         <View style={styles.toast}>
@@ -60,10 +59,7 @@ export default function EnergyScreen() {
 
 const styles = StyleSheet.create({
   content: {
-    gap: spacing[4],
-    paddingBottom: spacing[8],
-    paddingHorizontal: spacing[5],
-    paddingTop: spacing[10],
+    gap: 14,
   },
   modalActions: {
     flexDirection: 'row',
@@ -113,7 +109,6 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.sm,
   },
   root: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   secondaryButton: {

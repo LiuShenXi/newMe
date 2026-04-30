@@ -17,9 +17,9 @@ export function ConfirmButton({ onPress }: ConfirmButtonProps) {
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: 'rgba(207, 250, 254, 0.10)',
-    borderColor: 'rgba(207, 250, 254, 0.20)',
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(207, 250, 254, 0.08)',
+    borderColor: 'rgba(207, 250, 254, 0.22)',
+    borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     minHeight: 50,
     justifyContent: 'center',

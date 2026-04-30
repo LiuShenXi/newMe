@@ -97,9 +97,9 @@ const styles = StyleSheet.create({
   },
   row: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.045)',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(3, 16, 13, 0.44)',
+    borderColor: 'rgba(207, 250, 254, 0.11)',
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[2],

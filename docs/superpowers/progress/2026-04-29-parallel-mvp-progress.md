@@ -5,9 +5,9 @@
 ## 当前总状态
 
 - 当前批次：Batch 2
-- 当前阶段：Batch 2 / Track C8 计划页已完成并合并到 main；下一步进入 C9 成长树页
+- 当前阶段：Batch 2 / C5-C9 原型级视觉还原返工完成；下一步进入 C10 周结算流程
 - 当前主控：main
-- 最近更新时间：2026-04-29
+- 最近更新时间：2026-04-30
 - 最近更新人：Codex
 
 ## 快速续跑入口
@@ -60,6 +60,8 @@ git worktree list
 | C6 Energy Page | DONE | feat/track-c-energy -> main | 604d2df / merge 1c58f93 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 能量球、本周进度概览、今日能量条、确认提醒和注入反馈完成；Skia 粒子留体验增强 |
 | C7 Todo Page | DONE | feat/track-c-todo -> main | 85177ee / merge f0d0f63 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 本周重点标签、今日清单 CRUD、本周 7 天概览完成；左滑删除留体验增强 |
 | C8 Plan Page | DONE | feat/track-c-plan -> main | 02d73b0 / merge 56fea2f | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 月/年双视图、4 周节点、Q1-Q4 卡片、手动空层级补全入口完成 |
+| C5-C9 Prototype Visual Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 均通过 | 补齐原型状态栏、深绿玻璃背景、胶囊底栏、冷启动卡片、能量/清单/计划视觉层级；C9 成长树、6 果实、Q2 阶段、1 荣誉和果实时间胶囊已完成 |
+| C9 Growth Tree Page | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 通过 | View/CSS-style 基础树形、果实点击时间胶囊、荣誉/阶段/果实统计完成；Skia 留体验增强 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
@@ -68,7 +70,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（C8 已合并 main，主工作区验证产物已清理）。
+- 无（C5-C9 原型级视觉还原返工已在本轮提交）。
 
 ## 最近工作记录
 
@@ -234,6 +236,16 @@ git worktree list
 - C8 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；启动 Expo Web 后运行 `npx playwright test .tmp/c8-plan.spec.js --reporter=line`，1 个用例通过，并生成 `.tmp/c8-plan.png` 做视觉检查。
 - 主控已将 `feat/track-c-plan` 合并到 `main`；合并提交 `56fea2f`。合并后在主目录执行 `pnpm --filter @newme/mobile typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/api build`、`pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web`、`npx playwright test .tmp/c8-plan.spec.js --reporter=line` 均通过；验证导出产物和临时测试目录已清理。
 
+### 2026-04-30
+
+- 设计总监返工启动：用户明确要求移动端前端界面按 `prototype/index.html` 1:1 还原，不再只做结构参考。
+- 新增原型还原红测 `apps/mobile/tests/prototype-parity.spec.js`：初始失败点为缺少原型状态栏、冷启动文案不一致、成长树仍为占位。
+- 公共视觉壳完成：新增 `PrototypeShell`，补齐原型内状态栏 `09:07 / 87%`、深绿色背景、玻璃卡和页面光晕；底部 Tab 改为原型胶囊式悬浮导航。
+- C5-C8 视觉返工完成：冷启动三路径卡片改为原型玻璃样式并修正文案为 `先快速规划这个季度`；能量页、清单页、计划页改回原型深绿玻璃层级、圆角、光效和间距。
+- C9 成长树完成：新增 `GrowthTree`、`FruitCapsule` 和果实数据，展示树干、枝干、树冠、6 个金色果实、`Q2 阶段`、`1 荣誉`，点击果实可打开时间胶囊。
+- 依赖更新：移动端新增 `expo-linear-gradient@^15.0.8` 用于还原原型背景渐变；Metro 需要 `expo start -c` 清缓存后识别新依赖。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 2 个用例通过；使用 Playwright 生成 `final-onboarding/energy/todo/plan/tree` 截图完成肉眼检查。
+
 ## 阻塞与风险
 
 - `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B2 已通过手动 `prisma generate/migrate` 验证，后续 bcrypt 使用前仍需关注构建脚本策略。
@@ -250,7 +262,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. C8 合并 main 后，建议进入 C9 成长树页，继续对齐年度树、果实时间胶囊和荣誉层展示。
+1. 下一步进入 C10 周结算流程，按原型还原开场语、每日能量回顾、重点回顾、结果微调、周感悟和果实生成动画。
 2. F2 冷启动联调时补齐快速/深度路径的真实 AI 生成、确认写入、本周重点和今日清单落库。
 3. C6 的 Skia 自绘粒子与复杂充电涌入效果、C7 的左滑删除手势留体验增强阶段，不阻塞 MVP 闭环。
 4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。

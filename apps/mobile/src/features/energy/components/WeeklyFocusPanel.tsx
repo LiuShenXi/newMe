@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.xs,
   },
   panel: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(18, 36, 31, 0.72)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: 22,
     borderWidth: StyleSheet.hairlineWidth,
-    opacity: 0.68,
+    opacity: 1,
     padding: spacing[4],
   },
   title: {

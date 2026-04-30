@@ -4,6 +4,7 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-
 import { AddTodoInput } from '../../src/features/todo/components/AddTodoInput';
 import { TodoList } from '../../src/features/todo/components/TodoList';
 import { TodoItemModel, useTodos } from '../../src/features/todo/hooks/useTodos';
+import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 
 export default function TodoScreen() {
@@ -36,7 +37,7 @@ export default function TodoScreen() {
 
   return (
     <View style={styles.root}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <PrototypeScreen contentStyle={styles.content}>
         <View style={styles.chipRow}>
           {focusChips.map((chip) => (
             <Text key={chip} style={styles.chip}>
@@ -64,7 +65,7 @@ export default function TodoScreen() {
           <TodoList onDelete={deleteTodo} onEdit={openEdit} onToggle={toggleTodo} todos={todos} />
           <AddTodoInput onAdd={addTodo} />
         </View>
-      </ScrollView>
+      </PrototypeScreen>
 
       {weekVisible ? (
         <View style={styles.modalBackdrop}>
@@ -137,9 +138,9 @@ export default function TodoScreen() {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.055)',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(18, 36, 31, 0.72)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: 24,
     borderWidth: StyleSheet.hairlineWidth,
     gap: spacing[3],
     padding: spacing[4],
@@ -175,10 +176,7 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.xs,
   },
   content: {
-    gap: spacing[4],
-    paddingBottom: spacing[8],
-    paddingHorizontal: spacing[5],
-    paddingTop: spacing[10],
+    gap: 16,
   },
   dayCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.045)',
@@ -293,7 +291,6 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.sm,
   },
   root: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   secondaryButton: {

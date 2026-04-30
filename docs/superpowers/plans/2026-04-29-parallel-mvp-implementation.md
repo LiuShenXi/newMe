@@ -1737,21 +1737,26 @@ git commit -m "feat: add plan page with month/year views"
 - Modify: `apps/mobile/app/(tabs)/tree.tsx`
 - Create: `apps/mobile/src/features/tree/components/GrowthTree.tsx`
 - Create: `apps/mobile/src/features/tree/components/FruitCapsule.tsx`
-- Create: `apps/mobile/src/features/tree/components/HonorBadge.tsx`
-- Create: `apps/mobile/src/features/tree/hooks/useTree.ts`
+- Create: `apps/mobile/src/features/tree/data/fruits.ts`
+- Modify: `apps/mobile/app/(tabs)/_layout.tsx`
+- Create: `apps/mobile/src/shared/components/PrototypeShell.tsx`
 
-- [ ] **Step 1: 实现成长树 Skia 自绘**
+- [x] **Step 1: 实现成长树基础自绘**
 
-树主体按季度阶段变化（Q1 树苗 → Q4 完整）。MVP 先实现基础树形。
+树主体按季度阶段变化（Q1 树苗 → Q4 完整）。MVP 已用 React Native View/CSS-style 还原原型基础树形，Skia 自绘留体验增强。
 
-- [ ] **Step 2: 实现果实点击 → 时间胶囊**
+- [x] **Step 2: 实现果实点击 → 时间胶囊**
 
-- [ ] **Step 3: 实现荣誉层展示**
+- [x] **Step 3: 实现荣誉层展示**
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: 原型级视觉返工与验证**
+
+2026-04-30 设计总监返工：C5-C9 按 `prototype/index.html` phone 内界面补齐原型状态栏、深绿玻璃背景、胶囊底栏、冷启动卡片、能量页、清单页、计划页和成长树页。验证：`pnpm --filter @newme/mobile typecheck`、`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 通过。
+
+- [x] **Step 5: Commit**
 
 ```bash
-git commit -m "feat: add growth tree page with fruits and honors"
+git commit -m "feat: restore prototype visual parity through growth tree"
 ```
 
 ### Task C10: 周结算流程

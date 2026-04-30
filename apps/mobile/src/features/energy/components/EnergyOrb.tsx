@@ -77,11 +77,11 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
 
 const styles = StyleSheet.create({
   aura: {
-    backgroundColor: 'rgba(165, 243, 252, 0.11)',
+    backgroundColor: 'rgba(104, 211, 190, 0.13)',
     borderRadius: radii.pill,
-    height: 242,
+    height: 250,
     position: 'absolute',
-    width: 242,
+    width: 250,
   },
   auraCharging: {
     backgroundColor: 'rgba(254, 240, 138, 0.16)',
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   core: {
-    backgroundColor: '#0F2026',
-    borderColor: 'rgba(207, 250, 254, 0.45)',
+    backgroundColor: 'rgba(18, 42, 37, 0.62)',
+    borderColor: 'rgba(207, 250, 254, 0.42)',
     borderRadius: radii.pill,
     borderWidth: StyleSheet.hairlineWidth,
     height: 224,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   shadow: {
-    backgroundColor: 'rgba(165, 243, 252, 0.18)',
+    backgroundColor: 'rgba(94, 234, 212, 0.20)',
     borderRadius: radii.pill,
     bottom: 8,
     height: 32,
@@ -153,16 +153,16 @@ const styles = StyleSheet.create({
   },
   value: {
     color: colors.text,
-    fontSize: 58,
+    fontSize: 64,
     fontWeight: fontWeights.regular,
-    lineHeight: 64,
+    lineHeight: 68,
   },
   wrap: {
     alignItems: 'center',
-    height: 242,
+    height: 270,
     justifyContent: 'center',
     alignSelf: 'center',
     position: 'relative',
-    width: 242,
+    width: 270,
   },
 });

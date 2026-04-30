@@ -1,9 +1,10 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyLevel } from '../../src/features/plan/components/EmptyLevel';
 import { MonthView } from '../../src/features/plan/components/MonthView';
 import { YearView } from '../../src/features/plan/components/YearView';
 import { usePlan } from '../../src/features/plan/hooks/usePlan';
+import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 
 export default function PlanScreen() {
@@ -11,7 +12,7 @@ export default function PlanScreen() {
 
   return (
     <View style={styles.root}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <PrototypeScreen contentStyle={styles.content}>
         <View style={styles.segmented}>
           <Pressable
             accessibilityRole="button"
@@ -45,17 +46,14 @@ export default function PlanScreen() {
         </View>
 
         {view === 'month' ? <MonthView weeks={monthWeeks} /> : <YearView quarters={quarters} />}
-      </ScrollView>
+      </PrototypeScreen>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   content: {
-    gap: spacing[4],
-    paddingBottom: spacing[8],
-    paddingHorizontal: spacing[5],
-    paddingTop: spacing[10],
+    gap: 16,
   },
   eyebrow: {
     color: colors.primary,
@@ -68,9 +66,9 @@ const styles = StyleSheet.create({
     marginTop: spacing[4],
   },
   manualCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.055)',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(18, 36, 31, 0.72)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: 22,
     borderWidth: StyleSheet.hairlineWidth,
     padding: spacing[4],
   },
@@ -88,20 +86,19 @@ const styles = StyleSheet.create({
     marginTop: spacing[1],
   },
   root: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   segmented: {
-    backgroundColor: 'rgba(255, 255, 255, 0.055)',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(3, 12, 10, 0.58)',
+    borderColor: 'rgba(207, 250, 254, 0.14)',
+    borderRadius: 28,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[2],
     padding: spacing[1],
   },
   segmentActive: {
-    backgroundColor: colors.primary,
+    backgroundColor: 'rgba(56, 91, 82, 0.85)',
   },
   segmentButton: {
     alignItems: 'center',
@@ -117,7 +114,7 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.sm,
   },
   segmentTextActive: {
-    color: colors.background,
+    color: colors.text,
   },
   sourcePill: {
     backgroundColor: 'rgba(245, 166, 35, 0.14)',

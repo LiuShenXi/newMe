@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { GlassCard, PrototypeScreen } from '../../../shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, spacing } from '../../../shared/theme';
 
 interface OnboardingScreenProps extends PropsWithChildren {
@@ -12,48 +12,53 @@ interface OnboardingScreenProps extends PropsWithChildren {
 
 export function OnboardingScreen({ children, eyebrow, subtitle, title }: OnboardingScreenProps) {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+    <PrototypeScreen contentStyle={styles.container}>
+      <GlassCard style={styles.hero}>
         <Text style={styles.eyebrow}>{eyebrow}</Text>
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-        <View style={styles.content}>{children}</View>
-      </View>
-    </SafeAreaView>
+      </GlassCard>
+      <View style={styles.content}>{children}</View>
+    </PrototypeScreen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: spacing[5],
+    gap: 16,
   },
   content: {
-    gap: spacing[4],
-    marginTop: spacing[6],
+    gap: 12,
   },
   eyebrow: {
-    color: colors.primary,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(254, 240, 138, 0.14)',
+    borderColor: 'rgba(254, 240, 138, 0.20)',
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    color: '#FEF3C7',
     fontSize: fontSizes.xs,
     fontWeight: fontWeights.heavy,
     lineHeight: lineHeights.xs,
-    marginTop: spacing[2],
+    marginBottom: spacing[2],
+    overflow: 'hidden',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
   },
-  safeArea: {
-    backgroundColor: colors.background,
-    flex: 1,
+  hero: {
+    minHeight: 182,
+    padding: 20,
   },
   subtitle: {
-    color: colors.textSecondary,
-    fontSize: fontSizes.md,
-    lineHeight: lineHeights.md,
+    color: 'rgba(226, 232, 240, 0.78)',
+    fontSize: fontSizes.sm,
+    lineHeight: 22,
     marginTop: spacing[3],
   },
   title: {
     color: colors.text,
-    fontSize: fontSizes.xxl,
+    fontSize: 25,
     fontWeight: fontWeights.heavy,
-    lineHeight: lineHeights.xxl,
-    marginTop: spacing[2],
+    lineHeight: 32,
   },
 });

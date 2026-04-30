@@ -29,7 +29,7 @@ export default function OnboardingChooseScreen() {
           setPath('quick');
           router.push('/onboarding/quick');
         }}
-        title="快速规划这个季度"
+        title="先快速规划这个季度"
       />
       <PathCard
         description="年、季、月、周、日逐层填写；空着点下一步就行。"

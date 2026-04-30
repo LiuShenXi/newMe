@@ -19,16 +19,32 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#00E5A0',
         tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.48)',
         tabBarStyle: {
-          backgroundColor: '#101827',
-          borderTopColor: 'rgba(255, 255, 255, 0.1)',
-          height: 68,
-          paddingBottom: 10,
-          paddingTop: 8,
+          backgroundColor: 'rgba(9, 27, 23, 0.92)',
+          borderColor: 'rgba(207, 250, 254, 0.13)',
+          borderRadius: 28,
+          borderTopColor: 'rgba(207, 250, 254, 0.13)',
+          borderWidth: 1,
+          bottom: 22,
+          height: 62,
+          left: 20,
+          paddingBottom: 7,
+          paddingHorizontal: 8,
+          paddingTop: 7,
+          position: 'absolute',
+          right: 20,
+          shadowColor: '#000000',
+          shadowOpacity: 0.32,
+          shadowRadius: 24,
         },
+        tabBarActiveBackgroundColor: 'rgba(29, 78, 70, 0.82)',
         tabBarIcon: ({ color, focused, size }) => {
           const icon = tabIconByRoute[route.name] ?? tabIconByRoute.energy;
 
           return <Ionicons color={color} name={focused ? icon.focused : icon.idle} size={size} />;
+        },
+        tabBarItemStyle: {
+          borderRadius: 20,
+          minHeight: 48,
         },
         tabBarLabelStyle: {
           fontSize: 12,

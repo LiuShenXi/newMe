@@ -103,9 +103,9 @@ const styles = StyleSheet.create({
   },
   trigger: {
     alignItems: 'center',
-    backgroundColor: 'rgba(207, 250, 254, 0.08)',
+    backgroundColor: 'rgba(207, 250, 254, 0.06)',
     borderColor: 'rgba(207, 250, 254, 0.16)',
-    borderRadius: radii.md,
+    borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
     minHeight: 48,
     justifyContent: 'center',

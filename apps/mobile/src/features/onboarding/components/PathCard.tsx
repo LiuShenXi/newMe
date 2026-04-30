@@ -1,27 +1,32 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
 
 interface PathCardProps {
   description: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: 'flash-outline' | 'sparkles' | 'square-outline';
   onPress: () => void;
   title: string;
 }
+
+const iconTextByName: Record<PathCardProps['icon'], string> = {
+  'flash-outline': '↯',
+  sparkles: '✦',
+  'square-outline': '□',
+};
 
 export function PathCard({ description, icon, onPress, title }: PathCardProps) {
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.iconBox}>
-        <Ionicons color={colors.text} name={icon} size={22} />
+        <Text style={styles.iconText}>{iconTextByName[icon]}</Text>
       </View>
       <View style={styles.copy}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
       <View style={styles.chevron}>
-        <Ionicons color={colors.textSecondary} name="chevron-forward" size={16} />
+        <Text style={styles.chevronText}>›</Text>
       </View>
     </Pressable>
   );
@@ -30,9 +35,9 @@ export function PathCard({ description, icon, onPress, title }: PathCardProps) {
 const styles = StyleSheet.create({
   card: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.lg,
+    backgroundColor: 'rgba(18, 36, 31, 0.72)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: 22,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing[3],
@@ -41,8 +46,10 @@ const styles = StyleSheet.create({
   },
   chevron: {
     alignItems: 'center',
-    backgroundColor: colors.surfaceHover,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: radii.pill,
+    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderWidth: StyleSheet.hairlineWidth,
     height: 30,
     justifyContent: 'center',
     width: 30,
@@ -51,19 +58,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   description: {
-    color: colors.textSecondary,
+    color: 'rgba(226, 232, 240, 0.70)',
     fontSize: fontSizes.sm,
     lineHeight: lineHeights.sm,
     marginTop: spacing[1],
   },
   iconBox: {
     alignItems: 'center',
-    borderColor: colors.border,
+    borderColor: 'rgba(207, 250, 254, 0.12)',
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
     height: 44,
     justifyContent: 'center',
     width: 44,
+  },
+  iconText: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: fontWeights.heavy,
+    lineHeight: 26,
   },
   pressed: {
     opacity: 0.84,
@@ -73,5 +86,10 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.md,
     fontWeight: fontWeights.heavy,
     lineHeight: lineHeights.md,
+  },
+  chevronText: {
+    color: colors.textSecondary,
+    fontSize: 22,
+    lineHeight: 24,
   },
 });
