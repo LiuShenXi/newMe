@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { PrototypeButton } from '../../../shared/components';
@@ -6,11 +6,12 @@ import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassBlur, protot
 import type { MonthWeek, PlanSource } from '../hooks/usePlan';
 
 interface MonthViewProps {
+  onUpdateWeekFocuses?: (items: string[]) => Promise<void>;
   planSource: PlanSource;
   weeks: MonthWeek[];
 }
 
-export function MonthView({ planSource, weeks }: MonthViewProps) {
+export function MonthView({ onUpdateWeekFocuses, planSource, weeks }: MonthViewProps) {
   const [coachOpen, setCoachOpen] = useState(false);
   const [feedback, setFeedback] = useState('这周工作会比较忙，保留晨跑，阅读任务拆小一点。');
   const [localWeeks, setLocalWeeks] = useState(weeks);
@@ -18,25 +19,32 @@ export function MonthView({ planSource, weeks }: MonthViewProps) {
   const [rounds, setRounds] = useState(0);
   const isAiSource = planSource === 'ai';
 
+  useEffect(() => {
+    setLocalWeeks(weeks);
+  }, [weeks]);
+
   function submitFeedback() {
     if (rounds >= 3 || planning) return;
     setPlanning(true);
     setTimeout(() => {
+      const nextItems = [
+        '把任务密度从 4 件降到 3 件，先保证能完成',
+        '保留晨跑作为稳定能量来源，不再新增运动任务',
+        '阅读任务改成每天 15 分钟，优先完成第 2 章',
+      ];
+
       setLocalWeeks((current) =>
         current.map((week) =>
           week.week === 'W17'
             ? {
                 ...week,
-                items: [
-                  '把任务密度从 4 件降到 3 件，先保证能完成',
-                  '保留晨跑作为稳定能量来源，不再新增运动任务',
-                  '阅读任务改成每天 15 分钟，优先完成第 2 章',
-                ],
+                items: nextItems,
                 title: '根据反馈重排 AI 任务',
               }
             : week,
         ),
       );
+      onUpdateWeekFocuses?.(nextItems).catch(() => undefined);
       setRounds((current) => current + 1);
       setPlanning(false);
       setCoachOpen(false);

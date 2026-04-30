@@ -8,7 +8,7 @@ import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 
 export default function PlanScreen() {
-  const { manualLevels, monthWeeks, planSource, quarters, setView, view } = usePlan();
+  const { error, loading, manualLevels, monthWeeks, planSource, quarters, setView, updateCurrentWeekFocuses, view } = usePlan();
   const showManualOverview = planSource !== 'ai';
 
   return (
@@ -31,6 +31,9 @@ export default function PlanScreen() {
           </Pressable>
         </View>
 
+        {loading ? <Text style={styles.statusText}>计划同步中</Text> : null}
+        {error ? <Text style={styles.statusText}>{error}</Text> : null}
+
         {showManualOverview ? (
           <View style={styles.manualCard}>
             <View style={styles.manualHeader}>
@@ -48,7 +51,11 @@ export default function PlanScreen() {
           </View>
         ) : null}
 
-        {view === 'month' ? <MonthView planSource={planSource} weeks={monthWeeks} /> : <YearView planSource={planSource} quarters={quarters} />}
+        {view === 'month' ? (
+          <MonthView onUpdateWeekFocuses={updateCurrentWeekFocuses} planSource={planSource} weeks={monthWeeks} />
+        ) : (
+          <YearView planSource={planSource} quarters={quarters} />
+        )}
       </PrototypeScreen>
     </View>
   );
@@ -128,5 +135,10 @@ const styles = StyleSheet.create({
     lineHeight: lineHeights.xs,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[2],
+  },
+  statusText: {
+    color: colors.textDim,
+    fontSize: fontSizes.xs,
+    lineHeight: lineHeights.xs,
   },
 });
