@@ -9,6 +9,22 @@ test.use({
   isMobile: true,
 });
 
+test('plan page keeps prototype AI fallback when APIs fail to load', async ({ page }) => {
+  await page.route(`${apiBase}/plans/weeks/${weekId}/focuses`, async (route) => {
+    await route.abort();
+  });
+
+  await page.route(`${apiBase}/goals/current`, async (route) => {
+    await route.abort();
+  });
+
+  await page.goto(`${baseUrl}/plan`, { waitUntil: 'networkidle' });
+
+  await expect(page.getByText('只规划最近一个月，避免计划过远失效')).toBeVisible();
+  await expect(page.getByText('AI 重规划')).toBeVisible();
+  await expect(page.getByText('手动 OKR', { exact: true })).toHaveCount(0);
+});
+
 test('plan page loads weekly focuses and current goals from APIs', async ({ page }) => {
   const focusRequests = [];
   const goalRequests = [];
