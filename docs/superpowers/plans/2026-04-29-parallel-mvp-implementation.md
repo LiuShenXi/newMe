@@ -1,4 +1,4 @@
-# MVP 并行开发实施计划
+﻿# MVP 并行开发实施计划
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -215,7 +215,7 @@ Week 2:                                          集成点 1
 - Create: `.nvmrc`
 - Create: `tsconfig.base.json`
 
-- [ ] **Step 1: 初始化 root package.json**
+- [x] **Step 1: 初始化 root package.json**
 
 ```json
 {
@@ -232,7 +232,7 @@ Week 2:                                          集成点 1
 }
 ```
 
-- [ ] **Step 2: 创建 pnpm-workspace.yaml**
+- [x] **Step 2: 创建 pnpm-workspace.yaml**
 
 ```yaml
 packages:
@@ -240,7 +240,7 @@ packages:
   - 'apps/*'
 ```
 
-- [ ] **Step 3: 创建 tsconfig.base.json**
+- [x] **Step 3: 创建 tsconfig.base.json**
 
 ```json
 {
@@ -260,13 +260,13 @@ packages:
 }
 ```
 
-- [ ] **Step 4: 创建 .nvmrc**
+- [x] **Step 4: 创建 .nvmrc**
 
 ```text
 20
 ```
 
-- [ ] **Step 5: 创建 .gitignore**
+- [x] **Step 5: 创建 .gitignore**
 
 ```text
 node_modules/
@@ -280,12 +280,12 @@ android/
 ios/
 ```
 
-- [ ] **Step 6: 运行 pnpm install 验证 workspace**
+- [x] **Step 6: 运行 pnpm install 验证 workspace**
 
 Run: `pnpm install`
 Expected: 成功，无错误
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add package.json pnpm-workspace.yaml tsconfig.base.json .nvmrc .gitignore
@@ -305,7 +305,7 @@ git commit -m "chore: init monorepo with pnpm workspace"
 - Create: `packages/shared/src/enums/index.ts`
 - Create: `packages/shared/src/constants/index.ts`
 
-- [ ] **Step 1: 创建 shared package.json**
+- [x] **Step 1: 创建 shared package.json**
 
 ```json
 {
@@ -320,7 +320,7 @@ git commit -m "chore: init monorepo with pnpm workspace"
 }
 ```
 
-- [ ] **Step 2: 创建 tsconfig.json**
+- [x] **Step 2: 创建 tsconfig.json**
 
 ```json
 {
@@ -333,7 +333,7 @@ git commit -m "chore: init monorepo with pnpm workspace"
 }
 ```
 
-- [ ] **Step 3: 创建枚举文件 — goal.ts**
+- [x] **Step 3: 创建枚举文件 — goal.ts**
 
 ```typescript
 export enum GoalType {
@@ -352,7 +352,7 @@ export enum GoalLevel {
 }
 ```
 
-- [ ] **Step 4: 创建枚举文件 — source.ts**
+- [x] **Step 4: 创建枚举文件 — source.ts**
 
 ```typescript
 export enum Source {
@@ -363,7 +363,7 @@ export enum Source {
 }
 ```
 
-- [ ] **Step 5: 创建枚举文件 — sync.ts**
+- [x] **Step 5: 创建枚举文件 — sync.ts**
 
 ```typescript
 export enum SyncStatus {
@@ -373,7 +373,7 @@ export enum SyncStatus {
 }
 ```
 
-- [ ] **Step 6: 创建枚举文件 — ai-scenario.ts**
+- [x] **Step 6: 创建枚举文件 — ai-scenario.ts**
 
 ```typescript
 export enum AiScenario {
@@ -387,7 +387,7 @@ export enum AiScenario {
 }
 ```
 
-- [ ] **Step 7: 创建 enums/index.ts 和常量**
+- [x] **Step 7: 创建 enums/index.ts 和常量**
 
 ```typescript
 // enums/index.ts
@@ -412,19 +412,19 @@ export const AI_RATE_LIMIT_GLOBAL_PER_HOUR = 30;
 export const SETTLEMENT_BACKFILL_WEEKS = 1;
 ```
 
-- [ ] **Step 8: 创建 src/index.ts**
+- [x] **Step 8: 创建 src/index.ts**
 
 ```typescript
 export * from './enums';
 export * from './constants';
 ```
 
-- [ ] **Step 9: 运行 typecheck**
+- [x] **Step 9: 运行 typecheck**
 
 Run: `cd packages/shared && pnpm typecheck`
 Expected: 无错误
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add packages/shared/
@@ -449,11 +449,11 @@ git commit -m "feat: add shared package with enums and constants"
 - Modify: `packages/shared/src/index.ts`
 - Modify: `packages/shared/package.json` (add zod dependency)
 
-- [ ] **Step 1: 安装 zod**
+- [x] **Step 1: 安装 zod**
 
 Run: `cd packages/shared && pnpm add zod`
 
-- [ ] **Step 2: 创建 dto/auth.ts**
+- [x] **Step 2: 创建 dto/auth.ts**
 
 ```typescript
 export interface LoginRequest {
@@ -480,7 +480,7 @@ export interface UserContext {
 }
 ```
 
-- [ ] **Step 3: 创建 dto/goal.ts**
+- [x] **Step 3: 创建 dto/goal.ts**
 
 ```typescript
 import { GoalType, Source } from '../enums';
@@ -527,7 +527,7 @@ export interface CreateMonthGoalRequest {
 }
 ```
 
-- [ ] **Step 4: 创建 dto/plan.ts**
+- [x] **Step 4: 创建 dto/plan.ts**
 
 ```typescript
 import { Source } from '../enums';
@@ -552,7 +552,7 @@ export interface UpdateWeeklyFocusesRequest {
 }
 ```
 
-- [ ] **Step 5: 创建 dto/todo.ts**
+- [x] **Step 5: 创建 dto/todo.ts**
 
 ```typescript
 import { Source } from '../enums';
@@ -582,7 +582,7 @@ export interface UpdateTodoRequest {
 }
 ```
 
-- [ ] **Step 6: 创建 dto/energy.ts**
+- [x] **Step 6: 创建 dto/energy.ts**
 
 ```typescript
 export interface EnergyEntryDto {
@@ -606,7 +606,7 @@ export interface RecordEnergyRequest {
 }
 ```
 
-- [ ] **Step 7: 创建 dto/settlement.ts**
+- [x] **Step 7: 创建 dto/settlement.ts**
 
 ```typescript
 export interface WeeklySettlementDto {
@@ -625,7 +625,7 @@ export interface CreateSettlementRequest {
 }
 ```
 
-- [ ] **Step 8: 创建 dto/tree.ts**
+- [x] **Step 8: 创建 dto/tree.ts**
 
 ```typescript
 export interface TreeFruitDto {
@@ -652,7 +652,7 @@ export interface GrowthTreeDto {
 }
 ```
 
-- [ ] **Step 9: 创建 dto/ai.ts**
+- [x] **Step 9: 创建 dto/ai.ts**
 
 ```typescript
 import { AiScenario } from '../enums';
@@ -684,7 +684,7 @@ export interface AssistRequest {
 }
 ```
 
-- [ ] **Step 10: 创建 dto/sync.ts**
+- [x] **Step 10: 创建 dto/sync.ts**
 
 ```typescript
 export interface SyncPushItem {
@@ -727,7 +727,7 @@ export interface SyncPullResponse {
 }
 ```
 
-- [ ] **Step 11: 创建 dto/index.ts 和 validators**
+- [x] **Step 11: 创建 dto/index.ts 和 validators**
 
 ```typescript
 // dto/index.ts
@@ -815,7 +815,7 @@ export const localAssistOutputSchema = z.object({
 export * from './ai-output';
 ```
 
-- [ ] **Step 12: 更新 src/index.ts**
+- [x] **Step 12: 更新 src/index.ts**
 
 ```typescript
 export * from './enums';
@@ -824,12 +824,12 @@ export * from './dto';
 export * from './validators';
 ```
 
-- [ ] **Step 13: 运行 typecheck**
+- [x] **Step 13: 运行 typecheck**
 
 Run: `cd packages/shared && pnpm typecheck`
 Expected: 无错误
 
-- [ ] **Step 14: Commit**
+- [x] **Step 14: Commit**
 
 ```bash
 git add packages/shared/
@@ -850,7 +850,7 @@ git commit -m "feat: add shared DTOs, Zod validators for AI output"
 - Modify: `packages/shared/src/index.ts`
 - Modify: `docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md`
 
-- [ ] **Step 1: 创建业务表名契约**
+- [x] **Step 1: 创建业务表名契约**
 
 ```typescript
 // packages/shared/src/contracts/tables.ts
@@ -873,7 +873,7 @@ export const SYNC_TABLES = [
 export type SyncTableName = (typeof SYNC_TABLES)[number];
 ```
 
-- [ ] **Step 2: 创建 AI 确认落库契约**
+- [x] **Step 2: 创建 AI 确认落库契约**
 
 AI confirm 不允许 AiModule 直接写正式业务表。Confirm 请求必须携带 `target`，由对应业务模块事务落库。
 
@@ -899,7 +899,7 @@ export interface AiConfirmationContract {
 }
 ```
 
-- [ ] **Step 3: 收紧 sync DTO**
+- [x] **Step 3: 收紧 sync DTO**
 
 `tableName` 使用 `SyncTableName`，`/sync/pull` 使用 POST body，不用 GET query 承载水位。
 
@@ -917,7 +917,7 @@ export interface SyncPushItem {
 }
 ```
 
-- [ ] **Step 4: 确认 7 个 AI 场景都有 Zod schema**
+- [x] **Step 4: 确认 7 个 AI 场景都有 Zod schema**
 
 必须包含：
 - `quickPlanOutputSchema`
@@ -928,7 +928,7 @@ export interface SyncPushItem {
 - `replanFutureWeeksOutputSchema`
 - `localAssistOutputSchema`
 
-- [ ] **Step 5: 导出 contracts**
+- [x] **Step 5: 导出 contracts**
 
 ```typescript
 // packages/shared/src/contracts/index.ts
@@ -945,13 +945,13 @@ export * from './validators';
 export * from './contracts';
 ```
 
-- [ ] **Step 6: 运行验证**
+- [x] **Step 6: 运行验证**
 
 Run: `pnpm --filter @newme/shared typecheck`
 
 Expected: 无错误
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/shared/ docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md
@@ -1770,11 +1770,11 @@ git commit -m "feat: restore prototype visual parity through growth tree"
 - Create: `apps/mobile/src/features/settlement/components/FruitAnimation.tsx`
 - Create: `apps/mobile/src/features/settlement/hooks/useSettlement.ts`
 
-- [ ] **Step 1: 实现周结算 7 步流程**
+- [x] **Step 1: 实现周结算 7 步流程**
 
 开场语 → 每日能量回顾 → 本周重点回顾 → 建议周结果 → 用户微调 → 周感悟 → 果实生成动画。
 
-- [ ] **Step 2: 实现果实生成动画（reanimated）**
+- [x] **Step 2: 实现果实生成动画（reanimated）**
 
 弹出、成形、亮起的序列动画。
 
@@ -1825,11 +1825,11 @@ export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
 
 每条记录包含：id (UUID), remoteId, createdAt, updatedAt, deletedAt, syncStatus, version。
 
-- [ ] **Step 4: 验证迁移执行**
+- [x] **Step 4: 验证迁移执行**
 
 当前 D1 验证已覆盖 TypeScript 与 Expo Web 打包；`expo-sqlite` 无法在 Node 环境直接打开数据库，首次真实 DB open + migration smoke 留到 D2 repository 接入时通过 App 运行态验证。
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git commit -m "feat: add SQLite database with migration framework"
@@ -2133,11 +2133,11 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 
 **验证项：**
 
-- [ ] monorepo 构建通过（`pnpm -r typecheck`）
-- [ ] 后端 API 可启动，/health 返回正常
-- [ ] 前端 App 可启动，4 tab 导航正常
-- [ ] 数据库迁移成功，核心表存在
-- [ ] 本地 SQLite 初始化成功
+- [x] monorepo 构建通过（`pnpm -r typecheck`）
+- [x] 后端 API 可启动，/health 返回正常
+- [x] 前端 App 可启动，4 tab 导航正常
+- [x] 数据库迁移成功，核心表存在
+- [x] 本地 SQLite 初始化成功
 
 ### 集成点 2（Week 2 中）
 
@@ -2145,11 +2145,11 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 
 **验证项：**
 
-- [ ] 冷启动三路径端到端可用
-- [ ] 日常执行闭环（清单 + 能量）可用
-- [ ] 周结算 → 果实生成可用
-- [ ] 离线 → 同步可用
-- [ ] AI 生成 → 确认 → 写入可用
+- [x] 冷启动三路径端到端可用
+- [x] 日常执行闭环（清单 + 能量）可用
+- [x] 周结算 → 果实生成可用
+- [x] 离线 → 同步可用
+- [x] AI 生成 → 确认 → 写入可用
 
 ### 最终验收（Week 2 末）
 
@@ -2160,14 +2160,14 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 - [x] 核心路径无崩溃
 - [x] F7 推送通知未完成时，不阻塞 MVP 验收；若提前完成，必须有独立验证记录
 
-> 2026-04-30 直接分支最终验收记录：`pnpm -r typecheck`、API 全量测试、Expo Web export、F2 手动 AI/F4 周结算成长树/原型一致性 Playwright、F5 sync runtime、planning-context smoke、`docker compose up --build -d` 和 `http://localhost:8080/api/v1/health` 均通过。F7 仍为 Phase 2 optional，不阻塞 MVP。
+> 2026-04-30 直接分支最终验收记录：`pnpm install --frozen-lockfile`、`pnpm -r typecheck`、API 全量测试、Expo Web export、F2 手动 AI/F4 周结算成长树/原型一致性 Playwright、F5 sync runtime、planning-context smoke、F7 notification smoke、`docker compose up --build -d` 和 `http://localhost:8080/api/v1/health` 均通过。F7 已作为 Phase 2 optional 提前完成；真机 SQLite 文件库 smoke 与系统级 APNs/FCM 到达测试仍保留为发布前验证项。
 
 ## 主控收口清单
 
 主控对话在合并所有 worker 结果后执行：
 
 - [x] 检查 `git status`，确认没有未解释的跨轨道改动。
-- [ ] 运行 `pnpm install`。
+- [x] 运行 `pnpm install`。
 - [x] 运行 `pnpm -r typecheck`。
 - [x] 运行后端测试：`pnpm --filter @newme/api test`。
 - [x] 运行前端可用性验证：启动 Expo，检查 4 tab 和关键页面。
