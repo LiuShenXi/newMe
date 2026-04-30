@@ -6,7 +6,7 @@
 
 - 当前批次：Batch 2
 - 当前阶段：Batch 2 / F2 冷启动 AI 联调已完成快速规划确认落库后端切片；下一步接移动端 quick 页面真实生成/确认调用
-- 当前主控：feat/track-f2-cold-start
+- 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Codex
 
@@ -275,6 +275,7 @@ git worktree list
 - F2 后端切片完成：`POST /ai/generations/:id/confirm` 现在按登录用户确认草案，校验 `generationId` 和场景一致性；快速规划草案确认时在事务中创建/复用 Quarter、创建 AI 来源 QuarterGoal、upsert AI 来源 WeekPlan、创建 WeeklyFocus 和今日 Todo，并标记用户 onboarding 完成。
 - 共享契约补充：`packages/shared/src/dto/ai.ts` 新增 `ConfirmGenerationResponse`，返回确认后的 generation 和实际写入数量，便于移动端下一步真实对接。
 - F2 验证记录：`pnpm --filter @newme/api test --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 通过；`pnpm --filter @newme/shared typecheck` 通过；`pnpm --filter @newme/api typecheck` 通过；`pnpm --filter @newme/api test --runInBand` 14 个 test suite / 27 个测试通过。
+- F2 主线合并：`feat/track-f2-cold-start` 已提交 `1bcbc13 feat: apply quick plan ai confirmations` 并 fast-forward 合并回 `main`；主目录补跑 `prisma generate` 后，`pnpm --filter @newme/api typecheck` 与 `pnpm --filter @newme/api test --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 均通过。
 
 ## 阻塞与风险
 
