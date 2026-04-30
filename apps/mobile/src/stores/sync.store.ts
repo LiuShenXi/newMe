@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { RuntimeSyncInput, RuntimeSyncSummary, syncOfflineChanges } from '../db/sync/runtime';
+
 interface SyncState {
   isOnline: boolean;
   isSyncing: boolean;
@@ -11,6 +13,7 @@ interface SyncState {
   markSyncFailure: (error: string) => void;
   markSyncStart: () => void;
   markSyncSuccess: (lastPulledAt?: string) => void;
+  runRuntimeSync: (input: RuntimeSyncInput) => Promise<RuntimeSyncSummary>;
   setOnline: (isOnline: boolean) => void;
 }
 
@@ -34,6 +37,30 @@ export const useSyncStore = create<SyncState>((set) => ({
   },
   markSyncSuccess(lastPulledAt = new Date().toISOString()) {
     set({ isSyncing: false, lastError: null, lastPulledAt });
+  },
+  async runRuntimeSync(input) {
+    set({ isSyncing: true, lastError: null });
+
+    try {
+      const summary = await syncOfflineChanges(input);
+      const lastError =
+        summary.conflicts > 0 || summary.errors > 0
+          ? `Sync completed with ${summary.conflicts} conflict(s) and ${summary.errors} error(s)`
+          : null;
+
+      set((state) => ({
+        isSyncing: false,
+        lastError,
+        lastPulledAt: summary.pulledAt,
+        pendingCount: Math.max(0, state.pendingCount - summary.pushed),
+      }));
+
+      return summary;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Sync failed';
+      set({ isSyncing: false, lastError: message });
+      throw error;
+    }
   },
   setOnline(isOnline) {
     set({ isOnline });
