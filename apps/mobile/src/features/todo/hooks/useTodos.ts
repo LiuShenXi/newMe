@@ -1,4 +1,7 @@
-import { useMemo, useState } from 'react';
+import type { TodoDto } from '@newme/shared';
+import { useEffect, useMemo, useState } from 'react';
+
+import { apiFetch } from '../../../shared/api/client';
 
 export interface TodoItemModel {
   completed: boolean;
@@ -20,9 +23,49 @@ const initialTodos: TodoItemModel[] = [
 ];
 
 const focusChips = ['完成能量', '晨跑 5 次', '读完两章'];
+const todayDate = '2026-04-26';
+
+function mapTodoDto(todo: TodoDto): TodoItemModel {
+  return {
+    completed: todo.completed,
+    id: todo.id,
+    title: todo.title,
+  };
+}
 
 export function useTodos() {
   const [todos, setTodos] = useState<TodoItemModel[]>(initialTodos);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadTodayTodos() {
+      try {
+        const remoteTodos = await apiFetch<TodoDto[]>(`/todos/today?date=${todayDate}`);
+
+        if (!cancelled) {
+          setTodos(remoteTodos.map(mapTodoDto));
+          setError(null);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setError(loadError instanceof Error ? loadError.message : '清单加载失败，已显示本地示例');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadTodayTodos();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const completedCount = useMemo(() => todos.filter((todo) => todo.completed).length, [todos]);
 
@@ -67,33 +110,83 @@ export function useTodos() {
     [todos],
   );
 
-  function addTodo(title: string) {
+  async function addTodo(title: string) {
     const trimmed = title.trim();
     if (!trimmed) return;
-    setTodos((current) => [...current, { completed: false, id: `todo-${Date.now()}`, title: trimmed }]);
+
+    const optimisticTodo: TodoItemModel = { completed: false, id: `todo-${Date.now()}`, title: trimmed };
+    setTodos((current) => [...current, optimisticTodo]);
+
+    try {
+      const createdTodo = await apiFetch<TodoDto>('/todos', {
+        body: {
+          date: todayDate,
+          title: trimmed,
+        },
+        method: 'POST',
+      });
+
+      setTodos((current) =>
+        current.map((todo) => (todo.id === optimisticTodo.id ? mapTodoDto(createdTodo) : todo)),
+      );
+      setError(null);
+    } catch (createError) {
+      setError(createError instanceof Error ? createError.message : '任务新增失败，已保留本地草稿');
+    }
   }
 
   function deleteTodo(id: string) {
     setTodos((current) => current.filter((todo) => todo.id !== id));
+    apiFetch(`/todos/${id}`, { method: 'DELETE' }).catch((deleteError: unknown) => {
+      setError(deleteError instanceof Error ? deleteError.message : '任务删除失败');
+    });
   }
 
   function toggleTodo(id: string) {
+    const nextTodo = todos.find((todo) => todo.id === id);
+    const nextCompleted = nextTodo ? !nextTodo.completed : false;
+
     setTodos((current) =>
       current.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
     );
+
+    apiFetch<TodoDto>(`/todos/${id}`, {
+      body: { completed: nextCompleted },
+      method: 'PATCH',
+    })
+      .then((updatedTodo) => {
+        setTodos((current) => current.map((todo) => (todo.id === id ? mapTodoDto(updatedTodo) : todo)));
+        setError(null);
+      })
+      .catch((updateError: unknown) => {
+        setError(updateError instanceof Error ? updateError.message : '任务状态更新失败');
+      });
   }
 
-  function updateTodo(id: string, title: string) {
+  async function updateTodo(id: string, title: string) {
     const trimmed = title.trim();
     if (!trimmed) return;
     setTodos((current) => current.map((todo) => (todo.id === id ? { ...todo, title: trimmed } : todo)));
+
+    try {
+      const updatedTodo = await apiFetch<TodoDto>(`/todos/${id}`, {
+        body: { title: trimmed },
+        method: 'PATCH',
+      });
+      setTodos((current) => current.map((todo) => (todo.id === id ? mapTodoDto(updatedTodo) : todo)));
+      setError(null);
+    } catch (updateError) {
+      setError(updateError instanceof Error ? updateError.message : '任务编辑失败，已保留本地修改');
+    }
   }
 
   return {
     addTodo,
     completedCount,
     deleteTodo,
+    error,
     focusChips,
+    loading,
     todos,
     toggleTodo,
     totalCount: todos.length,

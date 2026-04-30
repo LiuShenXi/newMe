@@ -59,6 +59,24 @@ interface QuickPlanOutput {
   }[];
 }
 
+interface AnnualOkrOutput {
+  objectives: { title: string; keyResults: string[] }[];
+}
+
+interface QuarterOkrOutput {
+  quarters: {
+    quarter: number;
+    goals: { title: string; goalType: 'habit' | 'project' | 'result' }[];
+  }[];
+}
+
+interface FourWeekCommitmentsOutput {
+  weeks: {
+    weekNumber: number;
+    focuses: { title: string; reason: string }[];
+  }[];
+}
+
 @Injectable()
 export class AiService {
   constructor(
@@ -140,17 +158,28 @@ export class AiService {
       throw new BadRequestException('确认场景与草案场景不一致');
     }
 
-    const applied = {
-      quarterGoals: 0,
-      todayTodos: 0,
-      weeklyFocuses: 0,
-    };
+    const applied: ConfirmGenerationResponse['applied'] = {};
 
     const updated = await this.prisma.$transaction(async (tx) => {
       if (scenario === AiScenario.QUICK_QUARTER_PLAN) {
         const result = await this.applyQuickQuarterPlan(tx, userId, generation, request);
         applied.quarterGoals = result.quarterGoals;
         applied.todayTodos = result.todayTodos;
+        applied.weeklyFocuses = result.weeklyFocuses;
+      } else if (scenario === AiScenario.VISION_TO_ANNUAL_OKR) {
+        const result = await this.applyVisionToAnnualOkr(tx, userId, generation, request);
+        applied.annualObjectives = result.annualObjectives;
+      } else if (scenario === AiScenario.ANNUAL_TO_QUARTER_OKR) {
+        const result = await this.applyAnnualToQuarterOkr(tx, userId, generation, request);
+        applied.quarterGoals = result.quarterGoals;
+      } else if (scenario === AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS) {
+        const result = await this.applyQuarterToFourWeekCommitments(
+          tx,
+          userId,
+          generation,
+          request,
+        );
+        applied.weekPlans = result.weekPlans;
         applied.weeklyFocuses = result.weeklyFocuses;
       }
 
@@ -315,6 +344,169 @@ export class AiService {
     };
   }
 
+  private async applyVisionToAnnualOkr(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    generation: { inputJson: unknown; outputJson: unknown },
+    request: ConfirmGenerationRequest,
+  ) {
+    if (request.target !== 'annual_objective') {
+      throw new BadRequestException('愿景年度 OKR 确认目标必须是 annual_objective');
+    }
+
+    const input = this.asRecord(generation.inputJson);
+    const edits = this.asRecord(request.edits ?? {});
+    const year = this.resolveNumber('year', edits, input);
+
+    if (!year) {
+      throw new BadRequestException('愿景年度 OKR 确认缺少年份');
+    }
+
+    const output = this.outputValidator.validate(
+      AiScenario.VISION_TO_ANNUAL_OKR,
+      generation.outputJson,
+    ) as unknown as AnnualOkrOutput;
+
+    await tx.annualObjective.create({
+      data: {
+        userId,
+        year,
+        objectives: output.objectives as Prisma.InputJsonValue,
+        source: PrismaSource.AI,
+      },
+    });
+
+    return { annualObjectives: 1 };
+  }
+
+  private async applyAnnualToQuarterOkr(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    generation: { inputJson: unknown; outputJson: unknown },
+    request: ConfirmGenerationRequest,
+  ) {
+    if (request.target !== 'quarter_goals') {
+      throw new BadRequestException('年度到季度 OKR 确认目标必须是 quarter_goals');
+    }
+
+    const input = this.asRecord(generation.inputJson);
+    const edits = this.asRecord(request.edits ?? {});
+    const year = this.resolveNumber('year', edits, input);
+    const annualObjectiveId = this.resolveString('annualObjectiveId', edits, input);
+
+    if (!year) {
+      throw new BadRequestException('年度到季度 OKR 确认缺少年份');
+    }
+
+    const output = this.outputValidator.validate(
+      AiScenario.ANNUAL_TO_QUARTER_OKR,
+      generation.outputJson,
+    ) as unknown as QuarterOkrOutput;
+    let quarterGoals = 0;
+
+    for (const quarterOutput of output.quarters) {
+      const quarterBounds = this.getQuarterBounds(year, quarterOutput.quarter);
+      const quarter = await tx.quarter.upsert({
+        where: {
+          userId_year_quarter: {
+            userId,
+            year,
+            quarter: quarterOutput.quarter,
+          },
+        },
+        update: {},
+        create: {
+          userId,
+          year,
+          quarter: quarterOutput.quarter,
+          startsOn: quarterBounds.startsOn,
+          endsOn: quarterBounds.endsOn,
+          source: PrismaSource.AI,
+        },
+      });
+
+      for (const goal of quarterOutput.goals) {
+        await tx.quarterGoal.create({
+          data: {
+            userId,
+            quarterId: quarter.id,
+            annualObjectiveId,
+            title: goal.title.trim(),
+            goalType: goal.goalType.toUpperCase() as PrismaGoalType,
+            source: PrismaSource.AI,
+          },
+        });
+        quarterGoals += 1;
+      }
+    }
+
+    return { quarterGoals };
+  }
+
+  private async applyQuarterToFourWeekCommitments(
+    tx: Prisma.TransactionClient,
+    userId: string,
+    generation: { inputJson: unknown; outputJson: unknown },
+    request: ConfirmGenerationRequest,
+  ) {
+    if (request.target !== 'week_plan') {
+      throw new BadRequestException('季度四周承诺确认目标必须是 week_plan');
+    }
+
+    const input = this.asRecord(generation.inputJson);
+    const edits = this.asRecord(request.edits ?? {});
+    const startWeekId = this.resolveString('startWeekId', edits, input);
+
+    if (!startWeekId) {
+      throw new BadRequestException('季度四周承诺确认缺少起始周');
+    }
+
+    this.parseWeekId(startWeekId);
+
+    const output = this.outputValidator.validate(
+      AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
+      generation.outputJson,
+    ) as unknown as FourWeekCommitmentsOutput;
+    let weeklyFocuses = 0;
+
+    for (const week of output.weeks) {
+      const weekId = this.addWeeksToWeekId(startWeekId, week.weekNumber - 1);
+      const weekPlan = await tx.weekPlan.upsert({
+        where: {
+          userId_weekId: {
+            userId,
+            weekId,
+          },
+        },
+        update: { source: PrismaSource.AI },
+        create: {
+          userId,
+          weekId,
+          source: PrismaSource.AI,
+        },
+      });
+
+      for (const focus of week.focuses) {
+        await tx.weeklyFocus.create({
+          data: {
+            userId,
+            weekPlanId: weekPlan.id,
+            weekId,
+            title: focus.title.trim(),
+            reason: focus.reason.trim(),
+            source: PrismaSource.AI,
+          },
+        });
+        weeklyFocuses += 1;
+      }
+    }
+
+    return {
+      weekPlans: output.weeks.length,
+      weeklyFocuses,
+    };
+  }
+
   private asRecord(value: unknown): Record<string, unknown> {
     return value && typeof value === 'object' && !Array.isArray(value)
       ? (value as Record<string, unknown>)
@@ -328,6 +520,24 @@ export class AiService {
   ) {
     const value = edits[key] ?? input[key];
     return typeof value === 'string' && value.trim() ? value.trim() : null;
+  }
+
+  private resolveNumber(
+    key: string,
+    edits: Record<string, unknown>,
+    input: Record<string, unknown>,
+  ) {
+    const value = edits[key] ?? input[key];
+
+    if (typeof value === 'number' && Number.isInteger(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string' && /^\d+$/.test(value.trim())) {
+      return Number(value.trim());
+    }
+
+    return null;
   }
 
   private parseDate(date: string) {
@@ -365,6 +575,38 @@ export class AiService {
     const yearStart = new Date(Date.UTC(weekYear, 0, 1));
     const week = Math.ceil(((utcDate.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
     return `${weekYear}-W${String(week).padStart(2, '0')}`;
+  }
+
+  private parseWeekId(weekId: string) {
+    const match = /^(\d{4})-W(\d{2})$/.exec(weekId);
+
+    if (!match) {
+      throw new BadRequestException('周 ID 格式应为 YYYY-Www');
+    }
+
+    const year = Number(match[1]);
+    const week = Number(match[2]);
+
+    if (week < 1 || week > 53) {
+      throw new BadRequestException('周 ID 格式应为 YYYY-Www');
+    }
+
+    return { year, week };
+  }
+
+  private addWeeksToWeekId(weekId: string, offset: number) {
+    const { year, week } = this.parseWeekId(weekId);
+    const weekOneMonday = this.startOfIsoWeekOne(year);
+    const target = new Date(weekOneMonday);
+    target.setUTCDate(weekOneMonday.getUTCDate() + (week - 1 + offset) * 7);
+    return this.weekIdForDate(this.formatDate(target));
+  }
+
+  private startOfIsoWeekOne(year: number) {
+    const januaryFourth = new Date(Date.UTC(year, 0, 4));
+    const day = januaryFourth.getUTCDay() || 7;
+    januaryFourth.setUTCDate(januaryFourth.getUTCDate() - day + 1);
+    return januaryFourth;
   }
 
   private formatDate(date: Date) {

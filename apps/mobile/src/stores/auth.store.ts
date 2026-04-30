@@ -29,15 +29,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   refreshToken: null,
   user: null,
   async clearSession() {
-    await Promise.all([SecureStore.deleteItemAsync(accessTokenKey), SecureStore.deleteItemAsync(refreshTokenKey)]);
+    await Promise.all([deleteStoredToken(accessTokenKey), deleteStoredToken(refreshTokenKey)]);
     queryClient.clear();
     set({ accessToken: null, hydrated: true, isLoading: false, refreshToken: null, user: null });
   },
   async hydrate() {
     set({ isLoading: true });
     const [accessToken, refreshToken] = await Promise.all([
-      SecureStore.getItemAsync(accessTokenKey),
-      SecureStore.getItemAsync(refreshTokenKey),
+      getStoredToken(accessTokenKey),
+      getStoredToken(refreshTokenKey),
     ]);
 
     set({ accessToken, hydrated: true, isLoading: false, refreshToken });
@@ -69,8 +69,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   async setSession(tokens, user = null) {
     await Promise.all([
-      SecureStore.setItemAsync(accessTokenKey, tokens.accessToken),
-      SecureStore.setItemAsync(refreshTokenKey, tokens.refreshToken),
+      setStoredToken(accessTokenKey, tokens.accessToken),
+      setStoredToken(refreshTokenKey, tokens.refreshToken),
     ]);
     set({ accessToken: tokens.accessToken, hydrated: true, refreshToken: tokens.refreshToken, user });
   },
@@ -81,3 +81,50 @@ configureApiClient({
   onRefreshToken: () => useAuthStore.getState().refreshSession(),
   onUnauthorized: () => useAuthStore.getState().clearSession(),
 });
+
+type WebTokenStorage = {
+  getItem: (key: string) => string | null;
+  removeItem: (key: string) => void;
+  setItem: (key: string, value: string) => void;
+};
+
+async function canUseSecureStore() {
+  try {
+    return await SecureStore.isAvailableAsync();
+  } catch {
+    return false;
+  }
+}
+
+async function getStoredToken(key: string) {
+  if (await canUseSecureStore()) {
+    return SecureStore.getItemAsync(key);
+  }
+
+  return getWebTokenStorage()?.getItem(key) ?? null;
+}
+
+async function setStoredToken(key: string, value: string) {
+  if (await canUseSecureStore()) {
+    await SecureStore.setItemAsync(key, value);
+    return;
+  }
+
+  getWebTokenStorage()?.setItem(key, value);
+}
+
+async function deleteStoredToken(key: string) {
+  if (await canUseSecureStore()) {
+    await SecureStore.deleteItemAsync(key);
+    return;
+  }
+
+  getWebTokenStorage()?.removeItem(key);
+}
+
+function getWebTokenStorage(): WebTokenStorage | null {
+  return (
+    (globalThis as typeof globalThis & { localStorage?: WebTokenStorage }).localStorage ??
+    null
+  );
+}

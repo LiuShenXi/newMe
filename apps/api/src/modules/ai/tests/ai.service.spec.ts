@@ -23,6 +23,35 @@ describe('AiService', () => {
       },
     ],
   };
+  const validAnnualOkr = {
+    objectives: [
+      {
+        title: '成为稳定输出的独立开发者',
+        keyResults: ['发布第一个 MVP', '每周复盘一次'],
+      },
+    ],
+  };
+  const validQuarterOkr = {
+    quarters: [1, 2, 3, 4].map((quarter) => ({
+      quarter,
+      goals: [
+        {
+          title: `完成 Q${quarter} 核心里程碑`,
+          goalType: quarter === 1 ? 'result' : 'project',
+        },
+      ],
+    })),
+  };
+  const validFourWeekCommitments = {
+    weeks: [1, 2].map((weekNumber) => ({
+      weekNumber,
+      focuses: [
+        { title: `第 ${weekNumber} 周重点 A`, reason: '保持节奏' },
+        { title: `第 ${weekNumber} 周重点 B`, reason: '降低风险' },
+        { title: `第 ${weekNumber} 周重点 C`, reason: '形成闭环' },
+      ],
+    })),
+  };
 
   function createService() {
     const prisma = {
@@ -219,6 +248,222 @@ describe('AiService', () => {
     expect(prismaAny.user.update).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       data: { hasCompletedOnboarding: true },
+    });
+  });
+
+  it('confirms a vision to annual OKR draft by writing an AI annual objective', async () => {
+    const { service, prisma } = createService();
+    const prismaAny = prisma as any;
+    const generation = {
+      id: 'generation-annual-1',
+      userId: 'user-1',
+      scenario: 'VISION_TO_ANNUAL_OKR',
+      status: 'COMPLETED',
+      inputJson: { year: 2026, vision: '持续做出有价值的产品' },
+      outputJson: validAnnualOkr,
+      createdAt: now,
+    };
+    const confirmedGeneration = {
+      ...generation,
+      status: 'CONFIRMED',
+      confirmedAt: now,
+    };
+
+    Object.assign(prismaAny, {
+      $transaction: jest.fn(async (callback) => callback(prisma)),
+      aiGeneration: {
+        ...prismaAny.aiGeneration,
+        findFirst: jest.fn().mockResolvedValue(generation),
+        update: jest.fn().mockResolvedValue(confirmedGeneration),
+      },
+      annualObjective: {
+        create: jest.fn().mockResolvedValue({ id: 'annual-objective-1' }),
+      },
+    });
+
+    await expect(
+      (service as any).confirmGeneration('user-1', 'generation-annual-1', {
+        contextVersion: 'ctx-annual',
+        generationId: 'generation-annual-1',
+        scenario: AiScenario.VISION_TO_ANNUAL_OKR,
+        target: 'annual_objective',
+      }),
+    ).resolves.toEqual({
+      applied: { annualObjectives: 1 },
+      generation: {
+        id: 'generation-annual-1',
+        scenario: AiScenario.VISION_TO_ANNUAL_OKR,
+        status: 'confirmed',
+        outputJson: validAnnualOkr,
+        createdAt: now.toISOString(),
+      },
+    });
+
+    expect(prismaAny.annualObjective.create).toHaveBeenCalledWith({
+      data: {
+        userId: 'user-1',
+        year: 2026,
+        objectives: validAnnualOkr.objectives,
+        source: 'AI',
+      },
+    });
+  });
+
+  it('confirms an annual to quarter OKR draft by reusing quarters and writing AI quarter goals', async () => {
+    const { service, prisma } = createService();
+    const prismaAny = prisma as any;
+    const generation = {
+      id: 'generation-quarter-1',
+      userId: 'user-1',
+      scenario: 'ANNUAL_TO_QUARTER_OKR',
+      status: 'COMPLETED',
+      inputJson: { year: 2026, annualObjectiveId: 'annual-objective-1' },
+      outputJson: validQuarterOkr,
+      createdAt: now,
+    };
+    const confirmedGeneration = {
+      ...generation,
+      status: 'CONFIRMED',
+      confirmedAt: now,
+    };
+    const quarters = [1, 2, 3, 4].map((quarter) => ({ id: `quarter-${quarter}` }));
+
+    Object.assign(prismaAny, {
+      $transaction: jest.fn(async (callback) => callback(prisma)),
+      aiGeneration: {
+        ...prismaAny.aiGeneration,
+        findFirst: jest.fn().mockResolvedValue(generation),
+        update: jest.fn().mockResolvedValue(confirmedGeneration),
+      },
+      quarter: {
+        upsert: jest
+          .fn()
+          .mockResolvedValueOnce(quarters[0])
+          .mockResolvedValueOnce(quarters[1])
+          .mockResolvedValueOnce(quarters[2])
+          .mockResolvedValueOnce(quarters[3]),
+      },
+      quarterGoal: {
+        create: jest.fn().mockResolvedValue({ id: 'quarter-goal-1' }),
+      },
+    });
+
+    await expect(
+      (service as any).confirmGeneration('user-1', 'generation-quarter-1', {
+        contextVersion: 'ctx-quarter',
+        generationId: 'generation-quarter-1',
+        scenario: AiScenario.ANNUAL_TO_QUARTER_OKR,
+        target: 'quarter_goals',
+      }),
+    ).resolves.toEqual({
+      applied: { quarterGoals: 4 },
+      generation: {
+        id: 'generation-quarter-1',
+        scenario: AiScenario.ANNUAL_TO_QUARTER_OKR,
+        status: 'confirmed',
+        outputJson: validQuarterOkr,
+        createdAt: now.toISOString(),
+      },
+    });
+
+    expect(prismaAny.quarter.upsert).toHaveBeenCalledTimes(4);
+    expect(prismaAny.quarter.upsert).toHaveBeenNthCalledWith(1, {
+      where: { userId_year_quarter: { quarter: 1, userId: 'user-1', year: 2026 } },
+      update: {},
+      create: expect.objectContaining({
+        quarter: 1,
+        source: 'AI',
+        userId: 'user-1',
+        year: 2026,
+      }),
+    });
+    expect(prismaAny.quarterGoal.create).toHaveBeenCalledTimes(4);
+    expect(prismaAny.quarterGoal.create).toHaveBeenNthCalledWith(1, {
+      data: expect.objectContaining({
+        annualObjectiveId: 'annual-objective-1',
+        goalType: 'RESULT',
+        quarterId: 'quarter-1',
+        source: 'AI',
+        title: '完成 Q1 核心里程碑',
+        userId: 'user-1',
+      }),
+    });
+  });
+
+  it('confirms a quarter to four week commitments draft by writing sequential AI week plans and focuses', async () => {
+    const { service, prisma } = createService();
+    const prismaAny = prisma as any;
+    const generation = {
+      id: 'generation-weeks-1',
+      userId: 'user-1',
+      scenario: 'QUARTER_TO_FOUR_WEEK_COMMITMENTS',
+      status: 'COMPLETED',
+      inputJson: { startWeekId: '2026-W18' },
+      outputJson: validFourWeekCommitments,
+      createdAt: now,
+    };
+    const confirmedGeneration = {
+      ...generation,
+      status: 'CONFIRMED',
+      confirmedAt: now,
+    };
+
+    Object.assign(prismaAny, {
+      $transaction: jest.fn(async (callback) => callback(prisma)),
+      aiGeneration: {
+        ...prismaAny.aiGeneration,
+        findFirst: jest.fn().mockResolvedValue(generation),
+        update: jest.fn().mockResolvedValue(confirmedGeneration),
+      },
+      weekPlan: {
+        upsert: jest
+          .fn()
+          .mockResolvedValueOnce({ id: 'week-plan-18' })
+          .mockResolvedValueOnce({ id: 'week-plan-19' }),
+      },
+      weeklyFocus: {
+        create: jest.fn().mockResolvedValue({ id: 'focus-1' }),
+      },
+    });
+
+    await expect(
+      (service as any).confirmGeneration('user-1', 'generation-weeks-1', {
+        contextVersion: 'ctx-weeks',
+        generationId: 'generation-weeks-1',
+        scenario: AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
+        target: 'week_plan',
+      }),
+    ).resolves.toEqual({
+      applied: { weekPlans: 2, weeklyFocuses: 6 },
+      generation: {
+        id: 'generation-weeks-1',
+        scenario: AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
+        status: 'confirmed',
+        outputJson: validFourWeekCommitments,
+        createdAt: now.toISOString(),
+      },
+    });
+
+    expect(prismaAny.weekPlan.upsert).toHaveBeenNthCalledWith(1, {
+      where: { userId_weekId: { userId: 'user-1', weekId: '2026-W18' } },
+      update: expect.objectContaining({ source: 'AI' }),
+      create: expect.objectContaining({ source: 'AI', userId: 'user-1', weekId: '2026-W18' }),
+    });
+    expect(prismaAny.weekPlan.upsert).toHaveBeenNthCalledWith(2, {
+      where: { userId_weekId: { userId: 'user-1', weekId: '2026-W19' } },
+      update: expect.objectContaining({ source: 'AI' }),
+      create: expect.objectContaining({ source: 'AI', userId: 'user-1', weekId: '2026-W19' }),
+    });
+    expect(prismaAny.weeklyFocus.create).toHaveBeenCalledTimes(6);
+    expect(prismaAny.weeklyFocus.create).toHaveBeenNthCalledWith(1, {
+      data: {
+        userId: 'user-1',
+        weekPlanId: 'week-plan-18',
+        weekId: '2026-W18',
+        title: '第 1 周重点 A',
+        reason: '保持节奏',
+        source: 'AI',
+      },
     });
   });
 });

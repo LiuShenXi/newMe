@@ -20,9 +20,11 @@ export interface ConfirmGenerationRequest extends AiConfirmationContract {}
 
 export interface ConfirmGenerationResponse {
   applied: {
-    quarterGoals: number;
-    todayTodos: number;
-    weeklyFocuses: number;
+    annualObjectives?: number;
+    quarterGoals?: number;
+    weekPlans?: number;
+    todayTodos?: number;
+    weeklyFocuses?: number;
   };
   generation: GenerationDto;
 }

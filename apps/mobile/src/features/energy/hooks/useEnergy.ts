@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import type { EnergyEntryDto, WeeklyEnergyDto } from '@newme/shared';
+import { useEffect, useRef, useState } from 'react';
 
+import { apiFetch } from '../../../shared/api/client';
 import { usePrototypeStore } from '../../../stores/prototype.store';
 
 export interface WeeklyFocusProgress {
@@ -16,19 +18,55 @@ const demoFocuses: WeeklyFocusProgress[] = [
 ];
 
 const demoWeekEnergyValues = [72, 84, 66, 88, 78, 0, 0];
+const todayDate = '2026-04-26';
+const currentWeekId = '2026-W17';
+
+function getDemoWeekEnergy() {
+  const recorded = demoWeekEnergyValues.filter(Boolean);
+  return Math.round(recorded.reduce((sum, value) => sum + value, 0) / recorded.length);
+}
 
 export function useEnergy() {
   const [charging, setCharging] = useState(false);
   const [energyValue, setEnergyValue] = useState(82);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [reminderVisible, setReminderVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [weekEnergy, setWeekEnergy] = useState(getDemoWeekEnergy);
   const markListViewed = usePrototypeStore((state) => state.markListViewed);
   const viewedList = usePrototypeStore((state) => state.viewedList);
   const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
 
-  const weekEnergy = useMemo(() => {
-    const recorded = demoWeekEnergyValues.filter(Boolean);
-    return Math.round(recorded.reduce((sum, value) => sum + value, 0) / recorded.length);
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadWeeklyEnergy() {
+      try {
+        const weeklyEnergy = await apiFetch<WeeklyEnergyDto>(`/energy/weeks/${currentWeekId}`);
+
+        if (!cancelled) {
+          if (typeof weeklyEnergy.average === 'number') {
+            setWeekEnergy(Math.round(weeklyEnergy.average));
+          }
+          setError(null);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setError(loadError instanceof Error ? loadError.message : '能量加载失败，已显示本地示例');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadWeeklyEnergy();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -55,6 +93,17 @@ export function useEnergy() {
     markListViewed();
     setCharging(true);
     setToastVisible(true);
+    apiFetch<EnergyEntryDto>(`/energy/days/${todayDate}`, {
+      body: {
+        hasViewedTodos: true,
+        score: energyValue,
+      },
+      method: 'PUT',
+    })
+      .then(() => setError(null))
+      .catch((recordError: unknown) => {
+        setError(recordError instanceof Error ? recordError.message : '能量确认失败，已保留本地反馈');
+      });
 
     timers.current.forEach((timer) => clearTimeout(timer));
     timers.current = [
@@ -67,7 +116,9 @@ export function useEnergy() {
     charging,
     confirmEnergy,
     energyValue,
+    error,
     focuses: demoFocuses,
+    loading,
     reminderVisible,
     requestConfirm,
     setReminderVisible,

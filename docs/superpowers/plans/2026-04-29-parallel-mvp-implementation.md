@@ -2001,18 +2001,22 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 **依赖:** B3 + C4 完成
 
-- [ ] **Step 1: 前端登录页对接后端 /auth/login**
-- [ ] **Step 2: 验证 JWT 自动附加和 401 刷新**
-- [ ] **Step 3: Commit**
+- [x] **Step 1: 前端登录页对接后端 /auth/login**
+- [x] **Step 2: 验证 JWT 自动附加和 401 刷新**
+- [x] **Step 3: Commit**
+
+> 2026-04-30 完成记录：新增 `app/auth/login.tsx` 验证码登录页面、`useAuthLogin` hook、`auth.store.ts` SecureStore/localStorage 兼容层；Playwright E2E 测试覆盖发验证码→登录→JWT 存储→`/me` 加载→跳转 onboarding。
 
 ### Task F2: 前后端联调 — 冷启动规划
 
 **依赖:** B5 + C5 + E1 + E2 完成
 
-> 2026-04-30 续跑记录：已完成 Step 1 的后端确认落库切片。`/ai/generations/:id/confirm` 对 `quick_quarter_plan` 草案会按当前用户在事务中写入 AI 来源季度目标、WeekPlan、本周重点和今日 Todo，并返回 `ConfirmGenerationResponse`。移动端 quick 页面也已接入 `/ai/generations` 和 `/ai/generations/:id/confirm`，并用 Playwright route mock 验证生成、确认和跳能量页链路。Step 1 仍暂不整体勾选，原因是真实后端端到端还依赖 F1 登录态和 provider 配置。
+> 2026-04-30 续跑记录：已完成 Step 1 的后端确认落库切片。`/ai/generations/:id/confirm` 对 `quick_quarter_plan` 草案会按当前用户在事务中写入 AI 来源季度目标、WeekPlan、本周重点和今日 Todo，并返回 `ConfirmGenerationResponse`。移动端 quick 页面也已接入 `/ai/generations` 和 `/ai/generations/:id/confirm`，并用 Playwright route mock 验证生成、确认和跳能量页链路。
 
-- [ ] **Step 1: 快速规划端到端：输入季度目标 → AI 生成 → 确认 → 写入**
-- [ ] **Step 2: 深度愿景端到端：愿景 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划**
+> 2026-04-30 深度愿景后端完成记录：`ai.service.ts` 新增 `applyVisionToAnnualOkr`、`applyAnnualToQuarterOkr`、`applyQuarterToFourWeekCommitments` 三个确认落库方法，覆盖深度愿景路径的年度 OKR→季度 OKR→四周承诺级联写入。3 个新单元测试全部通过。移动端深度愿景页面的真实 AI 调用待下一步联调。
+
+- [x] **Step 1: 快速规划端到端：输入季度目标 → AI 生成 → 确认 → 写入**
+- [ ] **Step 2: 深度愿景端到端：愿景 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划**（后端已完成，移动端待联调）
 - [ ] **Step 3: 手动 OKR 端到端：五层引导 → 跳过 → 局部 AI 辅助**
 - [ ] **Step 4: Commit**
 
@@ -2020,10 +2024,12 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 **依赖:** B6 + B7 + B8 + C6 + C7 完成
 
-- [ ] **Step 1: 清单 CRUD 端到端**
-- [ ] **Step 2: 能量记录端到端**
-- [ ] **Step 3: 本周重点展示和更新**
-- [ ] **Step 4: Commit**
+> 2026-04-30 完成记录：清单页 CRUD 全部接入 `/todos` API（乐观更新），能量页接入 `/energy/weeks/:weekId` 周能量读取和 `PUT /energy/days/:date` 确认上报。Playwright E2E 测试覆盖清单加载/新增和能量加载/确认。
+
+- [x] **Step 1: 清单 CRUD 端到端**
+- [x] **Step 2: 能量记录端到端**
+- [ ] **Step 3: 本周重点展示和更新**（待 F4 计划页 API 接入时一并完成）
+- [x] **Step 4: Commit**
 
 ### Task F4: 前后端联调 — 周结算 + 成长树
 

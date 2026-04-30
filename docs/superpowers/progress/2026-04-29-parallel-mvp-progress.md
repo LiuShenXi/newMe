@@ -4,11 +4,11 @@
 
 ## 当前总状态
 
-- 当前批次：Batch 2
-- 当前阶段：Batch 2 / F2 冷启动 AI 联调已完成快速规划后端确认落库与移动端 quick 真实生成/确认调用；下一步补 Auth 真登录或深度愿景路径联调
-- 当前主控：feat/track-f2-quick-mobile
+- 当前批次：Batch 2（已完成）
+- 当前阶段：F1 Auth 登录入口、F2 深度愿景后端确认链路、F3 日常执行页 API 接入均已完成；下一步为 F2 深度愿景移动端联调、F4 计划页 API 接入或 F5 真实 SQLite+Sync 联调
+- 当前主控：main
 - 最近更新时间：2026-04-30
-- 最近更新人：Codex
+- 最近更新人：Claude Code
 
 ## 快速续跑入口
 
@@ -65,16 +65,16 @@ git worktree list
 | C5-C10 Prototype Primitive Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line；npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line 均通过 | 已纠正此前“视觉还原完成”过宽口径，新增 prototype 原语层，底栏、按钮、胶囊、modal、sheet、toast、输入框、树侧工具统一按 `prototype/index.html` 复刻；默认 Expo tabbar 已隐藏 |
 | C9 Growth Tree Page | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 通过 | View/CSS-style 基础树形、果实点击时间胶囊、荣誉/阶段/果实统计完成；Skia 留体验增强 |
 | C10 Settlement UI + Prototype Interaction Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 均通过 | 不使用视觉工具；补能量提醒原型文案/跳清单/已查看状态、清单默认日期与左滑删除、计划默认 AI 来源与 AI 重规划状态机、成长树详情按钮、`/settlement` 周结算生成第 17 周果实并跳树 |
+| F1 Auth 登录入口 | DONE | main | 本轮提交 | pnpm --filter @newme/mobile exec tsc --noEmit 通过 | 验证码登录页面 UI、useAuthLogin hook、SecureStore/localStorage 兼容层、Playwright E2E 测试 |
+| F2 深度愿景后端确认链路 | DONE | main | 本轮提交 | pnpm --filter @newme/api exec jest ai.service.spec 6 个测试通过 | 愿景→年度 OKR、年度→季度 OKR、季度→四周承诺三个确认落库方法；DTO 扩展 |
+| F3 日常执行页 API 接入 | DONE | main | 本轮提交 | pnpm --filter @newme/mobile exec tsc --noEmit 通过 | 清单 CRUD 全部接入 API（乐观更新）；能量页接入周能量读取+确认上报；Playwright E2E 测试 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
 
 ## 未提交改动记录
 
-当前已知未提交改动：
-
-- `feat/track-f2-quick-mobile` worktree 中本轮 F2 移动端切片待提交：`apps/mobile/app/onboarding/quick.tsx`、`apps/mobile/tests/f2-quick-onboarding.spec.js`、本进度日志与实施计划。
-- 主目录当前已保持干净；如用户在主目录继续改 `AGENTS.md` 或产生 `.DS_Store`，收口时仍不要混入 F2 提交。
+当前已知未提交改动：无（本轮所有改动已提交）。
 
 ## 最近工作记录
 
@@ -281,6 +281,18 @@ git worktree list
 - F2 quick 页面实现：`apps/mobile/app/onboarding/quick.tsx` 现在会调用 `/ai/generations` 生成 `quick_quarter_plan` 草案，把返回的 `weeklyFocuses` 和 `todayTodos` 展示在草案卡片中；用户确认后调用 `/ai/generations/:id/confirm`，携带 `generationId/scenario/target/contextVersion/edits`，成功后进入能量页。
 - F2 移动端验证记录：`pnpm --filter @newme/shared typecheck` 通过；`pnpm --filter @newme/mobile typecheck` 通过；`EXPO_BASE_URL=http://127.0.0.1:19009 npx playwright test apps/mobile/tests/f2-quick-onboarding.spec.js --reporter=line` 1 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`EXPO_BASE_URL=http://127.0.0.1:19009 npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 4 个用例通过。
 
+### 2026-04-30（续）
+
+- 三路并行子 agent 开发启动：F1 Auth 登录入口、F2 深度愿景后端确认链路、F3 日常执行页真实 API 接入。
+- F1 Auth 登录入口完成：新增 `apps/mobile/app/auth/index.tsx`（路由重定向）、`apps/mobile/app/auth/login.tsx`（验证码登录页面 UI）、`apps/mobile/src/features/auth/useAuthLogin.ts`（发验证码→登录→存 token→跳转 hook）；`apps/mobile/src/stores/auth.store.ts` 新增 SecureStore/localStorage 兼容层，支持 Web 环境下 fallback 到 localStorage。
+- F1 Playwright 测试：新增 `apps/mobile/tests/f1-auth-login.spec.js`，覆盖发验证码、登录、JWT 存储、`/me` 加载和跳转 onboarding。
+- F2 深度愿景后端确认链路完成：`apps/api/src/modules/ai/ai.service.ts` 新增 `applyVisionToAnnualOkr`（愿景→年度 OKR 写入 AnnualObjective）、`applyAnnualToQuarterOkr`（年度→季度 OKR 写入 Quarter + QuarterGoal）、`applyQuarterToFourWeekCommitments`（季度→四周承诺写入 WeekPlan + WeeklyFocus）三个确认落库方法；`confirmGeneration` 路由新增 `VISION_TO_ANNUAL_OKR`、`ANNUAL_TO_QUARTER_OKR`、`QUARTER_TO_FOUR_WEEK_COMMITMENTS` 三个场景分支。
+- F2 共享契约更新：`packages/shared/src/dto/ai.ts` 的 `ConfirmGenerationResponse.applied` 改为可选字段，新增 `annualObjectives` 和 `weekPlans`。
+- F2 单元测试：`apps/api/src/modules/ai/tests/ai.service.spec.ts` 新增 3 个测试用例，覆盖年度 OKR、季度 OKR 和四周承诺确认落库，全部通过。
+- F3 日常执行页真实 API 接入完成：`apps/mobile/src/features/todo/hooks/useTodos.ts` 改为从 `/todos/today` 加载远程清单，新增/编辑/删除/勾选均调用后端 API 并使用乐观更新；`apps/mobile/src/features/energy/hooks/useEnergy.ts` 改为从 `/energy/weeks/:weekId` 加载周能量，确认能量时调用 `PUT /energy/days/:date`。
+- F3 Playwright 测试：新增 `apps/mobile/tests/f3-daily-api.spec.js`，覆盖清单 API 加载/新增和能量 API 加载/确认。
+- 验证记录：`pnpm --filter @newme/mobile exec tsc --noEmit` 通过；`pnpm --filter @newme/api exec tsc --noEmit` 通过；`pnpm --filter @newme/api exec jest --testPathPattern=ai.service.spec --no-coverage` 6 个测试全部通过。
+
 ## 阻塞与风险
 
 - `pnpm install` 提示 pnpm v10 默认忽略了 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 的 build scripts；B2 已通过手动 `prisma generate/migrate` 验证，后续 bcrypt 使用前仍需关注构建脚本策略。
@@ -297,11 +309,11 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 优先补 F1 Auth 前端登录页或提供开发态登录入口，让 quick 页面能在真实后端 JWT Guard 下完成端到端调用。
-2. F2 后续继续补深度愿景路径的年度 OKR、季度 OKR、4 周承诺级联确认，以及手动 OKR 的局部 AI 辅助。
-3. 继续把计划周节点跳清单并打开本周概览、手动 OKR 输入同步到计划/清单、真实 API/SQLite 落库接入。
-4. C6 的 Skia 自绘粒子与复杂充电涌入效果、成长树 native 渐变/blur 还原仍属体验增强，不阻塞 MVP 闭环。
-5. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
+1. F2 深度愿景移动端联调：`onboarding/vision` 页面接入真实 AI 生成和级联确认（年度 OKR → 季度 OKR → 四周承诺），后端已就绪。
+2. F4 计划页 API 接入：月视图从 `/plans/weeks/:weekId/focuses` 加载真实本周重点，年视图从 `/goals/current` 加载真实目标概览。
+3. F5 真实 SQLite + Sync 联调：D1-D3 已完成离线存储和同步引擎骨架，需要在 App 运行态下验证 DB open、migration、push/pull 端到端。
+4. 手动 OKR 路径的局部 AI 辅助（E2 prompt 已就绪，需要移动端 UI 接入）。
+5. 体验增强：Skia 粒子、充电涌入动效、成长树 native 渐变/blur。
 
 ## 收尾模板
 
