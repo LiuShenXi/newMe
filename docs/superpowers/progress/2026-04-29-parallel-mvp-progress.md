@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：F2 手动 OKR 局部 AI、F4 周结算+成长树真实 API、AI provider 本地优先降级、当前周上下文统一、F6 Docker 部署运行态均已在直接开发分支完成；下一步为设备级 SQLite smoke、旧 worktree 清理和最终合并收口
+- 当前阶段：F2 手动 OKR 局部 AI、F4 周结算+成长树真实 API、AI provider 本地优先降级、当前周上下文统一、F6 Docker 部署运行态均已在直接开发分支完成；旧来源 worktree 已清理；下一步为设备级 SQLite smoke 和最终合并收口
 - 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Claude Code
@@ -313,6 +313,7 @@ git worktree list
 - 当前周上下文 TDD 记录：新增 `apps/mobile/tests/planning-context.spec.js`，先确认缺少统一 helper 红测；实现 `planning-context` 与 `usePlanningContext` 后转绿，并替换能量、清单、计划、quick、vision、manual、周结算、成长树中的硬编码周/季度/日期。
 - F6 Docker 配置完成：新增 `.dockerignore`、`apps/api/Dockerfile`、`docker-compose.yml`、`nginx/default.conf`，`docker compose config`、`docker compose up --build -d` 和 `http://localhost:8080/api/v1/health` 均通过。容器构建已补齐 `@newme/shared` CommonJS build、API runtime node_modules 复制、Prisma migrate deploy 路径和 nginx health 精确代理。
 - 集成回归完成：`pnpm -r typecheck`、API 全量测试、Expo Web export、F2/F4/F3/原型 Playwright 总回归、F5 sync runtime 和 planning-context node smoke 均已通过；本机 `127.0.0.1:8080` 被本地 llama.cpp 服务占用，Docker health 验证使用 `localhost:8080`。
+- 旧来源 worktree 清理完成：`feat/f2-manual-ai-assist`、`feat/f4-settlement-tree-api`、`feat/f6-docker-deploy` 均已合入当前直接开发分支并删除本地分支，`.worktrees/*` 残留目录已清空；清理 `f4-settlement-tree-api` 时先停止了指向旧 worktree 的 Expo/Node 进程。
 
 ## 阻塞与风险
 
@@ -326,14 +327,14 @@ git worktree list
 - 当前周上下文已统一为 `/me.currentWeekId/currentQuarterId` 优先、本地日期 fallback；如果未登录态测试日期变化，相关 Playwright mock 周需要同步调整。
 - F5 Sync 本轮为依赖注入式 Node smoke 和运行态 helper 验证，尚未在真实 Expo 设备/Web SQLite 文件库中打开 `newme.db` 做端到端 smoke；发布前需补一轮设备级验证。
 - Docker MVP 部署已可用；本机验证时 `localhost:8080/api/v1/health` 正常，`127.0.0.1:8080` 会命中本机其它服务，后续本机验收优先使用 `localhost` 或调整 `NGINX_PORT`。
-- 旧 `feat/track-*` worktree 已清理；本轮按用户要求不再创建新 worktree，但仍保留已有 `f2-manual-ai-assist`、`f4-settlement-tree-api`、`f6-docker-deploy` worktree 作为来源参考，最终收口可清理。
+- 旧 `feat/track-*` worktree 与本轮来源 worktree 均已清理；本轮按用户要求未再创建新 worktree。
 
 ## 下次建议
 
 如果用户要求继续开发，建议按以下顺序：
 
 1. 发布前设备级 SQLite smoke：在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull。
-2. 清理旧 worktree，并按需合并 `feat/mvp-final-integration-direct`。
+2. 按需合并 `feat/mvp-final-integration-direct`。
 3. 若本机 8080 已被其它服务占用，Docker 验收改用 `localhost:8080` 或设置 `NGINX_PORT` 后重新 `docker compose up --build`。
 
 ## 收尾模板
