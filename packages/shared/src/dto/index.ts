@@ -7,3 +7,4 @@ export * from './settlement';
 export * from './tree';
 export * from './ai';
 export * from './sync';
+export * from './notifications';

@@ -76,6 +76,7 @@ git worktree list
 | AI Provider 本地优先降级 | DONE | feat/mvp-final-integration-direct | a29fb7e / 65e78f7 | openai.adapter.spec 3 个用例通过；api 全量测试通过；api typecheck 通过 | 本地 OpenAI-compatible 服务优先，失败降级 GLM；key 仅环境变量；Nest DI 可无参数实例化 |
 | 当前周上下文统一 | DONE | feat/mvp-final-integration-direct | 60e82d1 | planning-context node test 通过；mobile typecheck 通过 | 移动端优先用 `/me.currentWeekId/currentQuarterId`，无用户态用本地日期 fallback |
 | F6 Docker 配置 | DONE | feat/mvp-final-integration-direct | 14e07fd + 本轮收口提交 | docker compose config 通过；docker compose up --build -d 通过；`http://localhost:8080/api/v1/health` 返回 ok/database connected | Dockerfile/compose/nginx 已完成；容器内先 build shared，再 build API，并通过 nginx 精确转发 health |
+| F7 推送通知模块 | DONE | feat/mvp-final-integration-direct | 本轮提交 | notifications.service 7 个单测通过；API 全量测试通过；mobile typecheck/Expo export 通过；notification routing node smoke 通过 | Expo token 注册、偏好开关、每日能量、周结算、3 天召回、Deep Link 路由映射已完成；真实 APNs/FCM 凭据仍需发布配置 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
@@ -314,6 +315,7 @@ git worktree list
 - F6 Docker 配置完成：新增 `.dockerignore`、`apps/api/Dockerfile`、`docker-compose.yml`、`nginx/default.conf`，`docker compose config`、`docker compose up --build -d` 和 `http://localhost:8080/api/v1/health` 均通过。容器构建已补齐 `@newme/shared` CommonJS build、API runtime node_modules 复制、Prisma migrate deploy 路径和 nginx health 精确代理。
 - 集成回归完成：`pnpm -r typecheck`、API 全量测试、Expo Web export、F2/F4/F3/原型 Playwright 总回归、F5 sync runtime 和 planning-context node smoke 均已通过；本机 `127.0.0.1:8080` 被本地 llama.cpp 服务占用，Docker health 验证使用 `localhost:8080`。
 - 旧来源 worktree 清理完成：`feat/f2-manual-ai-assist`、`feat/f4-settlement-tree-api`、`feat/f6-docker-deploy` 均已合入当前直接开发分支并删除本地分支，`.worktrees/*` 残留目录已清空；清理 `f4-settlement-tree-api` 时先停止了指向旧 worktree 的 Expo/Node 进程。
+- F7 推送通知模块完成：后端新增 `NotificationsModule`，提供 `POST /notifications/tokens` 与 `PUT /notifications/preferences`；`NotificationsService` 管理 Expo token、偏好、三类场景调度和 Expo Push API 发送，且按用户时区计算、单 token 单次最多一条；移动端新增 `useNotifications`，登录态申请权限并注册 token，通知点击按 route/scenario 进入能量页或周结算页。
 
 ## 阻塞与风险
 
@@ -324,6 +326,7 @@ git worktree list
 - B9 Settlement 尚未生成 QuarterHonor；不要把季度荣誉视为后端已完成能力，B10 或后续季度结算任务需要补齐。
 - B11 Sync 目前按整条记录版本冲突处理，符合 MVP 单设备优先策略；多端字段级合并仍是后续演进项。
 - E1 AI provider 已支持本地 OpenAI-compatible 服务优先和 GLM fallback；真实调用仍依赖运行环境正确配置 `AI_LOCAL_*` 或 `AI_FALLBACK_*`，且不要把真实 key 写入仓库。
+- F7 推送通知真实到达仍依赖发布环境配置 APNs/FCM/Expo push 凭据；本轮已完成应用内注册、调度构造和路由映射，尚未在真机系统通知层做端到端到达测试。
 - 当前周上下文已统一为 `/me.currentWeekId/currentQuarterId` 优先、本地日期 fallback；如果未登录态测试日期变化，相关 Playwright mock 周需要同步调整。
 - F5 Sync 本轮为依赖注入式 Node smoke 和运行态 helper 验证，尚未在真实 Expo 设备/Web SQLite 文件库中打开 `newme.db` 做端到端 smoke；发布前需补一轮设备级验证。
 - Docker MVP 部署已可用；本机验证时 `localhost:8080/api/v1/health` 正常，`127.0.0.1:8080` 会命中本机其它服务，后续本机验收优先使用 `localhost` 或调整 `NGINX_PORT`。

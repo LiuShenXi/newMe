@@ -2088,38 +2088,40 @@ git commit -m "feat: add Docker deployment with compose and nginx"
 - Create: `apps/api/src/modules/notifications/tests/notifications.service.spec.ts`
 - Create: `apps/mobile/src/features/notifications/hooks/useNotifications.ts`
 
-- [ ] **Step 1: 写测试 → 实现后端 NotificationService**
+- [x] **Step 1: 写测试 → 实现后端 NotificationService**
 
 管理推送令牌（push_tokens 表）、按场景调度推送、记录发送结果。
 通过 Expo Push API 统一下发。
 
-- [ ] **Step 2: 实现 NotificationsController**
+- [x] **Step 2: 实现 NotificationsController**
 
 路由：
 - POST /notifications/tokens — 注册 Expo push token
 - PUT /notifications/preferences — 用户开关推送场景
 
-- [ ] **Step 3: 实现推送场景调度**
+- [x] **Step 3: 实现推送场景调度**
 
 三个场景：每日能量提醒（20:00）、周结算引导（周日 10:00）、召回（3 天未打开）。
 推送时间按用户时区计算。每天最多 1 条推送。
 
-- [ ] **Step 4: 前端注册推送令牌**
+- [x] **Step 4: 前端注册推送令牌**
 
 App 启动时通过 expo-notifications 获取 push token，注册到后端。
 
-- [ ] **Step 5: 实现 Deep Linking 路由映射**
+- [x] **Step 5: 实现 Deep Linking 路由映射**
 
 推送通知携带路由参数：
 - 每日能量提醒 → `/(tabs)/energy`
 - 周结算引导 → `/settlement/current-week`
 - 召回 → `/(tabs)/energy`
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git commit -m "feat: add notification module with push scenarios and deep linking"
 ```
+
+> 2026-04-30 直接分支完成记录：新增 `NotificationsModule`、`NotificationsController`、`NotificationsService`、共享 notification DTO、移动端 `useNotifications` 与通知路由映射。后端支持 Expo push token 注册、推送偏好合并、每日能量提醒、周结算引导、3 天未活动召回、用户时区计算和单 token 每次最多一条消息；移动端登录态下申请权限并注册 token，点击通知按 route/scenario 跳转。验证：notification service 7 个单测、API 全量测试、mobile typecheck、Expo Web export、notification routing node smoke 均通过。
 
 ---
 

@@ -5,6 +5,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { EnergyModule } from './modules/energy/energy.module';
 import { GoalsModule } from './modules/goals/goals.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import { PlansModule } from './modules/plans/plans.module';
 import { SettlementsModule } from './modules/settlements/settlements.module';
 import { SyncModule } from './modules/sync/sync.module';
@@ -27,6 +28,7 @@ import { PrismaModule } from './prisma/prisma.module';
     SettlementsModule,
     TreeModule,
     SyncModule,
+    NotificationsModule,
   ],
   controllers: [HealthController],
 })
