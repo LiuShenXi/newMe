@@ -2015,10 +2015,12 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 > 2026-04-30 深度愿景后端完成记录：`ai.service.ts` 新增 `applyVisionToAnnualOkr`、`applyAnnualToQuarterOkr`、`applyQuarterToFourWeekCommitments` 三个确认落库方法，覆盖深度愿景路径的年度 OKR→季度 OKR→四周承诺级联写入。3 个新单元测试全部通过。移动端深度愿景页面的真实 AI 调用待下一步联调。
 
+> 2026-04-30 深度愿景移动端完成记录：`onboarding/vision` 已接入 `/ai/generations` 与 `/ai/generations/:id/confirm`，完成愿景→年度 OKR→季度 OKR→四周承诺的三段生成与确认，确认后进入能量页。新增 `f2-vision-onboarding.spec.js` 覆盖三段 route mock 与最终跳转。
+
 - [x] **Step 1: 快速规划端到端：输入季度目标 → AI 生成 → 确认 → 写入**
-- [ ] **Step 2: 深度愿景端到端：愿景 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划**（后端已完成，移动端待联调）
+- [x] **Step 2: 深度愿景端到端：愿景 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划**
 - [ ] **Step 3: 手动 OKR 端到端：五层引导 → 跳过 → 局部 AI 辅助**
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ### Task F3: 前后端联调 — 日常执行闭环
 
@@ -2026,9 +2028,11 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 > 2026-04-30 完成记录：清单页 CRUD 全部接入 `/todos` API（乐观更新），能量页接入 `/energy/weeks/:weekId` 周能量读取和 `PUT /energy/days/:date` 确认上报。Playwright E2E 测试覆盖清单加载/新增和能量加载/确认。
 
+> 2026-04-30 计划页 API 完成记录：计划页月视图已从 `/plans/weeks/:weekId/focuses` 加载本周重点，年视图从 `/goals/current` 加载愿景、季度目标和月目标；`AI 重规划` 后通过 `PUT /plans/weeks/:weekId/focuses` 更新本周重点。API 失败时保留原型 AI fallback，API 成功返回空层级时展示手动空状态。
+
 - [x] **Step 1: 清单 CRUD 端到端**
 - [x] **Step 2: 能量记录端到端**
-- [ ] **Step 3: 本周重点展示和更新**（待 F4 计划页 API 接入时一并完成）
+- [x] **Step 3: 本周重点展示和更新**
 - [x] **Step 4: Commit**
 
 ### Task F4: 前后端联调 — 周结算 + 成长树
@@ -2043,10 +2047,12 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 **依赖:** B11 + D1 + D2 + D3 完成
 
-- [ ] **Step 1: 离线创建任务 → 恢复网络 → 自动同步**
-- [ ] **Step 2: 离线记录能量 → 恢复网络 → 自动同步**
-- [ ] **Step 3: 冲突场景验证**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: 离线创建任务 → 恢复网络 → 自动同步**
+- [x] **Step 2: 离线记录能量 → 恢复网络 → 自动同步**
+- [x] **Step 3: 冲突场景验证**
+- [x] **Step 4: Commit**
+
+> 2026-04-30 完成记录：新增 `apps/mobile/src/db/sync/runtime.ts` 和 `sync.store.ts` 的 `runRuntimeSync()`，提供离线 Todo 入队、离线能量入队、恢复网络 push/pull 与冲突 summary 的运行态 helper。新增 `f5-sync-runtime.spec.js` 通过依赖注入验证 SQLite open、队列计数和冲突结果。真实 Expo 设备上的 SQLite 文件库 smoke 仍建议在发布前补跑。
 
 ### Task F6: Docker 部署 + 健康检查
 
