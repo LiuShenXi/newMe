@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import { GenerateOptions, ProviderAdapter } from './provider-adapter';
 
 type FetchLike = (
@@ -41,7 +41,7 @@ interface ProviderEndpoint {
 export class OpenAiAdapter implements ProviderAdapter {
   private readonly fetchImpl: FetchLike;
 
-  constructor(options: OpenAiAdapterOptions = {}) {
+  constructor(@Optional() @Inject('OPENAI_ADAPTER_OPTIONS') options: OpenAiAdapterOptions = {}) {
     this.fetchImpl = options.fetch ?? fetch;
   }
 
