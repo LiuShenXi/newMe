@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：MVP 后续开发计划已全部完成并在 `feat/mvp-final-integration-direct` 收口；F2/F4/AI provider/当前周上下文/F6 Docker/F7 推送通知均已完成，旧来源 worktree 已清理；下一步为最终合并收口与发布前真机 smoke
-- 当前主控：main
+- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；F2/F4/AI provider/当前周上下文/F6 Docker/F7 推送通知均已完成，旧来源 worktree 已清理；下一步为发布前真机 smoke 与远端推送/发布流程
+- 当前主控：main（领先 origin/main）
 - 最近更新时间：2026-04-30
 - 最近更新人：Claude Code
 
@@ -317,6 +317,7 @@ git worktree list
 - 旧来源 worktree 清理完成：`feat/f2-manual-ai-assist`、`feat/f4-settlement-tree-api`、`feat/f6-docker-deploy` 均已合入当前直接开发分支并删除本地分支，`.worktrees/*` 残留目录已清空；清理 `f4-settlement-tree-api` 时先停止了指向旧 worktree 的 Expo/Node 进程。
 - F7 推送通知模块完成：后端新增 `NotificationsModule`，提供 `POST /notifications/tokens` 与 `PUT /notifications/preferences`；`NotificationsService` 管理 Expo token、偏好、三类场景调度和 Expo Push API 发送，且按用户时区计算、单 token 单次最多一条；移动端新增 `useNotifications`，登录态申请权限并注册 token，通知点击按 route/scenario 进入能量页或周结算页。
 - 计划完成回填：`docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md` 中所有任务和集成点 checkbox 已回填完成；补跑 `pnpm install --frozen-lockfile` 通过；补跑 F2 手动 AI、F4 周结算成长树、prototype parity、prototype visual regression Playwright 共 7 个用例通过。
+- 最终合并收口：`feat/mvp-final-integration-direct` 已通过 `merge: complete mvp final integration` 合并回 `main`。合并后重新验证：`pnpm -r typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web`、F5/planning-context/notification-routing Node smoke、F2/F4/原型 Playwright 7 个用例、`http://localhost:8080/api/v1/health` 均通过。
 
 ## 阻塞与风险
 
@@ -338,7 +339,7 @@ git worktree list
 如果用户要求继续开发，建议按以下顺序：
 
 1. 发布前设备级 SQLite smoke：在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull。
-2. 按需合并 `feat/mvp-final-integration-direct`。
+2. 推送远端前确认是否要包含或另行处理 `AGENTS.md`、`CLAUDE.md` 的用户侧未提交改动；当前功能提交未包含这两个文件。
 3. 若本机 8080 已被其它服务占用，Docker 验收改用 `localhost:8080` 或设置 `NGINX_PORT` 后重新 `docker compose up --build`。
 
 ## 收尾模板
