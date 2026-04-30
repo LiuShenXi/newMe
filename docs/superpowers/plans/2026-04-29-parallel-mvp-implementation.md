@@ -2067,15 +2067,15 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 - [x] **Step 1: 创建 Dockerfile（多阶段构建）**
 - [x] **Step 2: 创建 docker-compose.yml（api + postgres + nginx）**
-- [ ] **Step 3: 验证 docker compose up 启动成功**
-- [ ] **Step 4: 验证 /health 返回正常**
+- [x] **Step 3: 验证 docker compose up 启动成功**
+- [x] **Step 4: 验证 /health 返回正常**
 - [x] **Step 5: Commit**
 
 ```bash
 git commit -m "feat: add Docker deployment with compose and nginx"
 ```
 
-> 2026-04-30 直接分支完成记录：已新增 API Dockerfile、`docker-compose.yml`、`nginx/default.conf` 和 `.dockerignore`，`docker compose config` 通过。完整 `docker compose up --build` 与 `/api/v1/health` 运行态验证保留到最终验收命令中执行。
+> 2026-04-30 直接分支完成记录：已新增 API Dockerfile、`docker-compose.yml`、`nginx/default.conf` 和 `.dockerignore`，`docker compose config`、`docker compose up --build -d` 与 `http://localhost:8080/api/v1/health` 均通过。为支持容器运行，`@newme/shared` 新增 CommonJS build 输出，API Docker 构建先 build shared 再 build NestJS。
 
 ### Task F7: 推送通知模块（Phase 2 optional，不阻塞 Week 2 MVP）
 
@@ -2151,24 +2151,26 @@ git commit -m "feat: add notification module with push scenarios and deep linkin
 
 ### 最终验收（Week 2 末）
 
-- [ ] 完整闭环：冷启动 → 日常执行 → 周结算 → 成长树
-- [ ] 三条冷启动路径全部可用
-- [ ] 手动路径空层级不阻断闭环
-- [ ] Docker 部署可用
-- [ ] 核心路径无崩溃
-- [ ] F7 推送通知未完成时，不阻塞 MVP 验收；若提前完成，必须有独立验证记录
+- [x] 完整闭环：冷启动 → 日常执行 → 周结算 → 成长树
+- [x] 三条冷启动路径全部可用
+- [x] 手动路径空层级不阻断闭环
+- [x] Docker 部署可用
+- [x] 核心路径无崩溃
+- [x] F7 推送通知未完成时，不阻塞 MVP 验收；若提前完成，必须有独立验证记录
+
+> 2026-04-30 直接分支最终验收记录：`pnpm -r typecheck`、API 全量测试、Expo Web export、F2 手动 AI/F4 周结算成长树/原型一致性 Playwright、F5 sync runtime、planning-context smoke、`docker compose up --build -d` 和 `http://localhost:8080/api/v1/health` 均通过。F7 仍为 Phase 2 optional，不阻塞 MVP。
 
 ## 主控收口清单
 
 主控对话在合并所有 worker 结果后执行：
 
-- [ ] 检查 `git status`，确认没有未解释的跨轨道改动。
+- [x] 检查 `git status`，确认没有未解释的跨轨道改动。
 - [ ] 运行 `pnpm install`。
-- [ ] 运行 `pnpm -r typecheck`。
-- [ ] 运行后端测试：`pnpm --filter @newme/api test`。
-- [ ] 运行前端可用性验证：启动 Expo，检查 4 tab 和关键页面。
-- [ ] 运行数据库迁移验证：`pnpm --filter @newme/api prisma migrate dev` 或对应项目脚本。
-- [ ] 运行 SQLite 初始化验证。
+- [x] 运行 `pnpm -r typecheck`。
+- [x] 运行后端测试：`pnpm --filter @newme/api test`。
+- [x] 运行前端可用性验证：启动 Expo，检查 4 tab 和关键页面。
+- [x] 运行数据库迁移验证：`docker compose up --build -d` 内执行 `prisma migrate deploy`，并通过健康检查确认数据库连接。
+- [x] 运行 SQLite 初始化验证。
 - [x] 使用 `npx playwright` 对 `prototype/index.html` 做原型页面检查、截图、视觉验证，并与 Expo 客户端关键页面对照；当前验收口径已从页面级锚点升级为原型原语级复刻，覆盖底栏、按钮、胶囊、modal、sheet、toast、输入框和树侧工具。任何无法还原的差异都要记录原因并同步文档。
 - [x] 若实现与 `产品需求设计文档.md` 或架构文档不一致，按真实实现同步更新文档。
 

@@ -8,3 +8,5 @@ dist/
 android/
 ios/
 .worktrees/
+test-results/
+playwright-report/

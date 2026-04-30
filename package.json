@@ -9,6 +9,15 @@
   "engines": {
     "node": ">=20"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "bcrypt",
+      "prisma"
+    ]
+  },
   "devDependencies": {
     "@playwright/test": "^1.59.1"
   }
