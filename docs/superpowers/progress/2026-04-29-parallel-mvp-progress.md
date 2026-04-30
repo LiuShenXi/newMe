@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：F2 深度愿景移动端联调、F4 计划页 API 接入、F5 SQLite+Sync 运行态联调均已完成并合并；下一步为 F4 周结算+成长树真实 API 联调、手动 OKR 局部 AI 辅助或 F6 Docker 部署
+- 当前阶段：F2 手动 OKR 局部 AI、F4 周结算+成长树真实 API、AI provider 本地优先降级、当前周上下文统一、F6 Docker 配置均已进入直接开发分支；下一步为完整回归验证、Docker 运行态健康检查和设备级 SQLite smoke
 - 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Claude Code
@@ -71,6 +71,11 @@ git worktree list
 | F2 深度愿景移动端联调 | DONE | feat/f2-vision-mobile -> main | 558d3e7 / merge | pnpm --filter @newme/mobile exec tsc --noEmit；f2-vision-onboarding Playwright；集成回归均通过 | `onboarding/vision` 接入三段 AI 生成与确认：愿景→年度 OKR→季度 OKR→四周承诺，确认后进入能量页 |
 | F4 计划页 API 接入 | DONE | feat/f4-plan-api -> main | d03a6c2 + 4310e4f / merge | pnpm --filter @newme/mobile exec tsc --noEmit；f4-plan-api Playwright；prototype-parity 回归均通过 | 月视图加载/更新真实本周重点，年视图加载 `/goals/current`；修复 API 失败时原型 AI fallback 被误切到手动来源的问题 |
 | F5 SQLite+Sync 运行态联调 | DONE_WITH_CONCERNS | feat/f5-sync-runtime -> main | 2f88182 / merge | pnpm --filter @newme/mobile exec tsc --noEmit；node apps/mobile/tests/f5-sync-runtime.spec.js；pnpm -r typecheck 均通过 | 新增运行态 helper 覆盖 SQLite open、离线 Todo/能量入队、push/pull 与冲突 summary；真实 Expo 设备 SQLite 文件库 smoke 仍需发布前补跑 |
+| F2 手动 OKR 局部 AI 辅助 | DONE | feat/mvp-final-integration-direct | 4c88b84 / merge | pnpm --filter @newme/mobile exec tsc --noEmit 通过；Playwright 待总回归 | `manual_local_assist` 接入移动端手动路径，建议只回填当前层级 |
+| F4 周结算 + 成长树真实 API | DONE | feat/mvp-final-integration-direct | c12eeca / merge | pnpm --filter @newme/mobile exec tsc --noEmit 通过；Playwright 待总回归 | `/settlement` 调后端结算接口，成长树读取 `/tree/years/:year` |
+| AI Provider 本地优先降级 | DONE | feat/mvp-final-integration-direct | a29fb7e | openai.adapter.spec 3 个用例通过；api typecheck 通过 | 本地 OpenAI-compatible 服务优先，失败降级 GLM；key 仅环境变量 |
+| 当前周上下文统一 | DONE | feat/mvp-final-integration-direct | 60e82d1 | planning-context node test 通过；mobile typecheck 通过 | 移动端优先用 `/me.currentWeekId/currentQuarterId`，无用户态用本地日期 fallback |
+| F6 Docker 配置 | DONE_WITH_CONCERNS | feat/mvp-final-integration-direct | 14e07fd | docker compose config 通过；api typecheck 通过 | Dockerfile/compose/nginx 已完成；`docker compose up --build` 与 `/api/v1/health` 仍待总验收 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
@@ -302,6 +307,11 @@ git worktree list
 - F5 SQLite+Sync 运行态联调完成：新增 `apps/mobile/src/db/sync/runtime.ts`，提供 `createOfflineTodoForSync`、`createOfflineEnergyForSync`、`syncOfflineChanges` 和 `runSyncRuntimeSmoke`；`sync.store.ts` 新增 `runRuntimeSync`，新增 Node smoke 测试覆盖 SQLite open、离线入队和冲突 summary。
 - 主控 review 记录：第一次集成回归发现计划页 API 失败 fallback 破坏 `prototype-parity`，根因为 API 未加载时 `planSource` 被推断为 `manual`；已通过 `feat/f4-plan-parity-fix` 修复为 API 失败/未加载保持原型 AI fallback，API 成功返回空层级仍展示手动空状态。
 - 主控集成验证记录：补跑 `pnpm install` 安装已在 package 中声明但本地缺失的 `expo-linear-gradient`；随后 `pnpm -r typecheck`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web`、`node apps/mobile/tests/f5-sync-runtime.spec.js`、`npx playwright test apps/mobile/tests/f2-vision-onboarding.spec.js apps/mobile/tests/f4-plan-api.spec.js apps/mobile/tests/prototype-parity.spec.js --reporter=line`、`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 均通过。
+- 按用户要求切换为直接分支开发：从 `main` 创建 `feat/mvp-final-integration-direct`，未再创建新 worktree；主工作区已有 `AGENTS.md`、`CLAUDE.md` 未提交改动保持不纳入功能提交。
+- F2/F4 已完成分支合入：`feat/f2-manual-ai-assist` 与 `feat/f4-settlement-tree-api` 均通过 no-ff merge 合入直接开发分支，合并后 mobile/api typecheck 均通过。
+- AI Provider TDD 记录：新增 `apps/api/src/modules/ai/providers/openai.adapter.spec.ts`，先确认 OpenAiAdapter 不支持注入 fetch、不会本地优先/GLM 降级而红；实现后 3 个用例转绿。`.env.example` 已改为本地 OpenAI-compatible 服务与 GLM fallback 的占位变量，不提交真实 key。
+- 当前周上下文 TDD 记录：新增 `apps/mobile/tests/planning-context.spec.js`，先确认缺少统一 helper 红测；实现 `planning-context` 与 `usePlanningContext` 后转绿，并替换能量、清单、计划、quick、vision、manual、周结算、成长树中的硬编码周/季度/日期。
+- F6 Docker 配置完成：新增 `.dockerignore`、`apps/api/Dockerfile`、`docker-compose.yml`、`nginx/default.conf`，`docker compose config` 通过；完整 `docker compose up --build` 和 `/api/v1/health` 留到总验收。
 
 ## 阻塞与风险
 
@@ -311,21 +321,20 @@ git worktree list
 - B5 Goals 对外使用 `YYYY-Qn` 逻辑季度 ID，与 B4 `/me.currentQuarterId` 保持一致；服务端内部会映射到 Prisma `quarters.id` UUID，后续 Plans/Todos 若引用季度也应复用该转换策略。
 - B9 Settlement 尚未生成 QuarterHonor；不要把季度荣誉视为后端已完成能力，B10 或后续季度结算任务需要补齐。
 - B11 Sync 目前按整条记录版本冲突处理，符合 MVP 单设备优先策略；多端字段级合并仍是后续演进项。
-- E1 AI 的真实 provider 网络调用尚未启用；E2 已补齐 prompt 模板，但联调前仍需要配置 provider adapter 和 API Key。
-- F4 计划页当前仍使用前端常量 `2026-W17` 作为当前周；后续应统一接入 `/me.currentWeekId` 或用户时区下的当前周上下文，避免日期滚动后读取旧周。
+- E1 AI provider 已支持本地 OpenAI-compatible 服务优先和 GLM fallback；真实调用仍依赖运行环境正确配置 `AI_LOCAL_*` 或 `AI_FALLBACK_*`，且不要把真实 key 写入仓库。
+- 当前周上下文已统一为 `/me.currentWeekId/currentQuarterId` 优先、本地日期 fallback；如果未登录态测试日期变化，相关 Playwright mock 周需要同步调整。
 - F5 Sync 本轮为依赖注入式 Node smoke 和运行态 helper 验证，尚未在真实 Expo 设备/Web SQLite 文件库中打开 `newme.db` 做端到端 smoke；发布前需补一轮设备级验证。
 - 本轮为迁移验证启动了临时 Docker 容器 `newme-b2-postgres`，使用端口 `55432`，后续 B12 可复用它验证 `/health` 数据库状态，收尾时再停止或保留给联调。
-- 旧 `feat/track-*` worktree 已清理；当前仅保留本轮并行任务 worktree，收尾时可按需删除。
+- 旧 `feat/track-*` worktree 已清理；本轮按用户要求不再创建新 worktree，但仍保留已有 `f2-manual-ai-assist`、`f4-settlement-tree-api`、`f6-docker-deploy` worktree 作为来源参考，最终收口可清理。
 
 ## 下次建议
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. F4 周结算 + 成长树真实 API 联调：`/settlement` 从后端结算接口生成果实，成长树从 `/tree` 读取真实果实、时间胶囊和荣誉层。
-2. 手动 OKR 路径的局部 AI 辅助：E2 prompt 已就绪，需要移动端 UI 接入 `manual_local_assist`。
-3. F6 Docker 部署 + 健康检查：补 Dockerfile、compose、nginx，并验证 `/health`。
-4. 当前周上下文统一：计划页和其他页面从 `/me.currentWeekId` 或统一日期 helper 获取当前周，替换硬编码 `2026-W17`。
-5. 发布前设备级 SQLite smoke：在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull。
+1. 跑完整回归：`pnpm -r typecheck`、API 全量测试、Expo export、F2/F4/F3/原型 Playwright、F5 Node smoke。
+2. Docker 运行态验收：执行 `docker compose up --build`，验证 `http://127.0.0.1:8080/api/v1/health`。
+3. 发布前设备级 SQLite smoke：在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull。
+4. 回归通过后清理旧 worktree，并按需合并 `feat/mvp-final-integration-direct`。
 
 ## 收尾模板
 

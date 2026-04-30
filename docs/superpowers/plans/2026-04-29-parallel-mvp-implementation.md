@@ -2019,8 +2019,10 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 - [x] **Step 1: 快速规划端到端：输入季度目标 → AI 生成 → 确认 → 写入**
 - [x] **Step 2: 深度愿景端到端：愿景 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划**
-- [ ] **Step 3: 手动 OKR 端到端：五层引导 → 跳过 → 局部 AI 辅助**
+- [x] **Step 3: 手动 OKR 端到端：五层引导 → 跳过 → 局部 AI 辅助**
 - [x] **Step 4: Commit**
+
+> 2026-04-30 直接分支完成记录：`feat/mvp-final-integration-direct` 已合入 `feat/f2-manual-ai-assist`，手动 OKR 局部 AI 辅助通过 `manual_local_assist` 调用 `/ai/generations`，建议只回填当前层级输入，不自动补上游、不覆盖其他层级。新增 `apps/mobile/tests/f2-manual-ai-assist.spec.js` 覆盖周计划层级生成、接受建议和继续到今日 ToDo。
 
 ### Task F3: 前后端联调 — 日常执行闭环
 
@@ -2039,9 +2041,11 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 **依赖:** B9 + B10 + C9 + C10 完成
 
-- [ ] **Step 1: 周结算端到端：能量回顾 → 建议分数 → 确认 → 果实生成**
-- [ ] **Step 2: 成长树展示端到端：果实、时间胶囊、荣誉层**
-- [ ] **Step 3: Commit**
+- [x] **Step 1: 周结算端到端：能量回顾 → 建议分数 → 确认 → 果实生成**
+- [x] **Step 2: 成长树展示端到端：果实、时间胶囊、荣誉层**
+- [x] **Step 3: Commit**
+
+> 2026-04-30 直接分支完成记录：`/settlement` 已接入 `/energy/weeks/:weekId` 和 `POST /settlements/weeks/:weekId`；成长树已接入 `GET /tree/years/:year`，API 成功时展示真实果实、时间胶囊和荣誉层，API 失败时保留原型 fallback。新增 `apps/mobile/tests/f4-settlement-tree-api.spec.js` 覆盖周结算提交和成长树真实数据展示。
 
 ### Task F5: 离线 + 同步联调
 
@@ -2061,15 +2065,17 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 - Create: `docker-compose.yml`
 - Create: `nginx/default.conf`
 
-- [ ] **Step 1: 创建 Dockerfile（多阶段构建）**
-- [ ] **Step 2: 创建 docker-compose.yml（api + postgres + nginx）**
+- [x] **Step 1: 创建 Dockerfile（多阶段构建）**
+- [x] **Step 2: 创建 docker-compose.yml（api + postgres + nginx）**
 - [ ] **Step 3: 验证 docker compose up 启动成功**
 - [ ] **Step 4: 验证 /health 返回正常**
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git commit -m "feat: add Docker deployment with compose and nginx"
 ```
+
+> 2026-04-30 直接分支完成记录：已新增 API Dockerfile、`docker-compose.yml`、`nginx/default.conf` 和 `.dockerignore`，`docker compose config` 通过。完整 `docker compose up --build` 与 `/api/v1/health` 运行态验证保留到最终验收命令中执行。
 
 ### Task F7: 推送通知模块（Phase 2 optional，不阻塞 Week 2 MVP）
 
