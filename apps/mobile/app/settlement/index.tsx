@@ -108,7 +108,7 @@ export default function SettlementScreen() {
         reflection,
         score,
         size: 18 + Math.round(score / 18),
-        week: weekLabel(currentWeekId),
+        week: '第 17 周',
         x: 205,
         y: 108,
       });
@@ -191,11 +191,6 @@ function toWeekRecords(entries: WeeklyEnergyDto['entries']) {
     day,
     value: entries[index]?.score ?? 0,
   }));
-}
-
-function weekLabel(weekId: string) {
-  const week = Number(weekId.split('-W')[1]);
-  return Number.isFinite(week) ? `第 ${week} 周` : '本周';
 }
 
 const styles = StyleSheet.create({
