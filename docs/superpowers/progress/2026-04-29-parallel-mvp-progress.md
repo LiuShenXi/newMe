@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：F1 Auth 登录入口、F2 深度愿景后端确认链路、F3 日常执行页 API 接入均已完成；下一步为 F2 深度愿景移动端联调、F4 计划页 API 接入或 F5 真实 SQLite+Sync 联调
+- 当前阶段：F1 Auth 登录入口、F2 深度愿景后端确认链路、F3 日常执行页 API 接入均已完成；F2 深度愿景移动端联调、F4 计划页 API 接入、F5 真实 SQLite+Sync 联调已并行派发到独立 worktree
 - 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Claude Code
@@ -74,7 +74,7 @@ git worktree list
 
 ## 未提交改动记录
 
-当前已知未提交改动：无（本轮所有改动已提交）。
+当前已知未提交改动：主工作区仅有本进度日志更新；开发改动分派在 `.worktrees/f2-vision-mobile`、`.worktrees/f4-plan-api`、`.worktrees/f5-sync-runtime`。
 
 ## 最近工作记录
 
@@ -292,6 +292,8 @@ git worktree list
 - F3 日常执行页真实 API 接入完成：`apps/mobile/src/features/todo/hooks/useTodos.ts` 改为从 `/todos/today` 加载远程清单，新增/编辑/删除/勾选均调用后端 API 并使用乐观更新；`apps/mobile/src/features/energy/hooks/useEnergy.ts` 改为从 `/energy/weeks/:weekId` 加载周能量，确认能量时调用 `PUT /energy/days/:date`。
 - F3 Playwright 测试：新增 `apps/mobile/tests/f3-daily-api.spec.js`，覆盖清单 API 加载/新增和能量 API 加载/确认。
 - 验证记录：`pnpm --filter @newme/mobile exec tsc --noEmit` 通过；`pnpm --filter @newme/api exec tsc --noEmit` 通过；`pnpm --filter @newme/api exec jest --testPathPattern=ai.service.spec --no-coverage` 6 个测试全部通过。
+- 技术总监续跑清理：已确认旧 `.worktrees/*` 分支均已合入 `main`，移除所有旧 worktree、删除已合并的 `feat/track-*` 本地分支，并清理已合并的 `feat/static-html-prototype`；清理后 `git worktree list` 仅剩主工作区，`git branch --list` 仅剩 `main`。
+- 技术总监并行派发第一批后续开发：创建 `.worktrees/f2-vision-mobile` / `feat/f2-vision-mobile`、`.worktrees/f4-plan-api` / `feat/f4-plan-api`、`.worktrees/f5-sync-runtime` / `feat/f5-sync-runtime`；分别负责 F2 深度愿景移动端联调、计划页 API 接入、SQLite+Sync 运行态联调。主控只做调度、review、合并和文档收口。
 
 ## 阻塞与风险
 
