@@ -238,13 +238,18 @@ export function usePlan() {
   const monthWeeksFromApi = useMemo(() => (focuses ? buildWeeksFromFocuses(focuses) : monthWeeks), [focuses]);
   const quartersFromApi = useMemo(() => buildQuartersFromOverview(goalsOverview), [goalsOverview]);
   const planSource = useMemo(
-    () =>
-      inferPlanSource([
+    () => {
+      if (focuses === null || goalsOverview === null) {
+        return 'ai';
+      }
+
+      return inferPlanSource([
         ...(focuses ?? []).map((focus) => focus.source),
         ...(goalsOverview?.vision ? [goalsOverview.vision.source] : []),
         ...(goalsOverview?.quarterGoals.map((goal) => goal.source) ?? []),
         ...(goalsOverview?.monthGoals.map((goal) => goal.source) ?? []),
-      ]),
+      ]);
+    },
     [focuses, goalsOverview],
   );
 
