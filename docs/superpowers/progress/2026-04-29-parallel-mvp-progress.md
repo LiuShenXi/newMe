@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 2
-- 当前阶段：Batch 2 / F2 冷启动 AI 联调已完成快速规划确认落库后端切片；下一步接移动端 quick 页面真实生成/确认调用
-- 当前主控：main
+- 当前阶段：Batch 2 / F2 冷启动 AI 联调已完成快速规划后端确认落库与移动端 quick 真实生成/确认调用；下一步补 Auth 真登录或深度愿景路径联调
+- 当前主控：feat/track-f2-quick-mobile
 - 最近更新时间：2026-04-30
 - 最近更新人：Codex
 
@@ -53,6 +53,7 @@ git worktree list
 | E1 AI 骨架 | DONE | feat/track-e-ai -> main | 4323f13 | ai.service RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | provider 抽象、schema 校验、限流、熔断、生成记录；真实 provider 调用待环境配置 |
 | E2 Prompt 模板 | DONE | feat/track-e-prompts -> main | 38455eb | prompt registry RED/GREEN；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 7 个场景模板接入 PromptRegistry；示例输出与 shared schema 匹配 |
 | F2 Quick Plan Confirm Backend | DONE | feat/track-f2-cold-start | 本轮提交 | ai.service RED/GREEN；pnpm --filter @newme/shared typecheck；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api test --runInBand 均通过 | 快速规划 AI 草案确认时按用户写入季度目标、WeekPlan、WeeklyFocus、今日 Todo，并标记 onboarding 完成；移动端真实调用待下一步 |
+| F2 Quick Plan Mobile API | DONE | feat/track-f2-quick-mobile | 本轮提交 | Playwright RED/GREEN；pnpm --filter @newme/shared typecheck；pnpm --filter @newme/mobile typecheck；expo export；prototype-parity 均通过 | `onboarding/quick` 从占位草案改为真实调用 `/ai/generations` 与 `/ai/generations/:id/confirm`，确认后进入能量页；真实后端运行仍依赖 F1 Auth 登录态与 provider 配置 |
 | C1 Mobile Shell 初始化 | DONE | feat/track-c-mobile-shell -> main | 4e85a49 / merge 5372cd9 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成 |
 | C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成 |
 | C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
@@ -72,7 +73,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- `feat/track-f2-cold-start` worktree 中本轮 F2 后端切片待提交：`apps/api/src/modules/ai/ai.service.ts`、`apps/api/src/modules/ai/ai.controller.ts`、`apps/api/src/modules/ai/tests/ai.service.spec.ts`、`packages/shared/src/dto/ai.ts`、本进度日志与实施计划。
+- `feat/track-f2-quick-mobile` worktree 中本轮 F2 移动端切片待提交：`apps/mobile/app/onboarding/quick.tsx`、`apps/mobile/tests/f2-quick-onboarding.spec.js`、本进度日志与实施计划。
 - 主目录当前已保持干净；如用户在主目录继续改 `AGENTS.md` 或产生 `.DS_Store`，收口时仍不要混入 F2 提交。
 
 ## 最近工作记录
@@ -276,6 +277,9 @@ git worktree list
 - 共享契约补充：`packages/shared/src/dto/ai.ts` 新增 `ConfirmGenerationResponse`，返回确认后的 generation 和实际写入数量，便于移动端下一步真实对接。
 - F2 验证记录：`pnpm --filter @newme/api test --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 通过；`pnpm --filter @newme/shared typecheck` 通过；`pnpm --filter @newme/api typecheck` 通过；`pnpm --filter @newme/api test --runInBand` 14 个 test suite / 27 个测试通过。
 - F2 主线合并：`feat/track-f2-cold-start` 已提交 `1bcbc13 feat: apply quick plan ai confirmations` 并 fast-forward 合并回 `main`；主目录补跑 `prisma generate` 后，`pnpm --filter @newme/api typecheck` 与 `pnpm --filter @newme/api test --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 均通过。
+- F2 移动端 quick 联调切片：创建 `.worktrees/track-f2-quick-mobile` / `feat/track-f2-quick-mobile`，先新增 `apps/mobile/tests/f2-quick-onboarding.spec.js` 红测，确认 quick 页面仍停留在占位草案和直接进能量页；实现后测试转绿。
+- F2 quick 页面实现：`apps/mobile/app/onboarding/quick.tsx` 现在会调用 `/ai/generations` 生成 `quick_quarter_plan` 草案，把返回的 `weeklyFocuses` 和 `todayTodos` 展示在草案卡片中；用户确认后调用 `/ai/generations/:id/confirm`，携带 `generationId/scenario/target/contextVersion/edits`，成功后进入能量页。
+- F2 移动端验证记录：`pnpm --filter @newme/shared typecheck` 通过；`pnpm --filter @newme/mobile typecheck` 通过；`EXPO_BASE_URL=http://127.0.0.1:19009 npx playwright test apps/mobile/tests/f2-quick-onboarding.spec.js --reporter=line` 1 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`EXPO_BASE_URL=http://127.0.0.1:19009 npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 4 个用例通过。
 
 ## 阻塞与风险
 
@@ -293,11 +297,11 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. F2 下一步把移动端 `app/onboarding/quick.tsx` 从占位草案改为真实调用 `/ai/generations` 和 `/ai/generations/:id/confirm`，并在确认后进入能量/清单闭环。
+1. 优先补 F1 Auth 前端登录页或提供开发态登录入口，让 quick 页面能在真实后端 JWT Guard 下完成端到端调用。
 2. F2 后续继续补深度愿景路径的年度 OKR、季度 OKR、4 周承诺级联确认，以及手动 OKR 的局部 AI 辅助。
 3. 继续把计划周节点跳清单并打开本周概览、手动 OKR 输入同步到计划/清单、真实 API/SQLite 落库接入。
-3. C6 的 Skia 自绘粒子与复杂充电涌入效果、成长树 native 渐变/blur 还原仍属体验增强，不阻塞 MVP 闭环。
-4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
+4. C6 的 Skia 自绘粒子与复杂充电涌入效果、成长树 native 渐变/blur 还原仍属体验增强，不阻塞 MVP 闭环。
+5. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
 ## 收尾模板
 

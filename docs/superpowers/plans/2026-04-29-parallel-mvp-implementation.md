@@ -2009,7 +2009,7 @@ git commit -m "feat: add prompt templates for all 7 AI scenarios"
 
 **依赖:** B5 + C5 + E1 + E2 完成
 
-> 2026-04-30 续跑记录：已完成 Step 1 的后端确认落库切片。`/ai/generations/:id/confirm` 对 `quick_quarter_plan` 草案会按当前用户在事务中写入 AI 来源季度目标、WeekPlan、本周重点和今日 Todo，并返回 `ConfirmGenerationResponse`。移动端 quick 页面真实生成/确认调用仍待接入，Step 1 暂不整体勾选。
+> 2026-04-30 续跑记录：已完成 Step 1 的后端确认落库切片。`/ai/generations/:id/confirm` 对 `quick_quarter_plan` 草案会按当前用户在事务中写入 AI 来源季度目标、WeekPlan、本周重点和今日 Todo，并返回 `ConfirmGenerationResponse`。移动端 quick 页面也已接入 `/ai/generations` 和 `/ai/generations/:id/confirm`，并用 Playwright route mock 验证生成、确认和跳能量页链路。Step 1 仍暂不整体勾选，原因是真实后端端到端还依赖 F1 登录态和 provider 配置。
 
 - [ ] **Step 1: 快速规划端到端：输入季度目标 → AI 生成 → 确认 → 写入**
 - [ ] **Step 2: 深度愿景端到端：愿景 → 年度 OKR → 季度 OKR → 4 周承诺 → 天计划**
