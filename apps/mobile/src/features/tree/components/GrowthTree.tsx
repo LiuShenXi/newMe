@@ -2,12 +2,15 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, LayoutChangeEvent, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 import { PrototypeTreeTool } from '../../../shared/components';
+import type { GrowthTreeDto } from '@newme/shared';
 import type { TreeFruit } from '../data/fruits';
 
 interface GrowthTreeProps {
   fruits: TreeFruit[];
+  honorCount?: number;
   onDetailPress?: (type: 'fruit' | 'quarter' | 'honor') => void;
   onFruitPress: (fruit: TreeFruit) => void;
+  stage?: GrowthTreeDto['stage'];
 }
 
 const DESIGN_WIDTH = 353;
@@ -53,7 +56,7 @@ const glassBlur = {
   backdropFilter: 'blur(20px)',
 } as unknown as ViewStyle;
 
-export function GrowthTree({ fruits, onDetailPress, onFruitPress }: GrowthTreeProps) {
+export function GrowthTree({ fruits, honorCount = 1, onDetailPress, onFruitPress, stage = 'q2_growth' }: GrowthTreeProps) {
   const aura = useRef(new Animated.Value(0)).current;
   const [canvasWidth, setCanvasWidth] = useState(DESIGN_WIDTH);
 
@@ -155,8 +158,8 @@ export function GrowthTree({ fruits, onDetailPress, onFruitPress }: GrowthTreePr
 
       <View style={styles.tools}>
         <PrototypeTreeTool label="果实" onPress={() => onDetailPress?.('fruit')} tone="fruit" value={`${fruits.length}`} />
-        <PrototypeTreeTool label="阶段" onPress={() => onDetailPress?.('quarter')} tone="quarter" value="Q2" />
-        <PrototypeTreeTool label="荣誉" onPress={() => onDetailPress?.('honor')} tone="honor" value="1" />
+        <PrototypeTreeTool label="阶段" onPress={() => onDetailPress?.('quarter')} tone="quarter" value={stageToQuarterLabel(stage)} />
+        <PrototypeTreeTool label="荣誉" onPress={() => onDetailPress?.('honor')} tone="honor" value={`${honorCount}`} />
       </View>
 
       <View style={[styles.tip, glassBlur]}>
@@ -164,6 +167,13 @@ export function GrowthTree({ fruits, onDetailPress, onFruitPress }: GrowthTreePr
       </View>
     </View>
   );
+}
+
+function stageToQuarterLabel(stage: GrowthTreeDto['stage']) {
+  if (stage === 'q1_start') return 'Q1';
+  if (stage === 'q2_growth') return 'Q2';
+  if (stage === 'q3_flourish') return 'Q3';
+  return 'Q4';
 }
 
 const styles = StyleSheet.create({

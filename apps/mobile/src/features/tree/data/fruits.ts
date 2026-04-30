@@ -1,6 +1,9 @@
+import type { GrowthTreeDto, TreeFruitDto } from '@newme/shared';
+
 export interface TreeFruit {
   date: string;
   focuses: string[];
+  id?: string;
   note: string;
   reflection: string;
   score: number;
@@ -8,6 +11,12 @@ export interface TreeFruit {
   week: string;
   x: number;
   y: number;
+}
+
+export interface GrowthTreeViewData {
+  fruits: TreeFruit[];
+  honorCount: number;
+  stage: GrowthTreeDto['stage'];
 }
 
 export const treeFruits: TreeFruit[] = [
@@ -78,3 +87,41 @@ export const treeFruits: TreeFruit[] = [
     y: 260,
   },
 ];
+
+const fruitPositions = [
+  { x: 94, y: 226 },
+  { x: 145, y: 170 },
+  { x: 224, y: 214 },
+  { x: 252, y: 150 },
+  { x: 122, y: 132 },
+  { x: 176, y: 260 },
+  { x: 205, y: 108 },
+  { x: 282, y: 236 },
+];
+
+export function toTreeFruit(dto: TreeFruitDto, index: number): TreeFruit {
+  const position = fruitPositions[index % fruitPositions.length];
+  const createdAt = new Date(dto.createdAt);
+  const weekNumber = dto.weekId.includes('-W') ? dto.weekId.split('-W')[1] : dto.weekId;
+
+  return {
+    date: Number.isNaN(createdAt.getTime()) ? dto.createdAt.slice(0, 10) : createdAt.toISOString().slice(0, 10),
+    focuses: [dto.label],
+    id: dto.id,
+    note: dto.capsuleSummary,
+    reflection: dto.capsuleSummary,
+    score: dto.score,
+    size: 18 + Math.round(dto.score / 18),
+    week: dto.label || `第 ${Number(weekNumber)} 周`,
+    x: position.x,
+    y: position.y,
+  };
+}
+
+export function toGrowthTreeViewData(dto: GrowthTreeDto): GrowthTreeViewData {
+  return {
+    fruits: dto.fruits.map(toTreeFruit),
+    honorCount: dto.honors.length,
+    stage: dto.stage,
+  };
+}
