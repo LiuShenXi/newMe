@@ -12,6 +12,7 @@ import { OnboardingScreen } from '../../src/features/onboarding/components/Onboa
 import { useOnboarding } from '../../src/features/onboarding/hooks/useOnboarding';
 import { apiFetch, ApiError } from '../../src/shared/api/client';
 import { colors, fontSizes, lineHeights } from '../../src/shared/theme';
+import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
 
 interface QuickPlanOutput {
   todayTodos?: { title: string }[];
@@ -19,6 +20,7 @@ interface QuickPlanOutput {
 }
 
 export default function QuickPlanScreen() {
+  const { currentQuarterId, currentWeekId, todayDate } = usePlanningContext();
   const onboarding = useOnboarding();
   const value = onboarding.getInput('quarterGoal');
   const draft = onboarding.aiDrafts.week;
@@ -45,10 +47,10 @@ export default function QuickPlanScreen() {
       const generation = await apiFetch<GenerationDto>('/ai/generations', {
         body: {
           input: {
-            date: todayDate(),
+            date: todayDate,
             goal: value.trim(),
-            quarterId: currentQuarterId(),
-            weekId: currentWeekId(),
+            quarterId: currentQuarterId,
+            weekId: currentWeekId,
           },
           scenario: AiScenario.QUICK_QUARTER_PLAN,
         },
@@ -79,10 +81,10 @@ export default function QuickPlanScreen() {
         body: {
           contextVersion: 'quick-plan:v1',
           edits: {
-            date: todayDate(),
+            date: todayDate,
             goal: value.trim(),
-            quarterId: currentQuarterId(),
-            weekId: currentWeekId(),
+            quarterId: currentQuarterId,
+            weekId: currentWeekId,
           },
           generationId: draft.id,
           scenario: AiScenario.QUICK_QUARTER_PLAN,
@@ -132,25 +134,6 @@ export default function QuickPlanScreen() {
 
 function toUserMessage(error: unknown, fallback: string) {
   return error instanceof ApiError ? error.message : fallback;
-}
-
-function todayDate() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function currentQuarterId() {
-  const now = new Date();
-  return `${now.getFullYear()}-Q${Math.floor(now.getMonth() / 3) + 1}`;
-}
-
-function currentWeekId() {
-  const date = new Date();
-  const utc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  utc.setUTCDate(utc.getUTCDate() + 4 - (utc.getUTCDay() || 7));
-  const weekYear = utc.getUTCFullYear();
-  const yearStart = new Date(Date.UTC(weekYear, 0, 1));
-  const week = Math.ceil(((utc.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  return `${weekYear}-W${String(week).padStart(2, '0')}`;
 }
 
 const styles = StyleSheet.create({

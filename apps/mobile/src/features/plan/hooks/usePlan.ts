@@ -3,6 +3,7 @@ import type { MonthGoalDto, QuarterGoalDto, UpdateWeeklyFocusesRequest, VisionDt
 import { useEffect, useMemo, useState } from 'react';
 
 import { apiFetch } from '../../../shared/api/client';
+import { usePlanningContext } from '../../../shared/time/usePlanningContext';
 
 export type PlanView = 'month' | 'year';
 export type PlanSource = 'ai' | 'manual' | 'mixed';
@@ -111,9 +112,6 @@ interface CurrentGoalsOverview {
   vision: VisionDto | null;
 }
 
-const currentWeekId = '2026-W17';
-const currentQuarter = 'Q2';
-
 function inferPlanSource(sources: Source[]): PlanSource {
   const meaningfulSources = sources.filter((source) => source === Source.AI || source === Source.MANUAL || source === Source.MIXED);
 
@@ -132,11 +130,12 @@ function inferPlanSource(sources: Source[]): PlanSource {
   return 'mixed';
 }
 
-function buildWeeksFromFocuses(focuses: WeeklyFocusDto[]): MonthWeek[] {
+function buildWeeksFromFocuses(focuses: WeeklyFocusDto[], currentWeekId: string): MonthWeek[] {
   const activeFocuses = focuses.filter((focus) => !focus.invalidatedAt);
+  const currentWeekSuffix = currentWeekId.split('-')[1] ?? 'W17';
 
   return monthWeeks.map((week) => {
-    if (week.id !== 'W17') {
+    if (week.id !== currentWeekSuffix) {
       return week;
     }
 
@@ -160,10 +159,12 @@ function buildWeeksFromFocuses(focuses: WeeklyFocusDto[]): MonthWeek[] {
   });
 }
 
-function buildQuartersFromOverview(overview: CurrentGoalsOverview | null): QuarterPlan[] {
+function buildQuartersFromOverview(overview: CurrentGoalsOverview | null, currentQuarterId: string): QuarterPlan[] {
   if (!overview) {
     return quarters;
   }
+
+  const currentQuarter = currentQuarterId.split('-')[1] ?? 'Q2';
 
   return quarters.map((quarter) => {
     if (quarter.id !== currentQuarter) {
@@ -196,6 +197,7 @@ function buildQuartersFromOverview(overview: CurrentGoalsOverview | null): Quart
 }
 
 export function usePlan() {
+  const { currentQuarterId, currentWeekId } = usePlanningContext();
   const [focuses, setFocuses] = useState<WeeklyFocusDto[] | null>(null);
   const [goalsOverview, setGoalsOverview] = useState<CurrentGoalsOverview | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -233,10 +235,16 @@ export function usePlan() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [currentWeekId]);
 
-  const monthWeeksFromApi = useMemo(() => (focuses ? buildWeeksFromFocuses(focuses) : monthWeeks), [focuses]);
-  const quartersFromApi = useMemo(() => buildQuartersFromOverview(goalsOverview), [goalsOverview]);
+  const monthWeeksFromApi = useMemo(
+    () => (focuses ? buildWeeksFromFocuses(focuses, currentWeekId) : monthWeeks),
+    [currentWeekId, focuses],
+  );
+  const quartersFromApi = useMemo(
+    () => buildQuartersFromOverview(goalsOverview, currentQuarterId),
+    [currentQuarterId, goalsOverview],
+  );
   const planSource = useMemo(
     () => {
       if (focuses === null || goalsOverview === null) {

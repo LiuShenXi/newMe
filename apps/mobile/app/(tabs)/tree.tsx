@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import type { GrowthTreeDto } from '@newme/shared';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 import { FruitCapsule } from '../../src/features/tree/components/FruitCapsule';
 import { GrowthTree } from '../../src/features/tree/components/GrowthTree';
-import { type TreeFruit } from '../../src/features/tree/data/fruits';
+import { type GrowthTreeViewData, type TreeFruit, toGrowthTreeViewData } from '../../src/features/tree/data/fruits';
+import { apiFetch } from '../../src/shared/api/client';
 import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
+import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
 import { usePrototypeStore } from '../../src/stores/prototype.store';
 
 const phoneGradient = {
@@ -19,13 +22,41 @@ const gridBackground = {
 } as unknown as ViewStyle;
 
 export default function TreeScreen() {
-  const fruits = usePrototypeStore((state) => state.fruits);
+  const { year } = usePlanningContext();
+  const demoFruits = usePrototypeStore((state) => state.fruits);
+  const [treeData, setTreeData] = useState<GrowthTreeViewData | null>(null);
   const [selectedFruit, setSelectedFruit] = useState<TreeFruit | null>(null);
   const [detailType, setDetailType] = useState<'fruit' | 'quarter' | 'honor' | null>(null);
+  const fruits = treeData?.fruits ?? demoFruits;
+  const honorCount = treeData?.honorCount ?? 1;
+  const stage = treeData?.stage ?? 'q2_growth';
 
-  const detail = detailType
-    ? treeDetails[detailType]
-    : null;
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGrowthTree() {
+      try {
+        const remoteTree = await apiFetch<GrowthTreeDto>(`/tree/years/${year}`);
+
+        if (!cancelled) {
+          setTreeData(toGrowthTreeViewData(remoteTree));
+        }
+      } catch {
+        if (!cancelled) {
+          setTreeData(null);
+        }
+      }
+    }
+
+    void loadGrowthTree();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [year]);
+
+  const treeDetails = useMemo(() => buildTreeDetails(fruits, stage, honorCount), [fruits, honorCount, stage]);
+  const detail = detailType ? treeDetails[detailType] : null;
 
   return (
     <View style={[styles.phone, phoneGradient]}>
@@ -53,7 +84,13 @@ export default function TreeScreen() {
               </View>
             </View>
           ) : (
-            <GrowthTree fruits={fruits} onDetailPress={setDetailType} onFruitPress={setSelectedFruit} />
+            <GrowthTree
+              fruits={fruits}
+              honorCount={honorCount}
+              onDetailPress={setDetailType}
+              onFruitPress={setSelectedFruit}
+              stage={stage}
+            />
           )}
         </View>
       </PrototypeScreen>
@@ -63,23 +100,34 @@ export default function TreeScreen() {
   );
 }
 
-const treeDetails = {
-  fruit: {
-    title: '每周果实',
-    sub: '每颗果实都来自一次周结算，保存当周重点、结果和感悟。',
-    stats: [['6', '累计果实'], ['78%', '最近一周'], ['72%', '季度均值']],
-  },
-  quarter: {
-    title: 'Q2 成长阶段',
-    sub: '这棵树正在进入第二个季度的成长阶段，计划、能量和果实会继续叠加。',
-    stats: [['Q2', '当前阶段'], ['43%', '季度进度'], ['4 周', '滚动计划']],
-  },
-  honor: {
-    title: '永久荣誉层',
-    sub: '季度达标后的荣誉只会增加，不会因为后续波动而消失。',
-    stats: [['1', '已有荣誉'], ['永久', '保留规则'], ['Q1', '首次获得']],
-  },
-};
+function buildTreeDetails(fruits: TreeFruit[], stage: GrowthTreeDto['stage'], honorCount: number) {
+  const latestScore = fruits.at(-1)?.score ?? 0;
+
+  return {
+    fruit: {
+      title: '每周果实',
+      sub: '每颗果实都来自一次周结算，保存当周重点、结果和感悟。',
+      stats: [[`${fruits.length}`, '累计果实'], [`${latestScore}%`, '最近一周'], ['72%', '季度均值']],
+    },
+    quarter: {
+      title: `${stageToQuarterLabel(stage)} 成长阶段`,
+      sub: '这棵树正在进入第二个季度的成长阶段，计划、能量和果实会继续叠加。',
+      stats: [[stageToQuarterLabel(stage), '当前阶段'], ['43%', '季度进度'], ['4 周', '滚动计划']],
+    },
+    honor: {
+      title: '永久荣誉层',
+      sub: '季度达标后的荣誉只会增加，不会因为后续波动而消失。',
+      stats: [[`${honorCount}`, '已有荣誉'], ['永久', '保留规则'], [honorCount > 0 ? 'Q1' : '暂无', '首次获得']],
+    },
+  };
+}
+
+function stageToQuarterLabel(stage: GrowthTreeDto['stage']) {
+  if (stage === 'q1_start') return 'Q1';
+  if (stage === 'q2_growth') return 'Q2';
+  if (stage === 'q3_flourish') return 'Q3';
+  return 'Q4';
+}
 
 const styles = StyleSheet.create({
   content: {

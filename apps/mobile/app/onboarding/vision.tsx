@@ -12,6 +12,7 @@ import { OnboardingScreen } from '../../src/features/onboarding/components/Onboa
 import { useOnboarding } from '../../src/features/onboarding/hooks/useOnboarding';
 import { apiFetch, ApiError } from '../../src/shared/api/client';
 import { colors, fontSizes, lineHeights } from '../../src/shared/theme';
+import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
 
 interface AnnualOkrOutput {
   objectives?: { title: string; keyResults?: string[] }[];
@@ -26,6 +27,7 @@ interface FourWeekCommitmentsOutput {
 }
 
 export default function VisionPlanScreen() {
+  const { currentQuarterId, currentWeekId, year } = usePlanningContext();
   const onboarding = useOnboarding();
   const value = onboarding.getInput('vision');
   const annualDraft = onboarding.aiDrafts.annual;
@@ -33,7 +35,6 @@ export default function VisionPlanScreen() {
   const weekDraft = onboarding.aiDrafts.week;
   const [error, setError] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
-  const year = new Date().getFullYear();
   const annualOutput = annualDraft?.output as AnnualOkrOutput | undefined;
   const quarterOutput = quarterDraft?.output as QuarterOkrOutput | undefined;
   const weekOutput = weekDraft?.output as FourWeekCommitmentsOutput | undefined;
@@ -90,7 +91,7 @@ export default function VisionPlanScreen() {
         body: {
           input: {
             annualOkr: annualDraft.output,
-            quarterId: currentQuarterId(),
+            quarterId: currentQuarterId,
             vision: value.trim(),
             year,
           },
@@ -120,16 +121,16 @@ export default function VisionPlanScreen() {
 
     try {
       await confirmDraft(quarterDraft.id, AiScenario.ANNUAL_TO_QUARTER_OKR, 'quarter_goals', {
-        quarterId: currentQuarterId(),
+        quarterId: currentQuarterId,
         quarterOkr: quarterDraft.output,
         year,
       });
       const generation = await apiFetch<GenerationDto>('/ai/generations', {
         body: {
           input: {
-            quarterId: currentQuarterId(),
+            quarterId: currentQuarterId,
             quarterOkr: quarterDraft.output,
-            startWeekId: currentWeekId(),
+            startWeekId: currentWeekId,
             year,
           },
           scenario: AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
@@ -162,8 +163,8 @@ export default function VisionPlanScreen() {
         AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
         'week_plan',
         {
-          quarterId: currentQuarterId(),
-          startWeekId: currentWeekId(),
+          quarterId: currentQuarterId,
+          startWeekId: currentWeekId,
           weeks: weekDraft.output,
           year,
         },
@@ -291,21 +292,6 @@ function formatWeekItems(output?: FourWeekCommitmentsOutput) {
 
 function toUserMessage(error: unknown, fallback: string) {
   return error instanceof ApiError ? error.message : fallback;
-}
-
-function currentQuarterId() {
-  const now = new Date();
-  return `${now.getFullYear()}-Q${Math.floor(now.getMonth() / 3) + 1}`;
-}
-
-function currentWeekId() {
-  const date = new Date();
-  const utc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  utc.setUTCDate(utc.getUTCDate() + 4 - (utc.getUTCDay() || 7));
-  const weekYear = utc.getUTCFullYear();
-  const yearStart = new Date(Date.UTC(weekYear, 0, 1));
-  const week = Math.ceil(((utc.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  return `${weekYear}-W${String(week).padStart(2, '0')}`;
 }
 
 const styles = StyleSheet.create({

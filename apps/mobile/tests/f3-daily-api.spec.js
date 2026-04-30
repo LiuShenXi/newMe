@@ -2,8 +2,8 @@ const { expect, test } = require('@playwright/test');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:19008';
 const apiBase = 'http://127.0.0.1:3300/api/v1';
-const today = '2026-04-26';
-const weekId = '2026-W17';
+const today = '2026-04-30';
+const weekId = '2026-W18';
 
 test.use({
   viewport: { width: 390, height: 844 },
@@ -91,7 +91,7 @@ test('energy page loads weekly energy and confirms today score through API', asy
       json: {
         average: 90,
         entries: [
-          { date: '2026-04-20', hasViewedTodos: true, id: 'energy-1', score: 88, weekId },
+          { date: '2026-04-27', hasViewedTodos: true, id: 'energy-1', score: 88, weekId },
           { date: today, hasViewedTodos: true, id: 'energy-7', score: 92, weekId },
         ],
         recordedDays: 2,

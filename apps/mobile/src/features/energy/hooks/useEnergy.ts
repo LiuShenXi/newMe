@@ -2,6 +2,7 @@ import type { EnergyEntryDto, WeeklyEnergyDto } from '@newme/shared';
 import { useEffect, useRef, useState } from 'react';
 
 import { apiFetch } from '../../../shared/api/client';
+import { usePlanningContext } from '../../../shared/time/usePlanningContext';
 import { usePrototypeStore } from '../../../stores/prototype.store';
 
 export interface WeeklyFocusProgress {
@@ -18,8 +19,6 @@ const demoFocuses: WeeklyFocusProgress[] = [
 ];
 
 const demoWeekEnergyValues = [72, 84, 66, 88, 78, 0, 0];
-const todayDate = '2026-04-26';
-const currentWeekId = '2026-W17';
 
 function getDemoWeekEnergy() {
   const recorded = demoWeekEnergyValues.filter(Boolean);
@@ -27,6 +26,7 @@ function getDemoWeekEnergy() {
 }
 
 export function useEnergy() {
+  const { currentWeekId, todayDate } = usePlanningContext();
   const [charging, setCharging] = useState(false);
   const [energyValue, setEnergyValue] = useState(82);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export function useEnergy() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [currentWeekId]);
 
   useEffect(() => {
     return () => {
