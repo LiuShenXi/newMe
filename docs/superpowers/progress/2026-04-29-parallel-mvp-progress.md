@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：F2 手动 OKR 局部 AI、F4 周结算+成长树真实 API、AI provider 本地优先降级、当前周上下文统一、F6 Docker 部署运行态均已在直接开发分支完成；旧来源 worktree 已清理；下一步为设备级 SQLite smoke 和最终合并收口
+- 当前阶段：MVP 后续开发计划已全部完成并在 `feat/mvp-final-integration-direct` 收口；F2/F4/AI provider/当前周上下文/F6 Docker/F7 推送通知均已完成，旧来源 worktree 已清理；下一步为最终合并收口与发布前真机 smoke
 - 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Claude Code
@@ -316,6 +316,7 @@ git worktree list
 - 集成回归完成：`pnpm -r typecheck`、API 全量测试、Expo Web export、F2/F4/F3/原型 Playwright 总回归、F5 sync runtime 和 planning-context node smoke 均已通过；本机 `127.0.0.1:8080` 被本地 llama.cpp 服务占用，Docker health 验证使用 `localhost:8080`。
 - 旧来源 worktree 清理完成：`feat/f2-manual-ai-assist`、`feat/f4-settlement-tree-api`、`feat/f6-docker-deploy` 均已合入当前直接开发分支并删除本地分支，`.worktrees/*` 残留目录已清空；清理 `f4-settlement-tree-api` 时先停止了指向旧 worktree 的 Expo/Node 进程。
 - F7 推送通知模块完成：后端新增 `NotificationsModule`，提供 `POST /notifications/tokens` 与 `PUT /notifications/preferences`；`NotificationsService` 管理 Expo token、偏好、三类场景调度和 Expo Push API 发送，且按用户时区计算、单 token 单次最多一条；移动端新增 `useNotifications`，登录态申请权限并注册 token，通知点击按 route/scenario 进入能量页或周结算页。
+- 计划完成回填：`docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md` 中所有任务和集成点 checkbox 已回填完成；补跑 `pnpm install --frozen-lockfile` 通过；补跑 F2 手动 AI、F4 周结算成长树、prototype parity、prototype visual regression Playwright 共 7 个用例通过。
 
 ## 阻塞与风险
 
