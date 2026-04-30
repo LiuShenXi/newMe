@@ -27,10 +27,11 @@ export class AiController {
 
   @Post('generations/:id/confirm')
   confirmGeneration(
+    @Req() request: AuthenticatedRequest,
     @Param('id') generationId: string,
     @Body() body: ConfirmGenerationRequest,
   ) {
-    return this.aiService.confirmGeneration(generationId, body);
+    return this.aiService.confirmGeneration(request.user.userId, generationId, body);
   }
 
   @Post('assist')

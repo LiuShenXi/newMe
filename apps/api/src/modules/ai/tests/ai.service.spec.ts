@@ -101,4 +101,124 @@ describe('AiService', () => {
       status: HttpStatus.TOO_MANY_REQUESTS,
     });
   });
+
+  it('confirms a quick quarter draft by writing the quarter goal, weekly focuses, and today todos', async () => {
+    const { service, prisma } = createService();
+    const prismaAny = prisma as any;
+    const generation = {
+      id: 'generation-1',
+      userId: 'user-1',
+      scenario: 'QUICK_QUARTER_PLAN',
+      status: 'COMPLETED',
+      inputJson: {
+        date: '2026-04-29',
+        goal: '发布个人成长 App MVP',
+        quarterId: '2026-Q2',
+        weekId: '2026-W18',
+      },
+      outputJson: validQuickPlan,
+      createdAt: now,
+    };
+    const quarter = { id: 'quarter-1' };
+    const weekPlan = { id: 'week-plan-1' };
+    const focuses = [
+      { id: 'focus-1', title: validQuickPlan.weeklyFocuses[0].title },
+      { id: 'focus-2', title: validQuickPlan.weeklyFocuses[1].title },
+      { id: 'focus-3', title: validQuickPlan.weeklyFocuses[2].title },
+    ];
+    const confirmedGeneration = {
+      ...generation,
+      status: 'CONFIRMED',
+      confirmedAt: now,
+    };
+
+    Object.assign(prismaAny, {
+      $transaction: jest.fn(async (callback) => callback(prisma)),
+      aiGeneration: {
+        ...prismaAny.aiGeneration,
+        findFirst: jest.fn().mockResolvedValue(generation),
+        update: jest.fn().mockResolvedValue(confirmedGeneration),
+      },
+      quarter: {
+        upsert: jest.fn().mockResolvedValue(quarter),
+      },
+      quarterGoal: {
+        create: jest.fn().mockResolvedValue({ id: 'quarter-goal-1' }),
+      },
+      weekPlan: {
+        upsert: jest.fn().mockResolvedValue(weekPlan),
+      },
+      weeklyFocus: {
+        create: jest
+          .fn()
+          .mockResolvedValueOnce(focuses[0])
+          .mockResolvedValueOnce(focuses[1])
+          .mockResolvedValueOnce(focuses[2]),
+      },
+      todo: {
+        create: jest.fn().mockResolvedValue({ id: 'todo-1' }),
+      },
+      user: {
+        update: jest.fn().mockResolvedValue({ id: 'user-1' }),
+      },
+    });
+
+    await expect(
+      (service as any).confirmGeneration('user-1', 'generation-1', {
+        contextVersion: 'ctx-quick',
+        generationId: 'generation-1',
+        scenario: AiScenario.QUICK_QUARTER_PLAN,
+        target: 'week_plan',
+      }),
+    ).resolves.toEqual({
+      applied: { quarterGoals: 1, todayTodos: 1, weeklyFocuses: 3 },
+      generation: {
+        id: 'generation-1',
+        scenario: AiScenario.QUICK_QUARTER_PLAN,
+        status: 'confirmed',
+        outputJson: validQuickPlan,
+        createdAt: now.toISOString(),
+      },
+    });
+
+    expect(prismaAny.quarter.upsert).toHaveBeenCalledWith({
+      where: { userId_year_quarter: { quarter: 2, userId: 'user-1', year: 2026 } },
+      update: {},
+      create: expect.objectContaining({
+        quarter: 2,
+        source: 'AI',
+        userId: 'user-1',
+        year: 2026,
+      }),
+    });
+    expect(prismaAny.quarterGoal.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        goalType: 'PROJECT',
+        quarterId: 'quarter-1',
+        source: 'AI',
+        title: '发布个人成长 App MVP',
+        userId: 'user-1',
+      }),
+    });
+    expect(prismaAny.weekPlan.upsert).toHaveBeenCalledWith({
+      where: { userId_weekId: { userId: 'user-1', weekId: '2026-W18' } },
+      update: expect.objectContaining({ source: 'AI' }),
+      create: expect.objectContaining({ source: 'AI', userId: 'user-1', weekId: '2026-W18' }),
+    });
+    expect(prismaAny.weeklyFocus.create).toHaveBeenCalledTimes(3);
+    expect(prismaAny.todo.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        date: new Date('2026-04-29T00:00:00.000Z'),
+        source: 'AI',
+        sourceFocusId: 'focus-1',
+        title: '完成 AI 骨架测试',
+        userId: 'user-1',
+        weekPlanId: 'week-plan-1',
+      }),
+    });
+    expect(prismaAny.user.update).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+      data: { hasCompletedOnboarding: true },
+    });
+  });
 });

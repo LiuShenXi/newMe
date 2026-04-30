@@ -18,6 +18,15 @@ export interface GenerationDto {
 
 export interface ConfirmGenerationRequest extends AiConfirmationContract {}
 
+export interface ConfirmGenerationResponse {
+  applied: {
+    quarterGoals: number;
+    todayTodos: number;
+    weeklyFocuses: number;
+  };
+  generation: GenerationDto;
+}
+
 export interface AssistRequest {
   level: 'annual' | 'quarter' | 'month' | 'week' | 'day';
   context: string;
