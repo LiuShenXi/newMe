@@ -2,6 +2,7 @@ import type { TodoDto } from '@newme/shared';
 import { useEffect, useMemo, useState } from 'react';
 
 import { apiFetch } from '../../../shared/api/client';
+import { usePlanningContext } from '../../../shared/time/usePlanningContext';
 
 export interface TodoItemModel {
   completed: boolean;
@@ -23,7 +24,6 @@ const initialTodos: TodoItemModel[] = [
 ];
 
 const focusChips = ['完成能量', '晨跑 5 次', '读完两章'];
-const todayDate = '2026-04-26';
 
 function mapTodoDto(todo: TodoDto): TodoItemModel {
   return {
@@ -34,6 +34,7 @@ function mapTodoDto(todo: TodoDto): TodoItemModel {
 }
 
 export function useTodos() {
+  const { todayDate } = usePlanningContext();
   const [todos, setTodos] = useState<TodoItemModel[]>(initialTodos);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,7 @@ export function useTodos() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [todayDate]);
 
   const completedCount = useMemo(() => todos.filter((todo) => todo.completed).length, [todos]);
 

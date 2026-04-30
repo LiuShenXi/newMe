@@ -4,6 +4,7 @@ import type { GenerationDto } from '@newme/shared';
 import { AiScenario } from '@newme/shared';
 
 import { apiFetch, ApiError } from '../../../shared/api/client';
+import { usePlanningContext } from '../../../shared/time/usePlanningContext';
 import { useOnboarding } from './useOnboarding';
 
 type ManualLevel = 'annual' | 'month' | 'quarter' | 'today' | 'week';
@@ -26,6 +27,7 @@ const aiLevelByInputKey: Record<ManualLevel, 'annual' | 'day' | 'month' | 'quart
 };
 
 export function useManualAiAssist(level: ManualLevel) {
+  const { currentQuarterId, currentWeekId, todayDate } = usePlanningContext();
   const onboarding = useOnboarding();
   const draft = onboarding.aiDrafts[level];
   const value = onboarding.getInput(level);
@@ -54,10 +56,10 @@ export function useManualAiAssist(level: ManualLevel) {
             },
             currentLevel: level,
             currentValue: value.trim(),
-            date: todayDate(),
+            date: todayDate,
             level: aiLevelByInputKey[level],
-            quarterId: currentQuarterId(),
-            weekId: currentWeekId(),
+            quarterId: currentQuarterId,
+            weekId: currentWeekId,
           },
           scenario: AiScenario.MANUAL_LOCAL_ASSIST,
         },
@@ -92,21 +94,3 @@ function toUserMessage(error: unknown, fallback: string) {
   return error instanceof ApiError ? error.message : fallback;
 }
 
-function todayDate() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function currentQuarterId() {
-  const now = new Date();
-  return `${now.getFullYear()}-Q${Math.floor(now.getMonth() / 3) + 1}`;
-}
-
-function currentWeekId() {
-  const date = new Date();
-  const utc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-  utc.setUTCDate(utc.getUTCDate() + 4 - (utc.getUTCDay() || 7));
-  const weekYear = utc.getUTCFullYear();
-  const yearStart = new Date(Date.UTC(weekYear, 0, 1));
-  const week = Math.ceil(((utc.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
-  return `${weekYear}-W${String(week).padStart(2, '0')}`;
-}

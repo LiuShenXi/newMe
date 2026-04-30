@@ -6,9 +6,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { GlassCard, PrototypeButton, PrototypeScreen, PrototypeTextarea } from '../../src/shared/components';
 import { apiFetch } from '../../src/shared/api/client';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
+import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
 import { usePrototypeStore } from '../../src/stores/prototype.store';
 
-const currentWeekId = '2026-W17';
 const demoWeekRecords = [
   { day: '一', value: 72 },
   { day: '二', value: 84 },
@@ -26,6 +26,7 @@ const focusItems = [
 ];
 
 export default function SettlementScreen() {
+  const { currentWeekId, todayDate } = usePlanningContext();
   const [score, setScore] = useState(78);
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,7 +77,7 @@ export default function SettlementScreen() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [currentWeekId]);
 
   const displayScore = confirmed ? score : suggestedScore;
 
@@ -101,13 +102,13 @@ export default function SettlementScreen() {
     } catch {
       setConfirmed(true);
       addFruit({
-        date: '2026-04-26',
+        date: todayDate,
         focuses: focusItems.map((item) => item.title),
         note: '这一周的努力已经被树记住了。',
         reflection,
         score,
         size: 18 + Math.round(score / 18),
-        week: '第 17 周',
+        week: weekLabel(currentWeekId),
         x: 205,
         y: 108,
       });
@@ -190,6 +191,11 @@ function toWeekRecords(entries: WeeklyEnergyDto['entries']) {
     day,
     value: entries[index]?.score ?? 0,
   }));
+}
+
+function weekLabel(weekId: string) {
+  const week = Number(weekId.split('-W')[1]);
+  return Number.isFinite(week) ? `第 ${week} 周` : '本周';
 }
 
 const styles = StyleSheet.create({

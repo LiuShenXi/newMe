@@ -2,7 +2,7 @@ const { expect, test } = require('@playwright/test');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:19010';
 const apiBase = 'http://127.0.0.1:3300/api/v1';
-const weekId = '2026-W17';
+const weekId = '2026-W18';
 
 test.use({
   viewport: { width: 390, height: 844 },

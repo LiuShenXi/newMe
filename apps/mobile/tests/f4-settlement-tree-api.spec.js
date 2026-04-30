@@ -2,7 +2,7 @@ const { expect, test } = require('@playwright/test');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:19012';
 const apiBase = 'http://127.0.0.1:3300/api/v1';
-const weekId = '2026-W17';
+const weekId = '2026-W18';
 
 test.use({
   viewport: { width: 390, height: 844 },
@@ -19,8 +19,8 @@ test('weekly settlement posts to API then tree loads real fruit capsule and hono
       json: {
         average: 83,
         entries: [
-          { date: '2026-04-20', hasViewedTodos: true, id: 'energy-1', score: 80, weekId },
-          { date: '2026-04-21', hasViewedTodos: true, id: 'energy-2', score: 86, weekId },
+          { date: '2026-04-27', hasViewedTodos: true, id: 'energy-1', score: 80, weekId },
+          { date: '2026-04-28', hasViewedTodos: true, id: 'energy-2', score: 86, weekId },
         ],
         recordedDays: 2,
         weekId,
@@ -40,8 +40,8 @@ test('weekly settlement posts to API then tree loads real fruit capsule and hono
         reflection: '后端确认后的本周感悟',
         snapshotJson: {
           energyEntries: [
-            { date: '2026-04-20', hasViewedTodos: true, score: 80 },
-            { date: '2026-04-21', hasViewedTodos: true, score: 86 },
+            { date: '2026-04-27', hasViewedTodos: true, score: 80 },
+            { date: '2026-04-28', hasViewedTodos: true, score: 86 },
           ],
           todoSummary: { completed: 2, total: 3 },
         },

@@ -7,9 +7,8 @@ import { GrowthTree } from '../../src/features/tree/components/GrowthTree';
 import { type GrowthTreeViewData, type TreeFruit, toGrowthTreeViewData } from '../../src/features/tree/data/fruits';
 import { apiFetch } from '../../src/shared/api/client';
 import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
+import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
 import { usePrototypeStore } from '../../src/stores/prototype.store';
-
-const currentYear = 2026;
 
 const phoneGradient = {
   backgroundImage:
@@ -23,6 +22,7 @@ const gridBackground = {
 } as unknown as ViewStyle;
 
 export default function TreeScreen() {
+  const { year } = usePlanningContext();
   const demoFruits = usePrototypeStore((state) => state.fruits);
   const [treeData, setTreeData] = useState<GrowthTreeViewData | null>(null);
   const [selectedFruit, setSelectedFruit] = useState<TreeFruit | null>(null);
@@ -36,7 +36,7 @@ export default function TreeScreen() {
 
     async function loadGrowthTree() {
       try {
-        const remoteTree = await apiFetch<GrowthTreeDto>(`/tree/years/${currentYear}`);
+        const remoteTree = await apiFetch<GrowthTreeDto>(`/tree/years/${year}`);
 
         if (!cancelled) {
           setTreeData(toGrowthTreeViewData(remoteTree));
@@ -53,7 +53,7 @@ export default function TreeScreen() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [year]);
 
   const treeDetails = useMemo(() => buildTreeDetails(fruits, stage, honorCount), [fruits, honorCount, stage]);
   const detail = detailType ? treeDetails[detailType] : null;
