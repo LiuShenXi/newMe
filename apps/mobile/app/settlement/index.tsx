@@ -1,12 +1,15 @@
 import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import type { CreateSettlementRequest, WeeklyEnergyDto, WeeklySettlementDto } from '@newme/shared';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GlassCard, PrototypeButton, PrototypeScreen, PrototypeTextarea } from '../../src/shared/components';
+import { apiFetch } from '../../src/shared/api/client';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 import { usePrototypeStore } from '../../src/stores/prototype.store';
 
-const weekRecords = [
+const currentWeekId = '2026-W17';
+const demoWeekRecords = [
   { day: '一', value: 72 },
   { day: '二', value: 84 },
   { day: '三', value: 66 },
@@ -25,13 +28,94 @@ const focusItems = [
 export default function SettlementScreen() {
   const [score, setScore] = useState(78);
   const [confirmed, setConfirmed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [reflection, setReflection] = useState('这一周虽然有几次节奏被打断，但关键推进没有断线。');
+  const [submitting, setSubmitting] = useState(false);
+  const [weekRecords, setWeekRecords] = useState(demoWeekRecords);
   const addFruit = usePrototypeStore((state) => state.addFruit);
   const suggestedScore = useMemo(() => {
     const recorded = weekRecords.filter((record) => record.value > 0);
+    if (recorded.length === 0) {
+      return 0;
+    }
+
     return Math.round(recorded.reduce((sum, record) => sum + record.value, 0) / recorded.length);
+  }, [weekRecords]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSettlementReview() {
+      try {
+        const weeklyEnergy = await apiFetch<WeeklyEnergyDto>(`/energy/weeks/${currentWeekId}`);
+
+        if (cancelled) {
+          return;
+        }
+
+        if (weeklyEnergy.entries.length > 0) {
+          setWeekRecords(toWeekRecords(weeklyEnergy.entries));
+        }
+
+        if (typeof weeklyEnergy.average === 'number') {
+          setScore(Math.round(weeklyEnergy.average));
+        }
+      } catch {
+        if (!cancelled) {
+          setWeekRecords(demoWeekRecords);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadSettlementReview();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const displayScore = confirmed ? score : suggestedScore;
+
+  async function confirmSettlement() {
+    if (submitting) {
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const payload: CreateSettlementRequest = {
+        finalScore: score,
+        reflection,
+      };
+      await apiFetch<WeeklySettlementDto>(`/settlements/weeks/${currentWeekId}`, {
+        body: payload,
+        method: 'POST',
+      });
+      setConfirmed(true);
+      setTimeout(() => router.replace('/tree'), 900);
+    } catch {
+      setConfirmed(true);
+      addFruit({
+        date: '2026-04-26',
+        focuses: focusItems.map((item) => item.title),
+        note: '这一周的努力已经被树记住了。',
+        reflection,
+        score,
+        size: 18 + Math.round(score / 18),
+        week: '第 17 周',
+        x: 205,
+        y: 108,
+      });
+      setTimeout(() => router.replace('/tree'), 900);
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <PrototypeScreen activeTab="tree" contentStyle={styles.content}>
@@ -83,31 +167,29 @@ export default function SettlementScreen() {
         <PrototypeTextarea
           placeholder="这一周有什么值得树记住？"
           style={styles.note}
-          defaultValue="这一周虽然有几次节奏被打断，但关键推进没有断线。"
+          onChangeText={setReflection}
+          value={reflection}
         />
         <PrototypeButton
-          onPress={() => {
-            setConfirmed(true);
-            addFruit({
-              date: '2026-04-26',
-              focuses: focusItems.map((item) => item.title),
-              note: '这一周的努力已经被树记住了。',
-              reflection: '这一周虽然有几次节奏被打断，但关键推进没有断线。',
-              score,
-              size: 18 + Math.round(score / 18),
-              week: '第 17 周',
-              x: 205,
-              y: 108,
-            });
-            setTimeout(() => router.replace('/tree'), 900);
-          }}
+          accessibilityLabel="确认并生成果实"
+          disabled={loading || submitting}
+          onPress={confirmSettlement}
           style={styles.settleButton}
         >
-          {confirmed ? '果实已生成' : '确认并生成果实'}
+          {confirmed ? '果实已生成' : submitting ? '正在生成果实' : '确认并生成果实'}
         </PrototypeButton>
       </GlassCard>
     </PrototypeScreen>
   );
+}
+
+function toWeekRecords(entries: WeeklyEnergyDto['entries']) {
+  const days = ['一', '二', '三', '四', '五', '六', '日'];
+
+  return days.map((day, index) => ({
+    day,
+    value: entries[index]?.score ?? 0,
+  }));
 }
 
 const styles = StyleSheet.create({
