@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { usePrototypeStore } from '../../../stores/prototype.store';
+
 export interface WeeklyFocusProgress {
   id: string;
   note: string;
@@ -9,16 +11,17 @@ export interface WeeklyFocusProgress {
 
 const demoFocuses: WeeklyFocusProgress[] = [
   { id: 'focus-1', note: '前端结构已完成', title: '完成能量页交互原型', value: 68 },
-  { id: 'focus-2', note: '清单数据已整理', title: '验证今日清单和提醒流程', value: 46 },
-  { id: 'focus-3', note: '保留最低行动线', title: '保持 3 次运动和 2 次阅读', value: 58 },
+  { id: 'focus-2', note: '已完成 3 / 5', title: '晨跑 5 次', value: 60 },
+  { id: 'focus-3', note: '第 2 章进行中', title: '读完两章社会学', value: 40 },
 ];
 
 export function useEnergy() {
   const [charging, setCharging] = useState(false);
-  const [energyValue, setEnergyValue] = useState(72);
-  const [hasViewedTodos, setHasViewedTodos] = useState(false);
+  const [energyValue, setEnergyValue] = useState(82);
   const [reminderVisible, setReminderVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const markListViewed = usePrototypeStore((state) => state.markListViewed);
+  const viewedList = usePrototypeStore((state) => state.viewedList);
   const timers = useRef<Array<ReturnType<typeof setTimeout>>>([]);
 
   const weekEnergy = useMemo(() => {
@@ -37,7 +40,7 @@ export function useEnergy() {
   }
 
   function requestConfirm() {
-    if (!hasViewedTodos) {
+    if (!viewedList) {
       setReminderVisible(true);
       return;
     }
@@ -47,7 +50,7 @@ export function useEnergy() {
 
   function confirmEnergy() {
     setReminderVisible(false);
-    setHasViewedTodos(true);
+    markListViewed();
     setCharging(true);
     setToastVisible(true);
 

@@ -8,7 +8,8 @@ import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
 
 export default function PlanScreen() {
-  const { manualLevels, monthWeeks, quarters, setView, view } = usePlan();
+  const { manualLevels, monthWeeks, planSource, quarters, setView, view } = usePlan();
+  const showManualOverview = planSource !== 'ai';
 
   return (
     <View style={styles.root}>
@@ -30,22 +31,24 @@ export default function PlanScreen() {
           </Pressable>
         </View>
 
-        <View style={styles.manualCard}>
-          <View style={styles.manualHeader}>
-            <View>
-              <Text style={styles.eyebrow}>planning source</Text>
-              <Text style={styles.manualTitle}>自己掌控粒度，空着也可以继续走</Text>
+        {showManualOverview ? (
+          <View style={styles.manualCard}>
+            <View style={styles.manualHeader}>
+              <View>
+                <Text style={styles.eyebrow}>planning source</Text>
+                <Text style={styles.manualTitle}>自己掌控粒度，空着也可以继续走</Text>
+              </View>
+              <Text style={styles.sourcePill}>{planSource === 'mixed' ? '手动 + 局部 AI' : '手动 OKR'}</Text>
             </View>
-            <Text style={styles.sourcePill}>手动 OKR</Text>
+            <View style={styles.levelGrid}>
+              {manualLevels.map((level) => (
+                <EmptyLevel key={level.label} level={level} />
+              ))}
+            </View>
           </View>
-          <View style={styles.levelGrid}>
-            {manualLevels.map((level) => (
-              <EmptyLevel key={level.label} level={level} />
-            ))}
-          </View>
-        </View>
+        ) : null}
 
-        {view === 'month' ? <MonthView weeks={monthWeeks} /> : <YearView quarters={quarters} />}
+        {view === 'month' ? <MonthView planSource={planSource} weeks={monthWeeks} /> : <YearView planSource={planSource} quarters={quarters} />}
       </PrototypeScreen>
     </View>
   );

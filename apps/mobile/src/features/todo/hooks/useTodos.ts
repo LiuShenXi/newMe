@@ -14,11 +14,12 @@ export interface WeekDayTodos {
 
 const initialTodos: TodoItemModel[] = [
   { completed: true, id: 'todo-1', title: '整理本周 3 个重点承诺' },
-  { completed: false, id: 'todo-2', title: '补充打分前清单提醒' },
-  { completed: false, id: 'todo-3', title: '测试能量滑条拖动手感' },
+  { completed: true, id: 'todo-2', title: '完成能量球动效第一版' },
+  { completed: false, id: 'todo-3', title: '跑步 30 分钟' },
+  { completed: false, id: 'todo-4', title: '睡前阅读 20 分钟' },
 ];
 
-const focusChips = ['完成能量', '补齐清单', '记录反馈'];
+const focusChips = ['完成能量', '晨跑 5 次', '读完两章'];
 
 export function useTodos() {
   const [todos, setTodos] = useState<TodoItemModel[]>(initialTodos);
@@ -40,7 +41,16 @@ export function useTodos() {
         isToday: false,
         todos: [{ completed: true, id: 'tue-1', title: '补充打分前清单提醒' }],
       },
-      { day: '周三', isToday: true, todos },
+      {
+        day: '周三',
+        isToday: false,
+        todos: [
+          { completed: true, id: 'wed-1', title: '测试能量滑条拖动手感' },
+          { completed: true, id: 'wed-2', title: '跑步 30 分钟' },
+          { completed: false, id: 'wed-3', title: '记录一次产品反思' },
+          { completed: false, id: 'wed-4', title: '睡前阅读 20 分钟' },
+        ],
+      },
       {
         day: '周四',
         isToday: false,
@@ -52,7 +62,7 @@ export function useTodos() {
         todos: [{ completed: false, id: 'fri-1', title: '回看本周能量记录' }],
       },
       { day: '周六', isToday: false, todos: [] },
-      { day: '周日', isToday: false, todos: [] },
+      { day: '周日', isToday: true, todos },
     ],
     [todos],
   );

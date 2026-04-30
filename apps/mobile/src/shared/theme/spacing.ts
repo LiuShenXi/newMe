@@ -16,5 +16,12 @@ export const radii = {
   sm: 6,
   md: 8,
   lg: 12,
+  control: 16,
+  item: 18,
+  segment: 22,
+  card: 26,
+  panel: 30,
+  canvas: 34,
+  phone: 46,
   pill: 999,
 } as const;

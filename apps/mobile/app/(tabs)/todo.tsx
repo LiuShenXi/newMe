@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { AddTodoInput } from '../../src/features/todo/components/AddTodoInput';
@@ -6,6 +7,7 @@ import { TodoList } from '../../src/features/todo/components/TodoList';
 import { TodoItemModel, useTodos } from '../../src/features/todo/hooks/useTodos';
 import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../src/shared/theme';
+import { usePrototypeStore } from '../../src/stores/prototype.store';
 
 export default function TodoScreen() {
   const {
@@ -22,6 +24,13 @@ export default function TodoScreen() {
   const [editingTodo, setEditingTodo] = useState<TodoItemModel | null>(null);
   const [editDraft, setEditDraft] = useState('');
   const [weekVisible, setWeekVisible] = useState(false);
+  const markListViewed = usePrototypeStore((state) => state.markListViewed);
+
+  useFocusEffect(
+    useCallback(() => {
+      markListViewed();
+    }, [markListViewed]),
+  );
 
   function openEdit(todo: TodoItemModel) {
     setEditingTodo(todo);
@@ -49,7 +58,7 @@ export default function TodoScreen() {
         <View style={styles.card}>
           <View style={styles.header}>
             <View>
-              <Text style={styles.title}>今日清单</Text>
+              <Text style={styles.title}>4 月 26 日</Text>
               <Text style={styles.subtitle}>已完成 {completedCount} / {totalCount}</Text>
             </View>
             <Pressable
@@ -138,9 +147,9 @@ export default function TodoScreen() {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'rgba(18, 36, 31, 0.72)',
-    borderColor: 'rgba(207, 250, 254, 0.15)',
-    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.045)',
+    borderColor: 'rgba(167, 243, 208, 0.10)',
+    borderRadius: 26,
     borderWidth: StyleSheet.hairlineWidth,
     gap: spacing[3],
     padding: spacing[4],
@@ -222,9 +231,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[3],
   },
   editPanel: {
-    backgroundColor: '#101827',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(7, 17, 15, 0.95)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: radii.panel,
     borderWidth: StyleSheet.hairlineWidth,
     maxWidth: 360,
     padding: spacing[5],
@@ -340,9 +349,9 @@ const styles = StyleSheet.create({
     paddingTop: spacing[4],
   },
   weekPanel: {
-    backgroundColor: '#101827',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(7, 17, 15, 0.95)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: radii.panel,
     borderWidth: StyleSheet.hairlineWidth,
     maxWidth: 360,
     padding: spacing[5],

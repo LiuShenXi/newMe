@@ -16,39 +16,39 @@ export default function TabLayout() {
       initialRouteName="energy"
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#00E5A0',
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.48)',
+        tabBarActiveTintColor: '#CFFAFE',
+        tabBarInactiveTintColor: '#64748B',
         tabBarStyle: {
-          backgroundColor: 'rgba(9, 27, 23, 0.92)',
-          borderColor: 'rgba(207, 250, 254, 0.13)',
-          borderRadius: 28,
-          borderTopColor: 'rgba(207, 250, 254, 0.13)',
+          backgroundColor: 'rgba(10, 22, 19, 0.85)',
+          borderColor: 'rgba(209, 250, 229, 0.10)',
+          borderRadius: 26,
+          borderTopColor: 'rgba(209, 250, 229, 0.10)',
           borderWidth: 1,
-          bottom: 22,
-          height: 62,
+          bottom: 20,
+          height: 70,
           left: 20,
-          paddingBottom: 7,
+          paddingBottom: 8,
           paddingHorizontal: 8,
-          paddingTop: 7,
+          paddingTop: 8,
           position: 'absolute',
           right: 20,
           shadowColor: '#000000',
-          shadowOpacity: 0.32,
-          shadowRadius: 24,
+          shadowOpacity: 0.30,
+          shadowRadius: 40,
         },
-        tabBarActiveBackgroundColor: 'rgba(29, 78, 70, 0.82)',
+        tabBarActiveBackgroundColor: 'rgba(165, 243, 252, 0.10)',
         tabBarIcon: ({ color, focused, size }) => {
           const icon = tabIconByRoute[route.name] ?? tabIconByRoute.energy;
 
           return <Ionicons color={color} name={focused ? icon.focused : icon.idle} size={size} />;
         },
         tabBarItemStyle: {
-          borderRadius: 20,
-          minHeight: 48,
+          borderRadius: 16,
+          minHeight: 54,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '700',
+          fontSize: 11,
+          fontWeight: '400',
         },
       })}
     >

@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2
-- 当前阶段：Batch 2 / C5-C9 原型级视觉还原返工完成；下一步进入 C10 周结算流程
+- 当前阶段：Batch 2 / C5-C10 原型代码级还原补强完成；下一步进入 F2 冷启动 AI 联调或继续补齐跨页状态
 - 当前主控：main
 - 最近更新时间：2026-04-30
 - 最近更新人：Codex
@@ -58,10 +58,11 @@ git worktree list
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
 | C5 Onboarding 三路径 | DONE | feat/track-c-onboarding -> main | 4df1237 / merge 38fab3c | pnpm -r typecheck；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test .tmp/c5-onboarding.spec.js --reporter=line；main 上 api test/typecheck/build 均通过 | 三路径入口、快速/深度输入页、手动 OKR 五层流转完成；真实 AI 生成与确认写入留到 F2 |
 | C6 Energy Page | DONE | feat/track-c-energy -> main | 604d2df / merge 1c58f93 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 能量球、本周进度概览、今日能量条、确认提醒和注入反馈完成；Skia 粒子留体验增强 |
-| C7 Todo Page | DONE | feat/track-c-todo -> main | 85177ee / merge f0d0f63 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 本周重点标签、今日清单 CRUD、本周 7 天概览完成；左滑删除留体验增强 |
+| C7 Todo Page | DONE | feat/track-c-todo -> main | 85177ee / merge f0d0f63 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 本周重点标签、今日清单 CRUD、本周 7 天概览完成；本轮已补左滑露出垃圾桶 |
 | C8 Plan Page | DONE | feat/track-c-plan -> main | 02d73b0 / merge 56fea2f | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 月/年双视图、4 周节点、Q1-Q4 卡片、手动空层级补全入口完成 |
 | C5-C9 Prototype Visual Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 均通过 | 补齐原型状态栏、深绿玻璃背景、胶囊底栏、冷启动卡片、能量/清单/计划视觉层级；C9 成长树、6 果实、Q2 阶段、1 荣誉和果实时间胶囊已完成 |
 | C9 Growth Tree Page | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 通过 | View/CSS-style 基础树形、果实点击时间胶囊、荣誉/阶段/果实统计完成；Skia 留体验增强 |
+| C10 Settlement UI + Prototype Interaction Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line 均通过 | 不使用视觉工具；补能量提醒原型文案/跳清单/已查看状态、清单默认日期与左滑删除、计划默认 AI 来源与 AI 重规划状态机、成长树详情按钮、`/settlement` 周结算生成第 17 周果实并跳树 |
 | D1 SQLite 初始化与迁移 | DONE | feat/track-d-sqlite -> main | c6e98bb / merge 1f61a81 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 已建 getDatabase/runMigrations/v1 初始表；真实 DB open smoke 留到 D2 |
 | D2 SQLite Repository 层 | DONE | feat/track-d-repositories -> main | 51b7cb8 / merge bf212c6 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Todo/Energy/Goal/Focus/Settlement/sync_queue repository 已完成；运行态 DB smoke 待 App 触发 |
 | D3 Sync Engine | DONE | feat/track-d-sync-engine -> main | 8949e6d / merge 889b700 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | push/pull 引擎和版本冲突解析完成；真实 API/DB 联调待 F5 |
@@ -70,7 +71,7 @@ git worktree list
 
 当前已知未提交改动：
 
-- 无（C5-C9 原型级视觉还原返工已在本轮提交）。
+- 本轮 C10 / 原型交互还原补强改动待提交；另有用户已有 `AGENTS.md` 未提交改动，不属于本轮修改，收口时不要覆盖。
 
 ## 最近工作记录
 
@@ -245,6 +246,15 @@ git worktree list
 - C9 成长树完成：新增 `GrowthTree`、`FruitCapsule` 和果实数据，展示树干、枝干、树冠、6 个金色果实、`Q2 阶段`、`1 荣誉`，点击果实可打开时间胶囊。
 - 依赖更新：移动端新增 `expo-linear-gradient@^15.0.8` 用于还原原型背景渐变；Metro 需要 `expo start -c` 清缓存后识别新依赖。
 - 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 2 个用例通过；使用 Playwright 生成 `final-onboarding/energy/todo/plan/tree` 截图完成肉眼检查。
+- 总监续跑代码级还原补强：按用户要求派发 3 个只读子 agent，分别审计原型 CSS token/布局、交互状态机、移动端实现差异；全程未使用截图、浏览器视觉检查或图像工具作为验收依据。
+- 新增并扩展 `apps/mobile/tests/prototype-parity.spec.js` 交互红测：初始失败于能量确认提醒文案不一致；review 后继续补红测覆盖访问清单后返回能量不再重复提醒、`AI 重规划` 生成 W17 新任务、左滑删除 `跑步 30 分钟`、`/settlement` 确认后生成第 17 周果实并跳成长树、成长树 time capsule 文案。
+- 设计 token/公共壳补强：`colors.ts` 对齐深林绿、能量青、果实金和原型文本色；`PrototypeShell`、`Button`、底部 Tab 继续向原型 phone 内状态栏、深绿背景、玻璃卡、70px 胶囊导航靠拢。
+- 能量页补强：提醒弹层文案改为 `要不要先看看今天的清单？`，按钮改为 `先看清单` 跳转 `/todo`、`继续注入` 直接确认；新增 `prototype.store` 保存 `viewedList`，访问清单后返回能量页不再重复提醒；默认能量值和本周重点数据对齐原型。
+- 清单页补强：默认标题改为 `4 月 26 日`，默认 4 条任务、本周重点标签和本周 7 天概览数据对齐原型；TodoItem 改为左滑露出 78px 垃圾桶删除，编辑按钮保留在 surface 内。
+- 计划页补强：默认 `planSource=ai` 时不再展示手动来源卡；月视图标题改为 `只规划最近一个月，避免计划过远失效`，`AI 重规划` 可打开反馈面板，提交后进入生成中并更新 W17 后续计划；年视图 AI 来源文案对齐原型。
+- 成长树补强：树旁 `果实 / Q2 阶段 / 1 荣誉` 按钮可进入详情页并返回；果实时间胶囊维持原型 `time capsule`、本周结果和重点回顾。
+- C10 周结算 UI 完成：新增 `apps/mobile/app/settlement/index.tsx`，覆盖周结算开场语、每日能量柱状图、本周重点推进、最终周结果微调、周感悟和确认生成果实按钮；确认后写入 `prototype.store` 的第 17 周果实，并延迟跳转成长树。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 3 个用例通过。
 
 ## 阻塞与风险
 
@@ -262,9 +272,9 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 下一步进入 C10 周结算流程，按原型还原开场语、每日能量回顾、重点回顾、结果微调、周感悟和果实生成动画。
-2. F2 冷启动联调时补齐快速/深度路径的真实 AI 生成、确认写入、本周重点和今日清单落库。
-3. C6 的 Skia 自绘粒子与复杂充电涌入效果、C7 的左滑删除手势留体验增强阶段，不阻塞 MVP 闭环。
+1. F2 冷启动联调时补齐快速/深度路径的真实 AI 生成、确认写入、本周重点和今日清单落库。
+2. 继续把计划周节点跳清单并打开本周概览、手动 OKR 输入同步到计划/清单、真实 API/SQLite 落库接入。
+3. C6 的 Skia 自绘粒子与复杂充电涌入效果、成长树 native 渐变/blur 还原仍属体验增强，不阻塞 MVP 闭环。
 4. 如需释放目录，可清理已合并的旧 Track B/E worktree；临时数据库容器 `newme-b2-postgres` 可保留给下一轮验证或手动停止。
 
 ## 收尾模板

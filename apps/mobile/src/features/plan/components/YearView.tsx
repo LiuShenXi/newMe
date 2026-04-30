@@ -1,18 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors, fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
-import type { QuarterPlan } from '../hooks/usePlan';
+import type { PlanSource, QuarterPlan } from '../hooks/usePlan';
 
 interface YearViewProps {
+  planSource: PlanSource;
   quarters: QuarterPlan[];
 }
 
-export function YearView({ quarters }: YearViewProps) {
+export function YearView({ planSource, quarters }: YearViewProps) {
+  const isAiSource = planSource === 'ai';
+
   return (
     <View style={styles.list}>
       <View style={styles.intro}>
         <Text style={styles.eyebrow}>2026 · yearly map</Text>
-        <Text style={styles.introTitle}>上层目标可以慢慢补齐，不影响今天开始</Text>
+        <Text style={styles.introTitle}>{isAiSource ? '年度只看四个季度的阶段变化' : '上层目标可以慢慢补齐，不影响今天开始'}</Text>
       </View>
       {quarters.map((quarter) => (
         <View key={quarter.id} style={[styles.card, quarter.id === 'Q2' ? styles.current : null]}>

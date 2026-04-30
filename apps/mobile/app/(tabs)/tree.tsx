@@ -1,10 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
 import { FruitCapsule } from '../../src/features/tree/components/FruitCapsule';
 import { GrowthTree } from '../../src/features/tree/components/GrowthTree';
-import { treeFruits, type TreeFruit } from '../../src/features/tree/data/fruits';
+import { type TreeFruit } from '../../src/features/tree/data/fruits';
+import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
+import { usePrototypeStore } from '../../src/stores/prototype.store';
 
 const phoneGradient = {
   backgroundImage:
@@ -18,36 +19,72 @@ const gridBackground = {
 } as unknown as ViewStyle;
 
 export default function TreeScreen() {
+  const fruits = usePrototypeStore((state) => state.fruits);
   const [selectedFruit, setSelectedFruit] = useState<TreeFruit | null>(null);
+  const [detailType, setDetailType] = useState<'fruit' | 'quarter' | 'honor' | null>(null);
+
+  const detail = detailType
+    ? treeDetails[detailType]
+    : null;
 
   return (
     <View style={[styles.phone, phoneGradient]}>
-      <StatusBar style="light" />
       <View style={[styles.grid, gridBackground]} />
 
-      <View style={styles.content}>
-        <View style={styles.statusBar}>
-          <Text style={styles.statusText}>09:07</Text>
-          <View style={styles.speaker} />
-          <Text style={styles.statusText}>87%</Text>
-        </View>
-
+      <PrototypeScreen contentStyle={styles.content} scroll={false}>
         <View style={styles.main}>
-          <GrowthTree fruits={treeFruits} onFruitPress={setSelectedFruit} />
+          {detail ? (
+            <View style={styles.detail}>
+              <Pressable accessibilityRole="button" onPress={() => setDetailType(null)} style={styles.backButton}>
+                <Text style={styles.backText}>← 返回成长树</Text>
+              </Pressable>
+              <View style={styles.detailCard}>
+                <Text style={styles.eyebrow}>tree detail</Text>
+                <Text style={styles.detailTitle}>{detail.title}</Text>
+                <Text style={styles.detailCopy}>{detail.sub}</Text>
+              </View>
+              <View style={styles.stats}>
+                {detail.stats.map(([value, label]) => (
+                  <View key={label} style={styles.statCard}>
+                    <Text style={styles.statValue}>{value}</Text>
+                    <Text style={styles.statLabel}>{label}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : (
+            <GrowthTree fruits={fruits} onDetailPress={setDetailType} onFruitPress={setSelectedFruit} />
+          )}
         </View>
-      </View>
+      </PrototypeScreen>
 
       <FruitCapsule fruit={selectedFruit} onClose={() => setSelectedFruit(null)} />
     </View>
   );
 }
 
+const treeDetails = {
+  fruit: {
+    title: '每周果实',
+    sub: '每颗果实都来自一次周结算，保存当周重点、结果和感悟。',
+    stats: [['6', '累计果实'], ['78%', '最近一周'], ['72%', '季度均值']],
+  },
+  quarter: {
+    title: 'Q2 成长阶段',
+    sub: '这棵树正在进入第二个季度的成长阶段，计划、能量和果实会继续叠加。',
+    stats: [['Q2', '当前阶段'], ['43%', '季度进度'], ['4 周', '滚动计划']],
+  },
+  honor: {
+    title: '永久荣誉层',
+    sub: '季度达标后的荣誉只会增加，不会因为后续波动而消失。',
+    stats: [['1', '已有荣誉'], ['永久', '保留规则'], ['Q1', '首次获得']],
+  },
+};
+
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingBottom: 90,
-    paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingBottom: 98,
   },
   grid: {
     ...StyleSheet.absoluteFillObject,
@@ -56,7 +93,48 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     minHeight: 0,
-    paddingTop: 12,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  backText: {
+    color: '#CBD5E1',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  detail: {
+    gap: 16,
+  },
+  detailCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.045)',
+    borderColor: 'rgba(167, 243, 208, 0.10)',
+    borderRadius: 26,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: 20,
+  },
+  detailCopy: {
+    color: '#94A3B8',
+    fontSize: 14,
+    lineHeight: 24,
+    marginTop: 12,
+  },
+  detailTitle: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '700',
+    lineHeight: 32,
+    marginTop: 8,
+  },
+  eyebrow: {
+    color: 'rgba(209, 250, 229, 0.50)',
+    fontSize: 12,
+    textTransform: 'uppercase',
   },
   phone: {
     backgroundColor: '#07110F',
@@ -64,25 +142,30 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
-  speaker: {
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    borderRadius: 999,
-    height: 16,
-    shadowColor: '#000000',
-    shadowOffset: { height: 2, width: 0 },
-    shadowOpacity: 0.32,
-    shadowRadius: 8,
-    width: 112,
+  statCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.045)',
+    borderColor: 'rgba(167, 243, 208, 0.10)',
+    borderRadius: 26,
+    borderWidth: StyleSheet.hairlineWidth,
+    flex: 1,
+    padding: 16,
   },
-  statusBar: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: 20,
-    justifyContent: 'space-between',
-  },
-  statusText: {
-    color: 'rgba(203, 213, 225, 0.70)',
-    fontSize: 12,
+  statLabel: {
+    color: '#94A3B8',
+    fontSize: 11,
     lineHeight: 16,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  stats: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  statValue: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '300',
+    lineHeight: 26,
+    textAlign: 'center',
   },
 });

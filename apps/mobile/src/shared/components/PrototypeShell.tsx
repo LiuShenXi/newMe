@@ -27,9 +27,10 @@ export function PrototypeScreen({ children, contentStyle, scroll = true }: Proto
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={['#07140F', '#020605', '#07140F']} locations={[0, 0.56, 1]} style={StyleSheet.absoluteFill} />
-      <View style={styles.greenBloomTop} />
+      <LinearGradient colors={['#091411', '#060B0A', '#030605']} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
+      <View style={styles.cyanBloomTop} />
       <View style={styles.greenBloomBottom} />
+      <View style={styles.gridLayer} />
       {scroll ? (
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           {content}
@@ -51,20 +52,29 @@ export function GlassCard({ children, style }: PropsWithChildren<{ style?: Style
 
 const styles = StyleSheet.create({
   content: {
-    gap: 16,
+    gap: 12,
     paddingBottom: 106,
     paddingHorizontal: 20,
-    paddingTop: 18,
+    paddingTop: 16,
   },
   glassCard: {
-    backgroundColor: 'rgba(18, 36, 31, 0.72)',
-    borderColor: 'rgba(207, 250, 254, 0.15)',
-    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.045)',
+    borderColor: 'rgba(167, 243, 208, 0.10)',
+    borderRadius: 26,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
-    shadowColor: '#34D399',
-    shadowOpacity: 0.12,
-    shadowRadius: 28,
+    shadowColor: '#000000',
+    shadowOpacity: 0.22,
+    shadowRadius: 48,
+  },
+  cyanBloomTop: {
+    backgroundColor: 'rgba(37, 255, 219, 0.12)',
+    borderRadius: 180,
+    height: 250,
+    left: '18%',
+    position: 'absolute',
+    top: -70,
+    width: 250,
   },
   greenBloomBottom: {
     backgroundColor: 'rgba(20, 184, 166, 0.10)',
@@ -75,17 +85,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 250,
   },
-  greenBloomTop: {
-    backgroundColor: 'rgba(45, 212, 191, 0.14)',
-    borderRadius: 180,
-    height: 260,
-    position: 'absolute',
-    right: -120,
-    top: 60,
-    width: 260,
+  gridLayer: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.15,
   },
   root: {
-    backgroundColor: '#020605',
+    backgroundColor: '#07110F',
     flex: 1,
     overflow: 'hidden',
   },
@@ -104,7 +109,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    height: 20,
+    marginBottom: 12,
     paddingHorizontal: 1,
   },
   statusText: {

@@ -5,6 +5,7 @@ import type { TreeFruit } from '../data/fruits';
 
 interface GrowthTreeProps {
   fruits: TreeFruit[];
+  onDetailPress?: (type: 'fruit' | 'quarter' | 'honor') => void;
   onFruitPress: (fruit: TreeFruit) => void;
 }
 
@@ -46,7 +47,7 @@ const glassBlur = {
   backdropFilter: 'blur(20px)',
 } as unknown as ViewStyle;
 
-export function GrowthTree({ fruits, onFruitPress }: GrowthTreeProps) {
+export function GrowthTree({ fruits, onDetailPress, onFruitPress }: GrowthTreeProps) {
   const aura = useRef(new Animated.Value(0)).current;
   const [canvasWidth, setCanvasWidth] = useState(DESIGN_WIDTH);
 
@@ -147,15 +148,15 @@ export function GrowthTree({ fruits, onFruitPress }: GrowthTreeProps) {
       ))}
 
       <View style={styles.tools}>
-        <Pressable accessibilityRole="button" style={[styles.tool, styles.fruitTool, glassBlur]}>
+        <Pressable accessibilityRole="button" onPress={() => onDetailPress?.('fruit')} style={[styles.tool, styles.fruitTool, glassBlur]}>
           <Text style={styles.toolStrong}>{fruits.length}</Text>
           <Text style={styles.toolText}>果实</Text>
         </Pressable>
-        <Pressable accessibilityRole="button" style={[styles.tool, styles.quarterTool, glassBlur]}>
+        <Pressable accessibilityRole="button" onPress={() => onDetailPress?.('quarter')} style={[styles.tool, styles.quarterTool, glassBlur]}>
           <Text style={styles.toolStrong}>Q2</Text>
           <Text style={styles.toolText}>阶段</Text>
         </Pressable>
-        <Pressable accessibilityRole="button" style={[styles.tool, styles.honorTool, glassBlur]}>
+        <Pressable accessibilityRole="button" onPress={() => onDetailPress?.('honor')} style={[styles.tool, styles.honorTool, glassBlur]}>
           <Text style={styles.toolStrong}>1</Text>
           <Text style={styles.toolText}>荣誉</Text>
         </Pressable>

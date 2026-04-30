@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 export type PlanView = 'month' | 'year';
+export type PlanSource = 'ai' | 'manual' | 'mixed';
 
 export interface ManualLevel {
   action: string;
@@ -104,6 +105,7 @@ export function usePlan() {
   return {
     manualLevels,
     monthWeeks,
+    planSource: 'ai' as PlanSource,
     quarters,
     setView,
     view,

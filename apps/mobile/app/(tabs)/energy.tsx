@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ConfirmButton } from '../../src/features/energy/components/ConfirmButton';
@@ -40,14 +41,21 @@ export default function EnergyScreen() {
       <Modal animationType="fade" transparent visible={reminderVisible}>
         <View style={styles.modalBackdrop}>
           <View style={styles.modalPanel}>
-            <Text style={styles.modalTitle}>先看一眼清单？</Text>
+            <Text style={styles.modalTitle}>要不要先看看今天的清单？</Text>
             <Text style={styles.modalCopy}>看起来今天的清单还没看过。你可以先看一眼，再决定今日推进度。</Text>
             <View style={styles.modalActions}>
-              <Pressable accessibilityRole="button" onPress={() => setReminderVisible(false)} style={styles.secondaryButton}>
-                <Text style={styles.secondaryLabel}>返回调整</Text>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => {
+                  setReminderVisible(false);
+                  router.push('/todo');
+                }}
+                style={styles.primaryButton}
+              >
+                <Text style={styles.primaryLabel}>先看清单</Text>
               </Pressable>
-              <Pressable accessibilityRole="button" onPress={confirmEnergy} style={styles.primaryButton}>
-                <Text style={styles.primaryLabel}>仍然确认</Text>
+              <Pressable accessibilityRole="button" onPress={confirmEnergy} style={styles.secondaryButton}>
+                <Text style={styles.secondaryLabel}>继续注入</Text>
               </Pressable>
             </View>
           </View>
@@ -80,9 +88,9 @@ const styles = StyleSheet.create({
     marginTop: spacing[2],
   },
   modalPanel: {
-    backgroundColor: '#101827',
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(7, 17, 15, 0.95)',
+    borderColor: 'rgba(207, 250, 254, 0.15)',
+    borderRadius: radii.panel,
     borderWidth: StyleSheet.hairlineWidth,
     maxWidth: 360,
     padding: spacing[5],
@@ -96,14 +104,16 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radii.md,
+    backgroundColor: colors.primaryDim,
+    borderColor: colors.cyanBorder,
+    borderRadius: radii.control,
+    borderWidth: StyleSheet.hairlineWidth,
     flex: 1,
     justifyContent: 'center',
     minHeight: 46,
   },
   primaryLabel: {
-    color: colors.background,
+    color: '#ECFEFF',
     fontSize: fontSizes.sm,
     fontWeight: fontWeights.bold,
     lineHeight: lineHeights.sm,
@@ -113,9 +123,9 @@ const styles = StyleSheet.create({
   },
   secondaryButton: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.md,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderRadius: radii.control,
     borderWidth: StyleSheet.hairlineWidth,
     flex: 1,
     justifyContent: 'center',

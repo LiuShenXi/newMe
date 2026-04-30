@@ -59,7 +59,7 @@ export function Button({
 const styles = StyleSheet.create({
   base: {
     alignItems: 'center',
-    borderRadius: radii.md,
+    borderRadius: radii.control,
     flexDirection: 'row',
     gap: spacing[2],
     justifyContent: 'center',
@@ -84,10 +84,12 @@ const styles = StyleSheet.create({
     opacity: 0.82,
   },
   primary: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryDim,
+    borderColor: colors.cyanBorder,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   primaryLabel: {
-    color: colors.background,
+    color: '#ECFEFF',
   },
   secondary: {
     backgroundColor: colors.surface,
