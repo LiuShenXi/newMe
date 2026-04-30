@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.worktrees
+.env
+.env.*
+!.env.example
+.expo
+apps/mobile/dist-web
+coverage
+*.tsbuildinfo
