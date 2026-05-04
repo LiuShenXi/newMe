@@ -34,6 +34,8 @@
 
 - 原型应该是什么：所有主体验都渲染在同一个 `393 x 812` phone 内，状态栏、主内容、底部胶囊导航是一个固定舞台。冷启动阶段不显示底部导航，主 App 阶段显示底部导航。
 - App 实际是什么：React Native Web 页面按浏览器 viewport 渲染，截图中常出现高度、滚动、内容分段和底栏位置变化；部分页面使用 `ScrollView` 后页面节奏和原型固定舞台不同。
+- 2026-05-04 底栏修正：`PrototypeBottomNav` 已从距离底部 52px 的悬浮状态调整为距离底部 20px，和原型 `phone-content` 底部 padding 对齐；`PrototypeShell` 主内容底部预留同步改为底栏高度 + 20px，并新增 Playwright 几何断言防止底栏再次悬空。
+- 2026-05-05 能量条升级：旧原型的圆头氮气条不再作为验收基准，已升级为等离子氮气轨道。新的真源要求无圆形 thumb、斜切喷口、多层青色尾焰、黄白核心能量束和粒子逸散；移动端同步增加结构断言，防止退回普通 slider 或再次出现 `NaN%`。
 - P0 交互差异：冷启动和主 App 的舞台切换不完全等价，部分页面因为认证守卫先进入登录页，打断原型的首屏体验。
 - P0 布局结构差异：原型的一体化 `phone-main` 被 App 的通用 `PrototypeScreen` + 各页面卡片重组，页面间结构不统一。
 - P1 排版/样式差异：App 多处使用旧 `Button/Card/Input` 包装或 feature 自定义卡片，和原型 `.glass-card`、`.path-option`、`.goal-input`、`.manual-card` 不等价。

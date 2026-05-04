@@ -333,6 +333,15 @@ git worktree list
 - 深度愿景可编辑草案修复：修复年度 OKR/季度 OKR/首月 4 周承诺被渲染成只读编号文本的问题，恢复原型 `可修改` textarea；确认年度 OKR 后，移动端会把用户编辑后的年度草案传给季度生成，API 确认落库也优先使用 `edits.annualOkr`、`edits.quarterOkr`、`edits.weeks`；右上重新生成已拆为纯生成当前层级，不再再次 confirm 或重复写入上一层。
 - 深度愿景编辑回归验证：先新增/扩展失败用例覆盖“年度方向 1 可修改”输入框、编辑内容进入 `annual_to_quarter_okr` 请求，以及季度页右上重新生成不重复 confirm 上一层；修复后验证 `pnpm --filter @newme/api test -- --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/mobile typecheck`、`npx playwright test apps/mobile/tests/prototype-p0-parity.spec.js --reporter=line`、`npx playwright test apps/mobile/tests/prototype-parity.spec.js apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过。
 - 2026-05-04 提交前复核：已重启 `@newme/mobile` Expo Web 到 `http://127.0.0.1:37300` 并返回 HTTP 200；重新验证 `pnpm --filter @newme/api test -- --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 7 个用例通过、`pnpm --filter @newme/api typecheck` 通过、`pnpm --filter @newme/mobile typecheck` 通过、`npx playwright test apps/mobile/tests/prototype-p0-parity.spec.js --reporter=line` 6 个用例通过、`npx playwright test apps/mobile/tests/prototype-parity.spec.js apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 5 个用例通过、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
+- 2026-05-04 底栏沉底修正：按用户截图反馈，将 `PrototypeBottomNav` 的底部距离从 52px 调整为 20px，`PrototypeShell` 主内容底部预留同步改为 `bottomNavHeight + bottomNavInsetWeb`；先新增 `bottom nav sits on the prototype bottom edge` Playwright 断言并确认红测收到 52px，再修复到 20px 后绿测通过。
+
+### 2026-05-05
+
+- 等离子氮气能量条升级：按用户反馈，旧黄条 + 圆头滑块视觉张力不足，本轮将 `prototype/index.html` 和移动端 `EnergySlider` 同步升级为无圆形 thumb 的等离子氮气轨道；视觉包含斜切喷口、黄白能量核心、青色电离辉光、多层尾焰和 16 个粒子逸散点。
+- NaN 回归修复：`EnergySlider` 对外部 value 和点击/拖动输入统一做 finite check 与 `0-100` clamp，避免 Web 点击事件缺少 `locationX` 时把 `NaN%` 渲染到页面。
+- TDD 记录：先新增 `plasma energy rail has no round thumb and never renders NaN` Playwright 断言，确认红测失败于缺失 `plasma-energy-slider`；实现后 focused 用例已转绿。
+- 用户复核后纠偏：第一版尾焰固定宽度导致 0% 左侧出现块状光斑，默认态青色辉光也过厚；已改为尾焰随能量填充宽度收缩，0% 隐藏喷口/尾焰，默认态只保留细黄白主轨和局部青色尾焰。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 7 个用例通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 1 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
 
 ## 阻塞与风险
 

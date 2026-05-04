@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     paddingTop: prototype.size.mainTop,
   },
   mainWithNav: {
-    paddingBottom: prototype.size.bottomNavHeight + 32,
+    paddingBottom: prototype.size.bottomNavHeight + prototype.size.bottomNavInsetWeb,
   },
   root: {
     backgroundColor: prototype.color.phone,

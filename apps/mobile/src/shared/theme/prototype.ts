@@ -9,7 +9,7 @@ export const prototype = {
     statusHeight: 20,
     mainTop: 12,
     bottomNavHeight: 70,
-    bottomNavInsetWeb: 52,
+    bottomNavInsetWeb: 20,
   },
   color: {
     bg: '#030606',
