@@ -309,6 +309,62 @@ describe('AiService', () => {
     });
   });
 
+  it('confirms a user-edited annual OKR draft instead of the original AI output', async () => {
+    const { service, prisma } = createService();
+    const prismaAny = prisma as any;
+    const editedAnnualOkr = {
+      objectives: [
+        {
+          title: '用户改过的年度方向',
+          keyResults: ['保留真实修改'],
+        },
+      ],
+    };
+    const generation = {
+      id: 'generation-annual-edited',
+      userId: 'user-1',
+      scenario: 'VISION_TO_ANNUAL_OKR',
+      status: 'COMPLETED',
+      inputJson: { year: 2026, vision: '持续做出有价值的产品' },
+      outputJson: validAnnualOkr,
+      createdAt: now,
+    };
+    const confirmedGeneration = {
+      ...generation,
+      status: 'CONFIRMED',
+      confirmedAt: now,
+    };
+
+    Object.assign(prismaAny, {
+      $transaction: jest.fn(async (callback) => callback(prisma)),
+      aiGeneration: {
+        ...prismaAny.aiGeneration,
+        findFirst: jest.fn().mockResolvedValue(generation),
+        update: jest.fn().mockResolvedValue(confirmedGeneration),
+      },
+      annualObjective: {
+        create: jest.fn().mockResolvedValue({ id: 'annual-objective-1' }),
+      },
+    });
+
+    await (service as any).confirmGeneration('user-1', 'generation-annual-edited', {
+      contextVersion: 'ctx-annual',
+      edits: { annualOkr: editedAnnualOkr },
+      generationId: 'generation-annual-edited',
+      scenario: AiScenario.VISION_TO_ANNUAL_OKR,
+      target: 'annual_objective',
+    });
+
+    expect(prismaAny.annualObjective.create).toHaveBeenCalledWith({
+      data: {
+        userId: 'user-1',
+        year: 2026,
+        objectives: editedAnnualOkr.objectives,
+        source: 'AI',
+      },
+    });
+  });
+
   it('confirms an annual to quarter OKR draft by reusing quarters and writing AI quarter goals', async () => {
     const { service, prisma } = createService();
     const prismaAny = prisma as any;

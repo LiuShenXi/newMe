@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { EmptyLevel } from '../../src/features/plan/components/EmptyLevel';
@@ -52,7 +53,12 @@ export default function PlanScreen() {
         ) : null}
 
         {view === 'month' ? (
-          <MonthView onUpdateWeekFocuses={updateCurrentWeekFocuses} planSource={planSource} weeks={monthWeeks} />
+          <MonthView
+            onSelectWeek={(week) => router.push({ pathname: '/todo', params: { week: week.week } })}
+            onUpdateWeekFocuses={updateCurrentWeekFocuses}
+            planSource={planSource}
+            weeks={monthWeeks}
+          />
         ) : (
           <YearView planSource={planSource} quarters={quarters} />
         )}

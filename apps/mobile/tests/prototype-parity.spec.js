@@ -1,10 +1,15 @@
 const { test, expect } = require('@playwright/test');
+const { mockPrototypeApp } = require('./prototype-test-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
 
 test.use({
   viewport: { width: 390, height: 844 },
   isMobile: true,
+});
+
+test.beforeEach(async ({ page }) => {
+  await mockPrototypeApp(page);
 });
 
 test('mobile screens expose prototype-level chrome and copy', async ({ page }) => {

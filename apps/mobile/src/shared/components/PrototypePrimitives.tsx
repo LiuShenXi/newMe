@@ -54,6 +54,12 @@ interface PrototypeTreeToolProps {
   value: string;
 }
 
+interface PrototypeTopActionsProps {
+  onBack?: () => void;
+  onRegenerate?: () => void;
+  regenerateLabel?: string;
+}
+
 export function PrototypeBottomNav({ activeTab }: PrototypeBottomNavProps) {
   return (
     <View style={[styles.bottomNav, prototypeGlassBlur]} testID="prototype-bottom-nav">
@@ -113,6 +119,45 @@ export function PrototypeButton({
       <Text style={[styles.buttonText, styles[`${variant}Text`], textStyle]}>{children}</Text>
     </Pressable>
   );
+}
+
+export function PrototypeTopActions({
+  onBack,
+  onRegenerate,
+  regenerateLabel = '重新生成当前层级',
+}: PrototypeTopActionsProps) {
+  return (
+    <View style={styles.topActions}>
+      <Pressable
+        accessibilityLabel="返回上一步"
+        accessibilityRole="button"
+        onPress={onBack}
+        style={({ pressed }) => [styles.topIconButton, pressed ? styles.pressed : null]}
+      >
+        <Ionicons color="#CBD5E1" name="chevron-back" size={18} />
+      </Pressable>
+      {onRegenerate ? (
+        <Pressable
+          accessibilityLabel={regenerateLabel}
+          accessibilityRole="button"
+          onPress={onRegenerate}
+          style={({ pressed }) => [styles.topIconButton, styles.regenerateButton, pressed ? styles.pressed : null]}
+        >
+          <Ionicons color="#FEF3C7" name="refresh" size={17} />
+        </Pressable>
+      ) : (
+        <View style={styles.topActionSpacer} />
+      )}
+    </View>
+  );
+}
+
+export function PrototypeOnboardingPanel({ children, style }: PropsWithChildren<{ style?: StyleProp<ViewStyle> }>) {
+  return <View style={[styles.onboardingPanel, style]}>{children}</View>;
+}
+
+export function PrototypeEyebrow({ children, tone = 'plain' }: PropsWithChildren<{ tone?: 'gold' | 'plain' }>) {
+  return <Text style={[styles.eyebrow, tone === 'gold' ? styles.eyebrowGold : null]}>{children}</Text>;
 }
 
 export function PrototypeTreeTool({ label, onPress, tone, value }: PrototypeTreeToolProps) {
@@ -268,6 +313,25 @@ const styles = StyleSheet.create({
   iconText: {
     color: '#CBD5E1',
   },
+  eyebrow: {
+    color: 'rgba(209, 250, 229, 0.52)',
+    fontSize: 12,
+    fontWeight: '900',
+    lineHeight: 16,
+    textTransform: 'uppercase',
+  },
+  eyebrowGold: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(254, 240, 138, 0.14)',
+    borderColor: 'rgba(254, 240, 138, 0.20)',
+    borderRadius: prototype.radius.pill,
+    borderWidth: StyleSheet.hairlineWidth,
+    color: '#FEF3C7',
+    overflow: 'hidden',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    textTransform: 'none',
+  },
   input: {
     backgroundColor: 'transparent',
     borderWidth: 0,
@@ -304,6 +368,16 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 80,
   },
+  onboardingPanel: {
+    backgroundColor: 'rgba(255, 255, 255, 0.045)',
+    borderColor: prototype.color.glassBorder,
+    borderRadius: prototype.radius.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, .08), 0 20px 48px rgba(0, 0, 0, .22)',
+    gap: 16,
+    overflow: 'hidden',
+    padding: 20,
+  } as ViewStyle,
   navButton: {
     alignItems: 'center',
     borderRadius: prototype.radius.navItem,
@@ -401,6 +475,30 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     minHeight: 104,
     padding: 16,
+  },
+  topActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    minHeight: 36,
+  },
+  topActionSpacer: {
+    height: 34,
+    width: 34,
+  },
+  topIconButton: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderColor: 'rgba(255, 255, 255, 0.16)',
+    borderRadius: prototype.radius.pill,
+    borderWidth: StyleSheet.hairlineWidth,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
+  },
+  regenerateButton: {
+    backgroundColor: 'rgba(254, 240, 138, 0.10)',
+    borderColor: 'rgba(254, 240, 138, 0.20)',
   },
   toast: {
     alignSelf: 'center',

@@ -1,5 +1,6 @@
 const path = require('path');
 const { expect, test } = require('@playwright/test');
+const { mockPrototypeApp } = require('./prototype-test-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
 const prototypeUrl = `file://${path.resolve(__dirname, '../../../prototype/index.html')}`;
@@ -49,6 +50,7 @@ test('captures and compares prototype/client visual anchors', async ({ browser }
   await bootPrototype(proto);
 
   const client = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true });
+  await mockPrototypeApp(client);
   await client.goto(baseUrl, { waitUntil: 'networkidle' });
 
   await screenshotPrototype(proto, 'energy');

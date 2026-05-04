@@ -60,7 +60,7 @@ const monthWeeks: MonthWeek[] = [
     items: ['识别目标是项目型、习惯型还是阅读学习型', '按目标类型生成更贴近本周的行动建议', '根据本周结果重排后续两周任务密度'],
     score: null,
     state: '计划中',
-    title: 'AI 拆解优化',
+    title: '本周重点',
     week: 'W17',
   },
   {

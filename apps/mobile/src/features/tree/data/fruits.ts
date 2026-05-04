@@ -109,7 +109,7 @@ export function toTreeFruit(dto: TreeFruitDto, index: number): TreeFruit {
     focuses: [dto.label],
     id: dto.id,
     note: dto.capsuleSummary,
-    reflection: dto.capsuleSummary,
+    reflection: '这颗果实记录了本周推进的状态。',
     score: dto.score,
     size: 18 + Math.round(dto.score / 18),
     week: dto.label || `第 ${Number(weekNumber)} 周`,

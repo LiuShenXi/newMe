@@ -1,5 +1,5 @@
-import { useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AddTodoInput } from '../../src/features/todo/components/AddTodoInput';
@@ -18,6 +18,7 @@ import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassBlur, protot
 import { usePrototypeStore } from '../../src/stores/prototype.store';
 
 export default function TodoScreen() {
+  const params = useLocalSearchParams<{ week?: string }>();
   const {
     addTodo,
     completedCount,
@@ -39,6 +40,12 @@ export default function TodoScreen() {
       markListViewed();
     }, [markListViewed]),
   );
+
+  useEffect(() => {
+    if (typeof params.week === 'string' && params.week) {
+      setWeekVisible(true);
+    }
+  }, [params.week]);
 
   function openEdit(todo: TodoItemModel) {
     setEditingTodo(todo);
@@ -89,7 +96,7 @@ export default function TodoScreen() {
             <View style={styles.modalHeader}>
               <View>
                 <Text style={styles.eyebrow}>week overview</Text>
-                <Text style={styles.modalTitle}>本周 7 天概览</Text>
+                <Text style={styles.modalTitle}>{params.week ? `${params.week} · 本周 7 天概览` : '本周 7 天概览'}</Text>
               </View>
               <PrototypeButton onPress={() => setWeekVisible(false)} variant="pill">
                 关闭

@@ -6,12 +6,13 @@ import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassBlur, protot
 import type { MonthWeek, PlanSource } from '../hooks/usePlan';
 
 interface MonthViewProps {
+  onSelectWeek?: (week: MonthWeek) => void;
   onUpdateWeekFocuses?: (items: string[]) => Promise<void>;
   planSource: PlanSource;
   weeks: MonthWeek[];
 }
 
-export function MonthView({ onUpdateWeekFocuses, planSource, weeks }: MonthViewProps) {
+export function MonthView({ onSelectWeek, onUpdateWeekFocuses, planSource, weeks }: MonthViewProps) {
   const [coachOpen, setCoachOpen] = useState(false);
   const [feedback, setFeedback] = useState('这周工作会比较忙，保留晨跑，阅读任务拆小一点。');
   const [localWeeks, setLocalWeeks] = useState(weeks);
@@ -26,29 +27,27 @@ export function MonthView({ onUpdateWeekFocuses, planSource, weeks }: MonthViewP
   function submitFeedback() {
     if (rounds >= 3 || planning) return;
     setPlanning(true);
-    setTimeout(() => {
-      const nextItems = [
-        '把任务密度从 4 件降到 3 件，先保证能完成',
-        '保留晨跑作为稳定能量来源，不再新增运动任务',
-        '阅读任务改成每天 15 分钟，优先完成第 2 章',
-      ];
+    const nextItems = [
+      '把任务密度从 4 件降到 3 件，先保证能完成',
+      '保留晨跑作为稳定能量来源，不再新增运动任务',
+      '阅读任务改成每天 15 分钟，优先完成第 2 章',
+    ];
 
-      setLocalWeeks((current) =>
-        current.map((week) =>
-          week.week === 'W17'
-            ? {
-                ...week,
-                items: nextItems,
-                title: '根据反馈重排 AI 任务',
-              }
-            : week,
-        ),
-      );
-      onUpdateWeekFocuses?.(nextItems).catch(() => undefined);
-      setRounds((current) => current + 1);
-      setPlanning(false);
-      setCoachOpen(false);
-    }, 600);
+    setLocalWeeks((current) =>
+      current.map((week) =>
+        week.week === 'W17'
+          ? {
+              ...week,
+              items: nextItems,
+              title: '根据反馈重排 AI 任务',
+            }
+          : week,
+      ),
+    );
+    onUpdateWeekFocuses?.(nextItems).catch(() => undefined);
+    setRounds((current) => current + 1);
+    setCoachOpen(false);
+    setTimeout(() => setPlanning(false), 600);
   }
 
   return (
@@ -84,7 +83,17 @@ export function MonthView({ onUpdateWeekFocuses, planSource, weeks }: MonthViewP
         ) : null}
       </View>
       {localWeeks.map((week) => (
-        <View key={week.id} style={[styles.weekCard, week.state === '当前周' ? styles.currentWeek : null]}>
+        <Pressable
+          accessibilityLabel={`${week.week} · ${week.title} ${week.state}`}
+          accessibilityRole="button"
+          key={week.id}
+          onPress={() => onSelectWeek?.(week)}
+          style={({ pressed }) => [
+            styles.weekCard,
+            week.state === '当前周' ? styles.currentWeek : null,
+            pressed ? styles.weekPressed : null,
+          ]}
+        >
           <View style={styles.weekHeader}>
             <Text style={styles.weekTitle}>
               {week.week} · {week.title}
@@ -101,7 +110,7 @@ export function MonthView({ onUpdateWeekFocuses, planSource, weeks }: MonthViewP
               </View>
             ))}
           </View>
-        </View>
+        </Pressable>
       ))}
     </View>
   );
@@ -237,6 +246,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  weekPressed: {
+    opacity: 0.86,
+    transform: [{ scale: 0.99 }],
   },
   weekState: {
     color: '#CFFAFE',

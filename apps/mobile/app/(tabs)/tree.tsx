@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native'
 
 import { FruitCapsule } from '../../src/features/tree/components/FruitCapsule';
 import { GrowthTree } from '../../src/features/tree/components/GrowthTree';
-import { type GrowthTreeViewData, type TreeFruit, toGrowthTreeViewData } from '../../src/features/tree/data/fruits';
+import { treeFruits as initialTreeFruits, type GrowthTreeViewData, type TreeFruit, toGrowthTreeViewData } from '../../src/features/tree/data/fruits';
 import { apiFetch } from '../../src/shared/api/client';
 import { PrototypeScreen } from '../../src/shared/components/PrototypeShell';
 import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
@@ -27,7 +27,7 @@ export default function TreeScreen() {
   const [treeData, setTreeData] = useState<GrowthTreeViewData | null>(null);
   const [selectedFruit, setSelectedFruit] = useState<TreeFruit | null>(null);
   const [detailType, setDetailType] = useState<'fruit' | 'quarter' | 'honor' | null>(null);
-  const fruits = treeData?.fruits ?? demoFruits;
+  const fruits = useMemo(() => mergeTreeFruits(treeData?.fruits, demoFruits), [demoFruits, treeData?.fruits]);
   const honorCount = treeData?.honorCount ?? 1;
   const stage = treeData?.stage ?? 'q2_growth';
 
@@ -127,6 +127,21 @@ function stageToQuarterLabel(stage: GrowthTreeDto['stage']) {
   if (stage === 'q2_growth') return 'Q2';
   if (stage === 'q3_flourish') return 'Q3';
   return 'Q4';
+}
+
+function mergeTreeFruits(remoteFruits: TreeFruit[] | undefined, localFruits: TreeFruit[]) {
+  if (!remoteFruits) {
+    return localFruits;
+  }
+
+  const initialWeeks = new Set(initialTreeFruits.map((fruit) => fruit.week));
+  const remoteKeys = new Set(remoteFruits.map((fruit) => fruit.id ?? fruit.week));
+  const pendingLocalFruits = localFruits.filter((fruit) => {
+    const key = fruit.id ?? fruit.week;
+    return !initialWeeks.has(fruit.week) && !remoteKeys.has(key);
+  });
+
+  return [...remoteFruits, ...pendingLocalFruits];
 }
 
 const styles = StyleSheet.create({

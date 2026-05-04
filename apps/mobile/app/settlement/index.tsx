@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import type { CreateSettlementRequest, WeeklyEnergyDto, WeeklySettlementDto } from '@newme/shared';
 import { useEffect, useMemo, useState } from 'react';
+import type { GestureResponderEvent, LayoutChangeEvent } from 'react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GlassCard, PrototypeButton, PrototypeScreen, PrototypeTextarea } from '../../src/shared/components';
@@ -28,6 +29,7 @@ const focusItems = [
 export default function SettlementScreen() {
   const { currentWeekId, todayDate } = usePlanningContext();
   const [score, setScore] = useState(78);
+  const [scoreRailWidth, setScoreRailWidth] = useState(1);
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [reflection, setReflection] = useState('这一周虽然有几次节奏被打断，但关键推进没有断线。');
@@ -81,12 +83,33 @@ export default function SettlementScreen() {
 
   const displayScore = confirmed ? score : suggestedScore;
 
+  function updateScoreFromPress(event: GestureResponderEvent) {
+    const nextScore = Math.round((event.nativeEvent.locationX / scoreRailWidth) * 100);
+    setScore(Math.max(0, Math.min(100, nextScore)));
+  }
+
+  function onScoreRailLayout(event: LayoutChangeEvent) {
+    setScoreRailWidth(Math.max(1, event.nativeEvent.layout.width));
+  }
+
   async function confirmSettlement() {
     if (submitting) {
       return;
     }
 
     setSubmitting(true);
+
+    const nextFruit = {
+      date: todayDate,
+      focuses: focusItems.map((item) => item.title),
+      note: '这一周的努力已经被树记住了。',
+      reflection,
+      score,
+      size: 18 + Math.round(score / 18),
+      week: '第 17 周',
+      x: 205,
+      y: 108,
+    };
 
     try {
       const payload: CreateSettlementRequest = {
@@ -98,20 +121,11 @@ export default function SettlementScreen() {
         method: 'POST',
       });
       setConfirmed(true);
+      addFruit(nextFruit);
       setTimeout(() => router.replace('/tree'), 900);
     } catch {
       setConfirmed(true);
-      addFruit({
-        date: todayDate,
-        focuses: focusItems.map((item) => item.title),
-        note: '这一周的努力已经被树记住了。',
-        reflection,
-        score,
-        size: 18 + Math.round(score / 18),
-        week: '第 17 周',
-        x: 205,
-        y: 108,
-      });
+      addFruit(nextFruit);
       setTimeout(() => router.replace('/tree'), 900);
     } finally {
       setSubmitting(false);
@@ -161,7 +175,14 @@ export default function SettlementScreen() {
           <Text style={styles.scoreLabel}>{score}%</Text>
         </View>
         <View style={styles.scoreRail}>
-          <Pressable accessibilityRole="adjustable" onPress={() => setScore((current) => (current >= 100 ? 0 : current + 5))} style={styles.scoreFillWrap}>
+          <Pressable
+            accessibilityLabel="最终周结果"
+            accessibilityRole={'slider' as any}
+            accessibilityValue={{ max: 100, min: 0, now: score }}
+            onLayout={onScoreRailLayout}
+            onPress={updateScoreFromPress}
+            style={styles.scoreFillWrap}
+          >
             <View style={[styles.scoreFill, { width: `${score}%` }]} />
           </Pressable>
         </View>

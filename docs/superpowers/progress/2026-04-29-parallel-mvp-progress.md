@@ -326,6 +326,13 @@ git worktree list
 - 本地端口统一：Docker Nginx 默认端口改为 `37200`，Expo Web 默认端口改为 `37300`，移动端默认 API base URL 改为 `http://127.0.0.1:37200/api/v1`；相关 Playwright 用例默认端口同步更新。
 - 文档同步：`docs/architecture/05-部署与运维方案.md` 已记录 2026-05-04 本地联调默认端口与覆盖方式。
 - 验证记录：`pnpm -r typecheck` 通过；`pnpm --filter @newme/api test -- --runInBand` 通过，16 个 test suite / 40 个测试全部通过。
+- 原型复刻差异审计：按用户要求新增 `docs/prototype-parity/2026-05-04-full-page-diff-audit.md`，明确 `prototype/index.html` 是唯一真源，逐页记录当前 App 在布局、排版、样式、按钮、跳转、弹层和基础交互逻辑上的差异。本轮只做文档审计，不修 App 代码。
+- 审计取证：使用 Playwright 截取原型和 App 的代表性状态，截图临时保存在 `test-results/prototype-parity-audit/`，该目录已被 `.gitignore` 忽略，不作为正式交付入库。
+- 原型 P0 复刻修复：按审计文档修复路径选择、快速规划、五年愿景、手动 OKR、计划页周卡跳清单、周结算 slider、结算后成长树果实反馈等关键结构/交互差异；新增 `apps/mobile/tests/prototype-p0-parity.spec.js` 覆盖这些断点，并为旧 prototype parity/visual regression 测试补登录态和 API mock，避免认证守卫干扰验收。
+- 本轮验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-p0-parity.spec.js --reporter=line` 6 个用例通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 5 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
+- 深度愿景可编辑草案修复：修复年度 OKR/季度 OKR/首月 4 周承诺被渲染成只读编号文本的问题，恢复原型 `可修改` textarea；确认年度 OKR 后，移动端会把用户编辑后的年度草案传给季度生成，API 确认落库也优先使用 `edits.annualOkr`、`edits.quarterOkr`、`edits.weeks`；右上重新生成已拆为纯生成当前层级，不再再次 confirm 或重复写入上一层。
+- 深度愿景编辑回归验证：先新增/扩展失败用例覆盖“年度方向 1 可修改”输入框、编辑内容进入 `annual_to_quarter_okr` 请求，以及季度页右上重新生成不重复 confirm 上一层；修复后验证 `pnpm --filter @newme/api test -- --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand`、`pnpm --filter @newme/api typecheck`、`pnpm --filter @newme/mobile typecheck`、`npx playwright test apps/mobile/tests/prototype-p0-parity.spec.js --reporter=line`、`npx playwright test apps/mobile/tests/prototype-parity.spec.js apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 均通过。
+- 2026-05-04 提交前复核：已重启 `@newme/mobile` Expo Web 到 `http://127.0.0.1:37300` 并返回 HTTP 200；重新验证 `pnpm --filter @newme/api test -- --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 7 个用例通过、`pnpm --filter @newme/api typecheck` 通过、`pnpm --filter @newme/mobile typecheck` 通过、`npx playwright test apps/mobile/tests/prototype-p0-parity.spec.js --reporter=line` 6 个用例通过、`npx playwright test apps/mobile/tests/prototype-parity.spec.js apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 5 个用例通过、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
 
 ## 阻塞与风险
 

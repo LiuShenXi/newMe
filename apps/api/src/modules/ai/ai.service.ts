@@ -362,10 +362,12 @@ export class AiService {
       throw new BadRequestException('愿景年度 OKR 确认缺少年份');
     }
 
-    const output = this.outputValidator.validate(
+    const output = this.resolveEditedOutput<AnnualOkrOutput>(
       AiScenario.VISION_TO_ANNUAL_OKR,
+      edits,
+      'annualOkr',
       generation.outputJson,
-    ) as unknown as AnnualOkrOutput;
+    );
 
     await tx.annualObjective.create({
       data: {
@@ -398,10 +400,12 @@ export class AiService {
       throw new BadRequestException('年度到季度 OKR 确认缺少年份');
     }
 
-    const output = this.outputValidator.validate(
+    const output = this.resolveEditedOutput<QuarterOkrOutput>(
       AiScenario.ANNUAL_TO_QUARTER_OKR,
+      edits,
+      'quarterOkr',
       generation.outputJson,
-    ) as unknown as QuarterOkrOutput;
+    );
     let quarterGoals = 0;
 
     for (const quarterOutput of output.quarters) {
@@ -463,10 +467,12 @@ export class AiService {
 
     this.parseWeekId(startWeekId);
 
-    const output = this.outputValidator.validate(
+    const output = this.resolveEditedOutput<FourWeekCommitmentsOutput>(
       AiScenario.QUARTER_TO_FOUR_WEEK_COMMITMENTS,
+      edits,
+      'weeks',
       generation.outputJson,
-    ) as unknown as FourWeekCommitmentsOutput;
+    );
     let weeklyFocuses = 0;
 
     for (const week of output.weeks) {
@@ -538,6 +544,18 @@ export class AiService {
     }
 
     return null;
+  }
+
+  private resolveEditedOutput<T>(
+    scenario: AiScenario,
+    edits: Record<string, unknown>,
+    editKey: string,
+    fallback: unknown,
+  ) {
+    return this.outputValidator.validate(
+      scenario,
+      edits[editKey] ?? fallback,
+    ) as unknown as T;
   }
 
   private parseDate(date: string) {
