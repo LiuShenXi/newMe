@@ -1,7 +1,7 @@
 const path = require('path');
 const { expect, test } = require('@playwright/test');
 
-const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:19008';
+const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
 const prototypeUrl = `file://${path.resolve(__dirname, '../../../prototype/index.html')}`;
 
 test.use({

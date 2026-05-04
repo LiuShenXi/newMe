@@ -10,6 +10,7 @@ export function useAuthLogin() {
   const loadMe = useAuthStore((state) => state.loadMe);
   const setSession = useAuthStore((state) => state.setSession);
   const [codeSent, setCodeSent] = useState(false);
+  const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isRequestingCode, setIsRequestingCode] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -26,11 +27,12 @@ export function useAuthLogin() {
     setIsRequestingCode(true);
 
     try {
-      await apiFetch('/auth/code', {
+      const result = await apiFetch<{ expiresAt: string; devCode?: string }>('/auth/code', {
         body: { phone: normalizedPhone },
         skipAuth: true,
       });
       setCodeSent(true);
+      if (result.devCode) setDevCode(result.devCode);
     } catch (nextError) {
       setError(toUserMessage(nextError, '验证码发送失败，请稍后再试'));
     } finally {
@@ -74,6 +76,7 @@ export function useAuthLogin() {
 
   return {
     codeSent,
+    devCode,
     error,
     isRequestingCode,
     isSigningIn,

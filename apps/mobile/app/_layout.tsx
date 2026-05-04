@@ -1,13 +1,34 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
+import { Redirect, Stack, usePathname } from 'expo-router';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { queryClient } from '../src/shared/api/query-client';
 import { useNotifications } from '../src/features/notifications/hooks/useNotifications';
+import { useAuthStore } from '../src/stores/auth.store';
 
 function NotificationBridge() {
   useNotifications();
+  return null;
+}
+
+function AuthGuard() {
+  const hydrated = useAuthStore((s) => s.hydrated);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const hydrate = useAuthStore((s) => s.hydrate);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  if (!hydrated) return null;
+
+  const isAuthRoute = pathname.startsWith('/auth');
+  if (!accessToken && !isAuthRoute) {
+    return <Redirect href="/auth/login" />;
+  }
 
   return null;
 }
@@ -18,6 +39,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <NotificationBridge />
+          <AuthGuard />
           <Stack
             screenOptions={{
               animation: 'fade',

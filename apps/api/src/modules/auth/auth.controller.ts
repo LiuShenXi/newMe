@@ -13,8 +13,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('code')
-  sendVerificationCode(@Body('phone') phone: string) {
-    return this.authService.sendVerificationCode(phone);
+  async sendVerificationCode(@Body('phone') phone: string) {
+    const { __devCode, ...rest } = await this.authService.sendVerificationCode(phone) as any;
+    return { ...rest, devCode: __devCode };
   }
 
   @Post('login')

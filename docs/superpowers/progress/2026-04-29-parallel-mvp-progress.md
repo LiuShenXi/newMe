@@ -7,8 +7,8 @@
 - 当前批次：Batch 2（已完成）
 - 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；F2/F4/AI provider/当前周上下文/F6 Docker/F7 推送通知均已完成，旧来源 worktree 已清理；下一步为发布前真机 smoke 与远端推送/发布流程
 - 当前主控：main（领先 origin/main）
-- 最近更新时间：2026-04-30
-- 最近更新人：Claude Code
+- 最近更新时间：2026-05-04
+- 最近更新人：Codex
 
 ## 快速续跑入口
 
@@ -83,7 +83,7 @@ git worktree list
 
 ## 未提交改动记录
 
-当前已知未提交改动：主工作区仅有文档收口更新；代码改动已合并到 main。验证产物已清理。
+当前已知未提交改动：2026-05-04 本地联调收口改动已准备提交，提交后主工作区应保持干净。验证产物已清理。
 
 ## 最近工作记录
 
@@ -319,6 +319,14 @@ git worktree list
 - 计划完成回填：`docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md` 中所有任务和集成点 checkbox 已回填完成；补跑 `pnpm install --frozen-lockfile` 通过；补跑 F2 手动 AI、F4 周结算成长树、prototype parity、prototype visual regression Playwright 共 7 个用例通过。
 - 最终合并收口：`feat/mvp-final-integration-direct` 已通过 `merge: complete mvp final integration` 合并回 `main`。合并后重新验证：`pnpm -r typecheck`、`pnpm --filter @newme/api test -- --runInBand`、`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web`、F5/planning-context/notification-routing Node smoke、F2/F4/原型 Playwright 7 个用例、`http://localhost:8080/api/v1/health` 均通过。
 
+### 2026-05-04
+
+- 本地联调收口：API 开启 CORS；验证码发送接口在开发态返回 `devCode` 并打印 `[DEV] verification code`，移动端登录页展示开发验证码，方便无短信服务时完成端到端登录。
+- 登录链路收口：移动端根布局新增 AuthGuard，未水合完成前不渲染跳转，未登录访问 App 页面时跳转 `/auth/login`；登录后继续加载 `/me` 并按现有逻辑进入 onboarding 或主流程。
+- 本地端口统一：Docker Nginx 默认端口改为 `37200`，Expo Web 默认端口改为 `37300`，移动端默认 API base URL 改为 `http://127.0.0.1:37200/api/v1`；相关 Playwright 用例默认端口同步更新。
+- 文档同步：`docs/architecture/05-部署与运维方案.md` 已记录 2026-05-04 本地联调默认端口与覆盖方式。
+- 验证记录：`pnpm -r typecheck` 通过；`pnpm --filter @newme/api test -- --runInBand` 通过，16 个 test suite / 40 个测试全部通过。
+
 ## 阻塞与风险
 
 - pnpm v10 默认忽略 build scripts 的风险已通过根 `package.json` 的 `pnpm.onlyBuiltDependencies` 收口，允许 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 执行必要构建脚本。
@@ -331,7 +339,7 @@ git worktree list
 - F7 推送通知真实到达仍依赖发布环境配置 APNs/FCM/Expo push 凭据；本轮已完成应用内注册、调度构造和路由映射，尚未在真机系统通知层做端到端到达测试。
 - 当前周上下文已统一为 `/me.currentWeekId/currentQuarterId` 优先、本地日期 fallback；如果未登录态测试日期变化，相关 Playwright mock 周需要同步调整。
 - F5 Sync 本轮为依赖注入式 Node smoke 和运行态 helper 验证，尚未在真实 Expo 设备/Web SQLite 文件库中打开 `newme.db` 做端到端 smoke；发布前需补一轮设备级验证。
-- Docker MVP 部署已可用；本机验证时 `localhost:8080/api/v1/health` 正常，`127.0.0.1:8080` 会命中本机其它服务，后续本机验收优先使用 `localhost` 或调整 `NGINX_PORT`。
+- Docker MVP 部署已可用；2026-05-04 起本地默认 Nginx 端口为 `37200`，后续本机验收优先使用 `http://localhost:37200/api/v1/health`，如端口冲突再调整 `NGINX_PORT`。
 - 旧 `feat/track-*` worktree 与本轮来源 worktree 均已清理；本轮按用户要求未再创建新 worktree。
 
 ## 下次建议
@@ -340,7 +348,7 @@ git worktree list
 
 1. 发布前设备级 SQLite smoke：在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull。
 2. 推送远端前确认是否要包含或另行处理 `AGENTS.md`、`CLAUDE.md` 的用户侧未提交改动；当前功能提交未包含这两个文件。
-3. 若本机 8080 已被其它服务占用，Docker 验收改用 `localhost:8080` 或设置 `NGINX_PORT` 后重新 `docker compose up --build`。
+3. 若本机 37200 已被其它服务占用，设置 `NGINX_PORT` 后重新 `docker compose up --build`，并同步调整移动端 `EXPO_PUBLIC_API_BASE_URL`。
 
 ## 收尾模板
 

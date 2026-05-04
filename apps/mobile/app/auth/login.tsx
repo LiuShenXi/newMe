@@ -9,7 +9,7 @@ import { prototype } from '../../src/shared/theme';
 export default function AuthLoginScreen() {
   const [code, setCode] = useState('');
   const [phone, setPhone] = useState('');
-  const { codeSent, error, isRequestingCode, isSigningIn, requestCode, signIn } = useAuthLogin();
+  const { codeSent, devCode, error, isRequestingCode, isSigningIn, requestCode, signIn } = useAuthLogin();
 
   return (
     <PrototypeScreen contentStyle={styles.content} scroll={false}>
@@ -50,7 +50,9 @@ export default function AuthLoginScreen() {
         {codeSent ? (
           <View style={styles.notice}>
             <Ionicons color={prototype.color.softCyan} name="checkmark-circle-outline" size={16} />
-            <Text style={styles.noticeText}>验证码已发送</Text>
+            <Text style={styles.noticeText}>
+              验证码已发送{devCode ? `（开发模式：${devCode}）` : ''}
+            </Text>
           </View>
         ) : null}
 

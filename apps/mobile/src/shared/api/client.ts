@@ -34,7 +34,7 @@ export class ApiError extends Error {
 
 const env = (globalThis as typeof globalThis & { process?: { env?: Record<string, string | undefined> } }).process
   ?.env;
-const defaultBaseUrl = env?.EXPO_PUBLIC_API_BASE_URL ?? 'http://127.0.0.1:3300/api/v1';
+const defaultBaseUrl = env?.EXPO_PUBLIC_API_BASE_URL ?? 'http://127.0.0.1:37200/api/v1';
 
 const config: Required<Pick<ApiClientConfig, 'baseUrl' | 'timeoutMs'>> &
   Omit<ApiClientConfig, 'baseUrl' | 'timeoutMs'> = {

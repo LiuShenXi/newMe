@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test');
 
-const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:19010';
-const apiBase = 'http://127.0.0.1:3300/api/v1';
+const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
+const apiBase = 'http://127.0.0.1:37200/api/v1';
 const weekId = '2026-W18';
 
 test.use({

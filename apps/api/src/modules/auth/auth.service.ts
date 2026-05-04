@@ -62,13 +62,13 @@ export class AuthService {
     const expiresAt = new Date(
       this.options.now().getTime() + this.options.verificationCodeTtlMs,
     );
+    const code = this.options.codeGenerator();
 
-    this.verificationCodes.set(normalizedPhone, {
-      code: this.options.codeGenerator(),
-      expiresAt,
-    });
+    this.verificationCodes.set(normalizedPhone, { code, expiresAt });
 
-    return { expiresAt };
+    console.log(`[DEV] verification code for ${normalizedPhone}: ${code}`);
+
+    return { expiresAt, __devCode: code };
   }
 
   verifyCode(phone: string, code: string) {
