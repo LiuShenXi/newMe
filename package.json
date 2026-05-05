@@ -4,7 +4,10 @@
   "scripts": {
     "api": "pnpm --filter @newme/api",
     "mobile": "pnpm --filter @newme/mobile",
-    "shared": "pnpm --filter @newme/shared"
+    "shared": "pnpm --filter @newme/shared",
+    "test:full-http-smoke": "node scripts/full-app-http-smoke.cjs",
+    "test:mobile:e2e": "npx playwright test apps/mobile/tests --reporter=line",
+    "test:prototype": "node prototype/prototype-regression.test.cjs && node prototype/prototype-interaction-smoke.cjs"
   },
   "engines": {
     "node": ">=20"

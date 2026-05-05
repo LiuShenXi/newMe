@@ -22,6 +22,12 @@
 
 本轮仍不把 P1/P2 视觉细节宣称为全部清零；剩余像素级差异继续以本审计文档逐页跟踪。
 
+## 2026-05-05 测试收口记录
+
+- 移动端 Playwright 非登录流程已统一通过 AuthGuard 登录态基座运行，并 mock `/me` 锁定服务端当前周/季度上下文，避免仅恢复 token 时退回本地日期。
+- 原型静态回归与交互 smoke 已恢复可运行：`prototype-regression.test.cjs` 覆盖 onboarding top actions helper，`prototype-interaction-smoke.cjs` 改用项目已安装的 `@playwright/test`。
+- 根目录新增 `test:full-http-smoke`、`test:mobile:e2e`、`test:prototype` 脚本；真实 HTTP smoke 覆盖接口、AI 生成/确认、周结算和成长树时间胶囊摘要。
+
 ## 严重级别
 
 - `P0`：流程、页面结构、按钮、跳转、信息层级不一致。

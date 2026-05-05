@@ -172,5 +172,5 @@ test('mobile interactions match prototype copy without visual inspection', async
   await page.goto(`${baseUrl}/tree`, { waitUntil: 'networkidle' });
   await page.getByLabel('打开第 16 周').click();
   await expect(page.getByText('time capsule')).toBeVisible();
-  await expect(page.getByText('果实亮度来自周结算确认值')).toBeVisible();
+  await expect(page.getByText('果实亮度来自周结算确认值').first()).toBeVisible();
 });

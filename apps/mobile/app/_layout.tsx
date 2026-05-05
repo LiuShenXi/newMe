@@ -17,17 +17,30 @@ function AuthGuard() {
   const hydrated = useAuthStore((s) => s.hydrated);
   const accessToken = useAuthStore((s) => s.accessToken);
   const hydrate = useAuthStore((s) => s.hydrate);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const loadMe = useAuthStore((s) => s.loadMe);
+  const user = useAuthStore((s) => s.user);
   const pathname = usePathname();
 
   useEffect(() => {
     hydrate();
   }, [hydrate]);
 
+  useEffect(() => {
+    if (hydrated && accessToken && !user && !isLoading) {
+      void loadMe();
+    }
+  }, [accessToken, hydrated, isLoading, loadMe, user]);
+
   if (!hydrated) return null;
 
   const isAuthRoute = pathname.startsWith('/auth');
   if (!accessToken && !isAuthRoute) {
     return <Redirect href="/auth/login" />;
+  }
+
+  if (accessToken && !isAuthRoute && !user) {
+    return null;
   }
 
   return null;

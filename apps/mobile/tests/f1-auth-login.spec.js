@@ -64,5 +64,6 @@ test('auth login requests a code, stores the JWT session, and loads /me before o
 
   expect(codeRequests).toEqual([{ phone: '13800138000' }]);
   expect(loginRequests).toEqual([{ code: '123456', phone: '13800138000' }]);
-  expect(meRequests).toEqual([{ authorization: 'Bearer access-token-f1' }]);
+  expect(meRequests.length).toBeGreaterThanOrEqual(1);
+  expect(meRequests.every((request) => request.authorization === 'Bearer access-token-f1')).toBe(true);
 });

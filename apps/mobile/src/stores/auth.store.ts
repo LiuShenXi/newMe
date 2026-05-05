@@ -43,9 +43,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ accessToken, hydrated: true, isLoading: false, refreshToken });
   },
   async loadMe() {
-    const user = await apiFetch<UserContext>('/me');
-    set({ user });
-    return user;
+    set({ isLoading: true });
+    try {
+      const user = await apiFetch<UserContext>('/me');
+      set({ isLoading: false, user });
+      return user;
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
+    }
   },
   async refreshSession() {
     const refreshToken = get().refreshToken;

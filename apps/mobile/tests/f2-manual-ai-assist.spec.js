@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test');
+const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const apiBase = 'http://127.0.0.1:37200/api/v1';
 
 test.use({
   viewport: { width: 390, height: 844 },
@@ -10,6 +10,8 @@ test.use({
 
 test('manual week step generates local AI suggestions, accepts one, and continues to today todos', async ({ page }) => {
   const generateRequests = [];
+
+  await useLoggedInSession(page, { hasCompletedOnboarding: false });
 
   await page.route(`${apiBase}/ai/generations`, async (route) => {
     const request = route.request();
@@ -38,7 +40,7 @@ test('manual week step generates local AI suggestions, accepts one, and continue
     });
   });
 
-  await page.goto(`${baseUrl}/onboarding/manual/week`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/onboarding/manual/week`, { waitUntil: 'domcontentloaded' });
   await page.getByPlaceholder('例如：完成手动 OKR 冷启动；计划页展示暂未设置；保留 3 次运动。').fill('本周先跑通手动路径');
 
   await page.getByText('AI 辅助').click();

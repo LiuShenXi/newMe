@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test');
+const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const apiBase = 'http://127.0.0.1:37200/api/v1';
 
 test.use({
   viewport: { width: 390, height: 844 },
@@ -11,6 +11,8 @@ test.use({
 test('vision onboarding cascades annual, quarter, and four-week AI confirmations before entering energy', async ({ page }) => {
   const generateRequests = [];
   const confirmRequests = [];
+
+  await useLoggedInSession(page, { hasCompletedOnboarding: false });
 
   await page.route(`${apiBase}/ai/generations`, async (route) => {
     const request = route.request();
@@ -103,20 +105,22 @@ test('vision onboarding cascades annual, quarter, and four-week AI confirmations
     });
   });
 
-  await page.goto(`${baseUrl}/onboarding/vision`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/onboarding/vision`, { waitUntil: 'domcontentloaded' });
   await page
-    .getByPlaceholder('例如：我有稳定的产品节奏、健康的身体和可持续的创作系统。')
+    .getByPlaceholder('可以很具体，也可以很模糊。比如：身体强健，有稳定创造力，靠自己的作品获得自由')
     .fill('五年后，我拥有稳定的产品创作系统和健康的生活节奏');
 
-  await page.getByText('生成年度 OKR').click();
+  await page.getByText('继续', { exact: true }).click();
+  await expect(page.getByText('我记住了。')).toBeVisible();
+  await page.getByText('整理今年 OKR').click();
   await expect(page.getByText('建立稳定的产品创作系统')).toBeVisible();
-  await page.getByText('确认年度 OKR，继续生成季度 OKR').click();
+  await page.getByText('确认年度 OKR').click();
   await expect(page.getByText('跑通 MVP 闭环')).toBeVisible();
 
   await page.getByText('确认季度 OKR，继续生成四周承诺').click();
   await expect(page.getByText('完成深度愿景联调')).toBeVisible();
 
-  await page.getByText('确认四周承诺并进入能量页').click();
+  await page.getByText('确认 4 周承诺，生成天计划').click();
   await expect(page).toHaveURL(/\/energy$/);
 
   expect(generateRequests.map((request) => request.scenario)).toEqual([

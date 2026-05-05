@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test');
+const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const apiBase = 'http://127.0.0.1:37200/api/v1';
 const weekId = '2026-W18';
 
 test.use({
@@ -12,6 +12,8 @@ test.use({
 test('weekly settlement posts to API then tree loads real fruit capsule and honors', async ({ page }) => {
   const settlementRequests = [];
   const treeRequests = [];
+
+  await useLoggedInSession(page);
 
   await page.route(`${apiBase}/energy/weeks/${weekId}`, async (route) => {
     await route.fulfill({
@@ -80,14 +82,14 @@ test('weekly settlement posts to API then tree loads real fruit capsule and hono
     });
   });
 
-  await page.goto(`${baseUrl}/settlement`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/settlement`, { waitUntil: 'domcontentloaded' });
   await expect(page.getByText('83%').first()).toBeVisible();
 
   await page.getByText(/确认.*果实|纭.*鏋滃疄/).click();
 
   await expect(page).toHaveURL(/\/tree$/);
-  await expect(page.getByRole('button', { name: '1 果实' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '荣誉' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '2 果实' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '1 荣誉' })).toBeVisible();
   expect(settlementRequests).toHaveLength(1);
   expect(settlementRequests[0]).toMatchObject({ finalScore: 83 });
   expect(treeRequests.length).toBeGreaterThanOrEqual(1);

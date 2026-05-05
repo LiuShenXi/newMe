@@ -5,9 +5,9 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；F2/F4/AI provider/当前周上下文/F6 Docker/F7 推送通知均已完成，旧来源 worktree 已清理；下一步为发布前真机 smoke 与远端推送/发布流程
+- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；下一步为发布前真机 SQLite smoke 与远端推送/发布流程
 - 当前主控：main（领先 origin/main）
-- 最近更新时间：2026-05-04
+- 最近更新时间：2026-05-05
 - 最近更新人：Codex
 
 ## 快速续跑入口
@@ -83,7 +83,7 @@ git worktree list
 
 ## 未提交改动记录
 
-当前已知未提交改动：2026-05-04 本地联调收口改动已准备提交，提交后主工作区应保持干净。验证产物已清理。
+当前已知未提交改动：2026-05-05 发布前测试收口改动已完成验证，待用户确认是否提交；涉及测试基座、AuthGuard 会话恢复、quick 跳转修复、成长树时间胶囊摘要、HTTP smoke 脚本、package scripts 和文档同步。
 
 ## 最近工作记录
 
@@ -344,6 +344,10 @@ git worktree list
 - 拖动跟手修复：按用户反馈将能量条从点击/松手式更新改为 `PanResponder` 连续跟踪，`mouse.down` 后拖动到新位置时会在未松手前实时更新百分比；新增 `energy bar follows the finger while dragging` 回归断言锁定该交互。
 - 尾雾硬边修复：按用户截图反馈，去掉 `energy-bar-tail` 的实体半透明背景，改为透明容器内叠横向渐隐 `LinearGradient`；`prototype/index.html` 同步改为左右透明的 CSS 渐变，避免能量条末端出现突兀黄色/青色方框。
 - 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 8 个用例通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 1 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
+- 发布前测试收口：新增 `apps/mobile/tests/e2e-auth-utils.js`，让非登录页 Playwright 流程在 AuthGuard 下预置 token 并 mock `/me`；修复已有 token 恢复后不加载 `/me` 导致规划上下文退回本地日期的问题；修复快速规划“进入能量页”按钮把点击事件当路由参数的问题；修复远端成长树果实时间胶囊不展示 `capsuleSummary` 的问题。
+- 测试矩阵固化：新增 `scripts/full-app-http-smoke.cjs`，并在根 `package.json` 增加 `test:full-http-smoke`、`test:mobile:e2e`、`test:prototype`。HTTP smoke 覆盖 health、auth、me、goals、plans、todos、energy、settlement、tree、sync、notifications、AI generation/confirm。
+- 阶段验证记录：`npx playwright test apps/mobile/tests/f2-quick-onboarding.spec.js apps/mobile/tests/f2-vision-onboarding.spec.js apps/mobile/tests/f2-manual-ai-assist.spec.js apps/mobile/tests/f3-daily-api.spec.js apps/mobile/tests/f4-plan-api.spec.js apps/mobile/tests/f4-settlement-tree-api.spec.js --reporter=line` 9 个用例通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`node scripts/full-app-http-smoke.cjs` 23 项 PASS。
+- 全量收口验证记录：`pnpm -r typecheck` 通过；`pnpm --filter @newme/api test -- --runInBand` 16 suites / 41 tests 通过；`pnpm --filter @newme/api build` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`docker compose config` 通过；`pnpm test:full-http-smoke` 23 项 PASS；`pnpm test:mobile:e2e` Node smoke 7 项 + Playwright 25 tests 通过；`pnpm test:prototype` 通过。
 
 ## 阻塞与风险
 

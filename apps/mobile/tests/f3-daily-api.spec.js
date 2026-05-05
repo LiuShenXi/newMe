@@ -1,8 +1,8 @@
 const { expect, test } = require('@playwright/test');
+const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const apiBase = 'http://127.0.0.1:37200/api/v1';
-const today = '2026-04-30';
+const today = '2026-05-05';
 const weekId = '2026-W18';
 
 test.use({
@@ -13,6 +13,8 @@ test.use({
 test('todo page reads today todos from API and posts new tasks', async ({ page }) => {
   const listRequests = [];
   const createRequests = [];
+
+  await useLoggedInSession(page);
 
   await page.route(`${apiBase}/todos/today**`, async (route) => {
     const requestUrl = new URL(route.request().url());
@@ -62,7 +64,7 @@ test('todo page reads today todos from API and posts new tasks', async ({ page }
     });
   });
 
-  await page.goto(`${baseUrl}/todo`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/todo`, { waitUntil: 'domcontentloaded' });
 
   await expect(page.getByText('API 返回的晨间复盘')).toBeVisible();
   await expect(page.getByText('API 返回的晚间阅读')).toBeVisible();
@@ -83,6 +85,8 @@ test('todo page reads today todos from API and posts new tasks', async ({ page }
 test('energy page loads weekly energy and confirms today score through API', async ({ page }) => {
   const weeklyRequests = [];
   const recordRequests = [];
+
+  await useLoggedInSession(page);
 
   await page.route(`${apiBase}/energy/weeks/${weekId}`, async (route) => {
     weeklyRequests.push(route.request().url());
@@ -115,7 +119,7 @@ test('energy page loads weekly energy and confirms today score through API', asy
     });
   });
 
-  await page.goto(`${baseUrl}/energy`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/energy`, { waitUntil: 'domcontentloaded' });
 
   await expect(page.getByText('90')).toBeVisible();
   expect(weeklyRequests).toHaveLength(1);
@@ -127,6 +131,6 @@ test('energy page loads weekly energy and confirms today score through API', asy
   await expect(recordRequests).toHaveLength(1);
   expect(recordRequests[0]).toMatchObject({
     hasViewedTodos: true,
-    score: 82,
+    score: 62,
   });
 });

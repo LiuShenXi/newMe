@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test');
+const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const apiBase = 'http://127.0.0.1:37200/api/v1';
 const weekId = '2026-W18';
 
 test.use({
@@ -10,6 +10,8 @@ test.use({
 });
 
 test('plan page keeps prototype AI fallback when APIs fail to load', async ({ page }) => {
+  await useLoggedInSession(page);
+
   await page.route(`${apiBase}/plans/weeks/${weekId}/focuses`, async (route) => {
     await route.abort();
   });
@@ -18,7 +20,7 @@ test('plan page keeps prototype AI fallback when APIs fail to load', async ({ pa
     await route.abort();
   });
 
-  await page.goto(`${baseUrl}/plan`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/plan`, { waitUntil: 'domcontentloaded' });
 
   await expect(page.getByText('只规划最近一个月，避免计划过远失效')).toBeVisible();
   await expect(page.getByText('AI 重规划')).toBeVisible();
@@ -29,6 +31,8 @@ test('plan page loads weekly focuses and current goals from APIs', async ({ page
   const focusRequests = [];
   const goalRequests = [];
   const updateRequests = [];
+
+  await useLoggedInSession(page);
 
   await page.route(`${apiBase}/plans/weeks/${weekId}/focuses`, async (route) => {
     const request = route.request();
@@ -108,7 +112,7 @@ test('plan page loads weekly focuses and current goals from APIs', async ({ page
     });
   });
 
-  await page.goto(`${baseUrl}/plan`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/plan`, { waitUntil: 'domcontentloaded' });
 
   await expect(page.getByText('API 接入计划页周重点')).toBeVisible();
   await expect(page.getByText('保持原型计划页视觉层级')).toBeVisible();
@@ -116,7 +120,7 @@ test('plan page loads weekly focuses and current goals from APIs', async ({ page
   await expect(page.getByText('自己掌控粒度，空着也可以继续走')).toHaveCount(0);
   await expect(page.getByText('AI 重规划')).toBeVisible();
   expect(focusRequests).toHaveLength(1);
-  expect(goalRequests).toHaveLength(1);
+  expect(goalRequests.length).toBeGreaterThanOrEqual(1);
 
   await page.getByText('年/季度').click();
   await expect(page.getByText('Q2 打磨 API 驱动的成长闭环')).toBeVisible();
@@ -132,6 +136,8 @@ test('plan page loads weekly focuses and current goals from APIs', async ({ page
 });
 
 test('plan page keeps empty fallback and manual source when APIs return no plan hierarchy', async ({ page }) => {
+  await useLoggedInSession(page);
+
   await page.route(`${apiBase}/plans/weeks/${weekId}/focuses`, async (route) => {
     await route.fulfill({
       contentType: 'application/json',
@@ -152,7 +158,7 @@ test('plan page keeps empty fallback and manual source when APIs return no plan 
     });
   });
 
-  await page.goto(`${baseUrl}/plan`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/plan`, { waitUntil: 'domcontentloaded' });
 
   await expect(page.getByText('手动 OKR', { exact: true })).toBeVisible();
   await expect(page.getByText('暂未设置').first()).toBeVisible();

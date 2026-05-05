@@ -1,7 +1,7 @@
 const { expect, test } = require('@playwright/test');
+const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const apiBase = 'http://127.0.0.1:37200/api/v1';
 
 test.use({
   viewport: { width: 390, height: 844 },
@@ -11,6 +11,8 @@ test.use({
 test('quick onboarding generates an AI draft, confirms it, and enters the energy flow', async ({ page }) => {
   const generateRequests = [];
   const confirmRequests = [];
+
+  await useLoggedInSession(page, { hasCompletedOnboarding: false });
 
   await page.route(`${apiBase}/ai/generations`, async (route) => {
     const request = route.request();
@@ -59,8 +61,8 @@ test('quick onboarding generates an AI draft, confirms it, and enters the energy
     });
   });
 
-  await page.goto(`${baseUrl}/onboarding/quick`, { waitUntil: 'networkidle' });
-  await page.getByPlaceholder('例如：完成个人成长 App 的第一个可用 MVP。').fill('发布个人成长 App MVP');
+  await page.goto(`${baseUrl}/onboarding/quick`, { waitUntil: 'domcontentloaded' });
+  await page.getByPlaceholder('例如：开发一款 App，上架到应用商店').fill('发布个人成长 App MVP');
   await page.getByText('让 AI 帮我拆成这周行动').click();
 
   await expect(page.getByText('跑通真实 AI 规划链路')).toBeVisible();
@@ -71,7 +73,7 @@ test('quick onboarding generates an AI draft, confirms it, and enters the energy
     scenario: 'quick_quarter_plan',
   });
 
-  await page.getByText('确认并进入能量页').click();
+  await page.getByText('进入能量页').click();
   await expect(page).toHaveURL(/\/energy$/);
   await expect(confirmRequests).toHaveLength(1);
   expect(confirmRequests[0]).toMatchObject({

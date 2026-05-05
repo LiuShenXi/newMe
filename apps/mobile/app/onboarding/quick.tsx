@@ -167,7 +167,7 @@ export default function QuickPlanScreen() {
             <PrototypeButton disabled={isConfirming} onPress={() => void confirmDraft('/(tabs)/todo')}>
               先看今日清单
             </PrototypeButton>
-            <PrototypeButton disabled={isConfirming} onPress={confirmDraft} variant="ghost">
+            <PrototypeButton disabled={isConfirming} onPress={() => void confirmDraft('/(tabs)/energy')} variant="ghost">
               进入能量页
             </PrototypeButton>
           </View>
