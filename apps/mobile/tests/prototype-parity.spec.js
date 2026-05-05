@@ -44,6 +44,76 @@ test('energy page keeps prototype vertical rhythm', async ({ page }) => {
   expect(confirmButton.y).toBeLessThan(680);
 });
 
+test('bottom nav sits on the prototype bottom edge', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  const nav = await page.getByTestId('prototype-bottom-nav').boundingBox();
+
+  expect(nav).not.toBeNull();
+  expect(Math.round(844 - (nav.y + nav.height))).toBeLessThanOrEqual(24);
+});
+
+test('energy bar matches the gold capsule reference composition', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  await expect(page.getByTestId('energy-value-label')).toHaveText('62%');
+  await expect(page.getByTestId('energy-bar-card')).toBeVisible();
+  await expect(page.getByTestId('energy-bar-hud-line')).toHaveCount(4);
+  await expect(page.getByTestId('energy-bar-hud-corner')).toHaveCount(4);
+  await expect(page.getByTestId('energy-bar-fill')).toBeVisible();
+  await expect(page.getByTestId('energy-bar-tail-fade')).toHaveCount(1);
+  await expect(page.getByTestId('energy-bar-particle')).toHaveCount(22);
+  await expect(page.getByTestId('legacy-energy-thumb')).toHaveCount(0);
+
+  const card = await page.getByTestId('energy-bar-card').boundingBox();
+  const track = await page.getByTestId('energy-bar-track').boundingBox();
+  const fill = await page.getByTestId('energy-bar-fill').boundingBox();
+
+  expect(card).not.toBeNull();
+  expect(track).not.toBeNull();
+  expect(fill).not.toBeNull();
+  expect(card.height).toBeGreaterThanOrEqual(132);
+  expect(card.height).toBeLessThanOrEqual(154);
+  expect(track.height).toBeGreaterThanOrEqual(35);
+  expect(track.height).toBeLessThanOrEqual(45);
+  expect(fill.width / track.width).toBeGreaterThan(0.58);
+  expect(fill.width / track.width).toBeLessThan(0.66);
+
+  const tailBackground = await page.getByTestId('energy-bar-tail').evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(tailBackground).toBe('rgba(0, 0, 0, 0)');
+});
+
+test('energy bar remains clean at zero without stray glow blocks', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  const track = await page.getByTestId('energy-bar-track').boundingBox();
+  expect(track).not.toBeNull();
+  await page.mouse.click(track.x + 1, track.y + track.height / 2);
+
+  await expect(page.getByTestId('energy-value-label')).toHaveText('0%');
+  const fill = await page.getByTestId('energy-bar-fill').boundingBox();
+  const tail = await page.getByTestId('energy-bar-tail').boundingBox();
+
+  expect(fill).not.toBeNull();
+  expect(tail).not.toBeNull();
+  expect(fill.width).toBeLessThanOrEqual(4);
+  expect(tail.width).toBeLessThanOrEqual(4);
+});
+
+test('energy bar follows the finger while dragging', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  const track = await page.getByTestId('energy-bar-track').boundingBox();
+  expect(track).not.toBeNull();
+
+  await page.mouse.move(track.x + track.width * 0.12, track.y + track.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(track.x + track.width * 0.82, track.y + track.height / 2, { steps: 12 });
+
+  await expect(page.getByTestId('energy-value-label')).toHaveText(/8[0-4]%/);
+  await page.mouse.up();
+});
+
 test('growth tree is no longer a placeholder', async ({ page }) => {
   await page.goto(`${baseUrl}/tree`, { waitUntil: 'networkidle' });
   await expect(page.getByText('6')).toBeVisible();

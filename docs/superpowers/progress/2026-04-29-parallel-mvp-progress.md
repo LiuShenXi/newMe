@@ -337,11 +337,13 @@ git worktree list
 
 ### 2026-05-05
 
-- 等离子氮气能量条升级：按用户反馈，旧黄条 + 圆头滑块视觉张力不足，本轮将 `prototype/index.html` 和移动端 `EnergySlider` 同步升级为无圆形 thumb 的等离子氮气轨道；视觉包含斜切喷口、黄白能量核心、青色电离辉光、多层尾焰和 16 个粒子逸散点。
+- 金色胶囊能量条 1:1 复刻：按用户目标图，将 `prototype/index.html` 和移动端 `EnergySlider` 同步升级为暗金卡片 + 金色胶囊进度主体 + 深色未填充轨道 + 细金色外框 + 青色 HUD 端点/细线 + 克制粒子层；默认今日能量值改为 `62%`，不再使用独立圆形 thumb。
 - NaN 回归修复：`EnergySlider` 对外部 value 和点击/拖动输入统一做 finite check 与 `0-100` clamp，避免 Web 点击事件缺少 `locationX` 时把 `NaN%` 渲染到页面。
 - TDD 记录：先新增 `plasma energy rail has no round thumb and never renders NaN` Playwright 断言，确认红测失败于缺失 `plasma-energy-slider`；实现后 focused 用例已转绿。
-- 用户复核后纠偏：第一版尾焰固定宽度导致 0% 左侧出现块状光斑，默认态青色辉光也过厚；已改为尾焰随能量填充宽度收缩，0% 隐藏喷口/尾焰，默认态只保留细黄白主轨和局部青色尾焰。
-- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 7 个用例通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 1 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
+- 用户复核后纠偏：放弃第一版过度发挥的等离子喷口方向，改为按目标图做金色胶囊能量条；新增结构断言覆盖卡片高度、轨道高度、填充比例、HUD 线/端点、粒子数量，以及 0% 时无游离光斑。
+- 拖动跟手修复：按用户反馈将能量条从点击/松手式更新改为 `PanResponder` 连续跟踪，`mouse.down` 后拖动到新位置时会在未松手前实时更新百分比；新增 `energy bar follows the finger while dragging` 回归断言锁定该交互。
+- 尾雾硬边修复：按用户截图反馈，去掉 `energy-bar-tail` 的实体半透明背景，改为透明容器内叠横向渐隐 `LinearGradient`；`prototype/index.html` 同步改为左右透明的 CSS 渐变，避免能量条末端出现突兀黄色/青色方框。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 8 个用例通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 1 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
 
 ## 阻塞与风险
 

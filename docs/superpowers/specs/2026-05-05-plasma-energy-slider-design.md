@@ -1,33 +1,34 @@
-# Plasma Energy Slider Design
+# Gold Capsule Energy Bar Design
 
 ## Goal
 
-Upgrade the daily energy slider from a plain thumb-based range control into a high-impact plasma nitro energy rail, and make this upgraded rail the new prototype source of truth.
+Rebuild the daily energy control to 1:1 match the user-provided target image: a calm, premium gold capsule energy bar inside the dark forest product style.
 
 ## Visual Direction
 
-- Remove the visible round thumb from the energy bar.
-- Use a dark glass rail with a bright yellow-white energy core and cyan plasma halo.
-- Represent the current value with an angled nozzle/cut face instead of a circular knob.
-- Render three trailing layers behind the nozzle: hot core, cyan flame, and long translucent afterimage.
-- Add deterministic particle sparks that drift backward from the nozzle with varied size, opacity, and direction.
-- Increase particle intensity while dragging and briefly after confirming energy.
-- Keep the value label stable and never render `NaN%`.
+- Default daily energy value is `62%`.
+- Use an dark-gold glass card with a thin gold border.
+- Use a long dark capsule track with a thin gold outline.
+- Fill the track with a gold capsule gradient, not a separate circular thumb.
+- Keep the fill rounded at both ends and proportional to the value.
+- Add subtle internal shine, a restrained moving highlight, and small gold particles inside the fill.
+- Add cyan HUD endpoint corners and fine decorative lines around the rail.
+- Render the tail mist as a transparent layer with a horizontal fade gradient so it disappears naturally without a rectangular yellow/cyan boundary.
+- Avoid orange fire, large plasma blocks, independent round knobs, or exaggerated game UI effects.
+- Keep `0%` visually clean: no stray glow block, no leftover cap, no `NaN%`.
 
 ## Implementation Boundaries
 
-- Update `prototype/index.html` first so the prototype remains the visual truth.
-- Update `apps/mobile/src/features/energy/components/EnergySlider.tsx` to match the new rail using React Native `View` and `Animated`.
-- Avoid adding new rendering dependencies in this iteration.
-- Preserve the existing page layout, copy, API behavior, and confirmation flow.
+- `prototype/index.html` remains the visual source of truth.
+- `apps/mobile/src/features/energy/components/EnergySlider.tsx` implements the mobile version with React Native `View`, `LinearGradient`, and lightweight `Animated`.
+- No Skia dependency in this pass; Skia can be added later for true procedural particles if the static 1:1 target needs more motion.
+- Preserve existing page layout, copy, API behavior, and confirmation flow.
 
 ## Testing
 
-- Extend Playwright parity coverage to assert the plasma rail structure exists.
-- Add a regression assertion that clicking the energy control never renders `NaN%`.
-- Keep existing prototype visual regression anchors aligned with the new rail geometry.
+- Playwright parity checks must assert default `62%`, gold capsule structure, HUD line/corner counts, particle count, fill ratio, a transparent tail container with a gradient fade child, finger-follow dragging, and clean `0%` state.
+- Existing prototype visual regression must remain green.
 
 ## Documentation
 
-- Update `产品需求设计文档.md` to record the plasma energy rail as the current implementation target.
-- Update `docs/prototype-parity/2026-05-04-full-page-diff-audit.md` and the progress log with the change and verification result.
+- Update `产品需求设计文档.md`, the parity audit, and the progress log to record the target-image gold capsule bar as the current acceptance baseline.

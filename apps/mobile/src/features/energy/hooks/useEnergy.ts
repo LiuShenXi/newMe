@@ -28,7 +28,7 @@ function getDemoWeekEnergy() {
 export function useEnergy() {
   const { currentWeekId, todayDate } = usePlanningContext();
   const [charging, setCharging] = useState(false);
-  const [energyValue, setEnergyValue] = useState(82);
+  const [energyValue, setEnergyValue] = useState(62);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [reminderVisible, setReminderVisible] = useState(false);

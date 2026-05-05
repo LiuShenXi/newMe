@@ -1,12 +1,12 @@
-# Plasma Energy Slider Implementation Plan
+# Gold Capsule Energy Bar Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the plain daily energy slider with a plasma nitro rail and make the prototype plus mobile client share the upgraded visual language.
+**Goal:** Replace the improvised energy slider with a 1:1 gold capsule energy bar based on the user-provided target image.
 
-**Architecture:** `prototype/index.html` defines the updated visual source of truth. `EnergySlider.tsx` implements the mobile version with React Native layout primitives and lightweight `Animated` loops. Playwright tests lock the visible structure and the `NaN%` regression.
+**Architecture:** `prototype/index.html` defines the updated source of truth. `EnergySlider.tsx` implements the same composition with React Native views, `expo-linear-gradient`, `PanResponder` drag tracking, and a small Animated highlight. Playwright tests lock the visual structure, default `62%` target state, transparent gradient tail mist, zero-value cleanliness, and finger-follow drag behavior.
 
-**Tech Stack:** Expo React Native, React Native Web, Playwright, single-file HTML prototype, Markdown docs.
+**Tech Stack:** Expo React Native, `expo-linear-gradient`, React Native Animated, Playwright, single-file HTML prototype, Markdown docs.
 
 ---
 
@@ -14,47 +14,59 @@
 
 **Files:**
 - Modify: `apps/mobile/tests/prototype-parity.spec.js`
-- Modify: `apps/mobile/tests/prototype-visual-regression.spec.js`
 
-- [x] **Step 1: Add structure and NaN assertions**
+- [x] **Step 1: Add target-image structure assertions**
 
-Add a Playwright test that opens the energy page, clicks the energy control, verifies the value label is not `NaN%`, and checks for plasma rail test ids.
+Add Playwright coverage for default `62%`, `energy-bar-card`, four HUD lines, four HUD corners, `energy-bar-fill`, 22 particles, fill-to-track ratio, and absence of `legacy-energy-thumb`.
 
-- [x] **Step 2: Run the focused test and confirm RED**
+- [x] **Step 2: Add zero-state cleanliness assertion**
 
-Run: `npx playwright test apps/mobile/tests/prototype-parity.spec.js --grep "plasma energy rail" --reporter=line`
+Click the far-left side of the track and assert the value becomes `0%` with fill and tail widths no larger than 4px.
 
-Expected: FAIL because the current slider does not expose the plasma rail structure.
+- [x] **Step 3: Add tail fade assertion**
 
-### Task 2: Upgrade Prototype Source of Truth
+Assert `energy-bar-tail` has no solid background and contains one `energy-bar-tail-fade` gradient child, preventing the visible rectangular glow block.
+
+- [x] **Step 4: Add finger-follow drag assertion**
+
+Hold the pointer down, drag across the track, and assert the percentage updates before pointer release.
+
+- [x] **Step 5: Run focused tests and confirm RED**
+
+Run: `npx playwright test apps/mobile/tests/prototype-parity.spec.js --grep "energy bar" --reporter=line`
+
+Expected: FAIL because the current slider does not expose the gold capsule target structure and still defaults to `82%`.
+
+### Task 2: Implement Mobile Gold Capsule Bar
+
+**Files:**
+- Modify: `apps/mobile/src/features/energy/components/EnergySlider.tsx`
+- Modify: `apps/mobile/src/features/energy/hooks/useEnergy.ts`
+
+- [x] **Step 1: Set default daily energy to 62**
+
+Change the local demo default from `82` to `62`.
+
+- [x] **Step 2: Rebuild EnergySlider layers**
+
+Render the dark-gold card, header, HUD decorations, dark capsule track, gold gradient fill, internal shine, particles, transparent gradient tail mist, and clean zero state.
+
+- [x] **Step 3: Preserve interaction safety**
+
+Keep finite input parsing and clamp all changes to `0-100`.
+
+### Task 3: Update Prototype Source of Truth
 
 **Files:**
 - Modify: `prototype/index.html`
 
-- [x] **Step 1: Replace the old nitro rail CSS**
+- [x] **Step 1: Set prototype daily value to 62**
 
-Update `.nitro-range-wrap`, `.nitro-tail`, `.nitro-head`, and `.nitro-spark` styling so the rail uses an angled nozzle, layered plasma tails, and stronger particle sparks.
+Update prototype default state from `82` to `62`.
 
-- [x] **Step 2: Keep the existing range input invisible but interactive**
+- [x] **Step 2: Replace old nitro styling**
 
-Do not change the `input#energy-range` data flow. Only change visual layers and class semantics.
-
-### Task 3: Upgrade Mobile EnergySlider
-
-**Files:**
-- Modify: `apps/mobile/src/features/energy/components/EnergySlider.tsx`
-
-- [x] **Step 1: Clamp value rendering**
-
-Render `safeValue = clampFinite(value)` and call `onChange` only with finite numbers.
-
-- [x] **Step 2: Replace thumb UI with plasma layers**
-
-Render test-id-backed layers for rail, core fill, plasma tail, nozzle, and sparks. The nozzle must be angled, not a circle.
-
-- [x] **Step 3: Add lightweight animation**
-
-Use `Animated.loop` for pulsing opacity/scale on the plasma tail and particles. Keep the control usable on web and mobile.
+Update the range card and rail CSS to use the target-image gold capsule composition instead of the old round-thumb nitro rail.
 
 ### Task 4: Sync Documentation
 
@@ -63,9 +75,9 @@ Use `Animated.loop` for pulsing opacity/scale on the plasma tail and particles. 
 - Modify: `docs/prototype-parity/2026-05-04-full-page-diff-audit.md`
 - Modify: `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
 
-- [x] **Step 1: Record the new source-of-truth decision**
+- [x] **Step 1: Record the new acceptance baseline**
 
-Document that the energy slider was intentionally upgraded beyond the old prototype and the new prototype rail is the acceptance baseline.
+Document that the current target is the user-provided gold capsule energy bar, not the earlier plasma/nozzle exploration.
 
 ### Task 5: Verify
 

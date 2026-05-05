@@ -56,10 +56,10 @@ test('captures and compares prototype/client visual anchors', async ({ browser }
   await screenshotPrototype(proto, 'energy');
   await screenshotClient(client, 'energy');
   const clientNav = await boxFor(client.getByTestId('prototype-bottom-nav'));
-  expectBoxClose(clientNav, { x: 20, y: 722, width: 350, height: 70 });
+  expectBoxClose(clientNav, { x: 20, y: 754, width: 350, height: 70 });
   const navButtons = await client.getByTestId('prototype-nav-button').all();
   expect(navButtons).toHaveLength(4);
-  expectBoxClose(await boxFor(navButtons[0]), { x: 28, y: 730, width: 83.5, height: 54 }, 3);
+  expectBoxClose(await boxFor(navButtons[0]), { x: 28, y: 762, width: 83.5, height: 54 }, 3);
 
   const primaryButton = await boxFor(client.getByTestId('prototype-button-primary').first());
   expect(primaryButton.height).toBeGreaterThanOrEqual(48);
