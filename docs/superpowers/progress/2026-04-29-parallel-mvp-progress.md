@@ -348,6 +348,7 @@ git worktree list
 - 测试矩阵固化：新增 `scripts/full-app-http-smoke.cjs`，并在根 `package.json` 增加 `test:full-http-smoke`、`test:mobile:e2e`、`test:prototype`。HTTP smoke 覆盖 health、auth、me、goals、plans、todos、energy、settlement、tree、sync、notifications、AI generation/confirm。
 - 阶段验证记录：`npx playwright test apps/mobile/tests/f2-quick-onboarding.spec.js apps/mobile/tests/f2-vision-onboarding.spec.js apps/mobile/tests/f2-manual-ai-assist.spec.js apps/mobile/tests/f3-daily-api.spec.js apps/mobile/tests/f4-plan-api.spec.js apps/mobile/tests/f4-settlement-tree-api.spec.js --reporter=line` 9 个用例通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`node scripts/full-app-http-smoke.cjs` 23 项 PASS。
 - 全量收口验证记录：`pnpm -r typecheck` 通过；`pnpm --filter @newme/api test -- --runInBand` 16 suites / 41 tests 通过；`pnpm --filter @newme/api build` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`docker compose config` 通过；`pnpm test:full-http-smoke` 23 项 PASS；`pnpm test:mobile:e2e` Node smoke 7 项 + Playwright 25 tests 通过；`pnpm test:prototype` 通过。
+- 设备级 SQLite smoke 交接：新增 `docs/testing/2026-05-05-device-sqlite-smoke.md` 与 `scripts/device-sqlite-smoke.cjs`，根 `package.json` 增加 `test:device-sqlite-smoke`。该入口自动预检 Node、`expo-sqlite`、`newme.db`、migration、F5 runtime exports 和 API health，并输出真机操作者清单；真实设备步骤仍需在 Expo Go/dev build 中手动留证。
 
 ## 阻塞与风险
 
@@ -368,7 +369,7 @@ git worktree list
 
 如果用户要求继续开发，建议按以下顺序：
 
-1. 发布前设备级 SQLite smoke：在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull。
+1. 执行发布前设备级 SQLite smoke：先运行 `pnpm test:device-sqlite-smoke`，再按 `docs/testing/2026-05-05-device-sqlite-smoke.md` 在真实 Expo 运行态验证 DB open、migration、离线入队、push/pull，并把证据放到 `test-results/device-sqlite-smoke/`。
 2. 推送远端前确认是否要包含或另行处理 `AGENTS.md`、`CLAUDE.md` 的用户侧未提交改动；当前功能提交未包含这两个文件。
 3. 若本机 37200 已被其它服务占用，设置 `NGINX_PORT` 后重新 `docker compose up --build`，并同步调整移动端 `EXPO_PUBLIC_API_BASE_URL`。
 
