@@ -14,8 +14,8 @@ test.beforeEach(async ({ page }) => {
 
 test('mobile screens expose prototype-level chrome and copy', async ({ page }) => {
   await page.goto(`${baseUrl}/onboarding/choose`, { waitUntil: 'networkidle' });
-  await expect(page.getByText('09:07')).toBeVisible();
-  await expect(page.getByText('87%')).toBeVisible();
+  await expect(page.getByText('09:07')).toHaveCount(0);
+  await expect(page.getByText('87%')).toHaveCount(0);
   await expect(page.getByText('先快速规划这个季度')).toBeVisible();
 
   await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
@@ -36,12 +36,12 @@ test('energy page keeps prototype vertical rhythm', async ({ page }) => {
   expect(sliderLabel).not.toBeNull();
   expect(confirmButton).not.toBeNull();
 
-  expect(energyLabel.y).toBeGreaterThan(178);
-  expect(energyLabel.y).toBeLessThan(215);
-  expect(sliderLabel.y).toBeGreaterThan(500);
-  expect(sliderLabel.y).toBeLessThan(545);
-  expect(confirmButton.y).toBeGreaterThan(620);
-  expect(confirmButton.y).toBeLessThan(680);
+  expect(energyLabel.y).toBeGreaterThan(146);
+  expect(energyLabel.y).toBeLessThan(183);
+  expect(sliderLabel.y).toBeGreaterThan(468);
+  expect(sliderLabel.y).toBeLessThan(513);
+  expect(confirmButton.y).toBeGreaterThan(588);
+  expect(confirmButton.y).toBeLessThan(648);
 });
 
 test('bottom nav sits on the prototype bottom edge', async ({ page }) => {

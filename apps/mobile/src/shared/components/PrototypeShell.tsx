@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import type { PropsWithChildren } from 'react';
-import { ScrollView, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import {
   prototype,
@@ -19,16 +19,6 @@ interface PrototypeScreenProps extends PropsWithChildren {
   showNav?: boolean;
 }
 
-export function PrototypeStatusBar() {
-  return (
-    <View style={styles.statusBar}>
-      <Text style={styles.statusText}>09:07</Text>
-      <View style={styles.speaker} />
-      <Text style={styles.statusText}>87%</Text>
-    </View>
-  );
-}
-
 export function PrototypeScreen({
   activeTab,
   children,
@@ -41,7 +31,6 @@ export function PrototypeScreen({
   const shouldScroll = contentMode ? contentMode === 'scroll' : scroll;
   const content = (
     <View style={styles.content}>
-      <PrototypeStatusBar />
       <View style={[styles.main, shouldShowNav ? styles.mainWithNav : null, contentStyle]}>{children}</View>
     </View>
   );
@@ -95,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 12,
     minHeight: 0,
-    paddingTop: prototype.size.mainTop,
+    paddingTop: 0,
   },
   mainWithNav: {
     paddingBottom: prototype.size.bottomNavHeight + prototype.size.bottomNavInsetWeb,
@@ -108,24 +97,5 @@ const styles = StyleSheet.create({
   scrollContent: {
     minHeight: '100%',
     width: '100%',
-  },
-  speaker: {
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    borderRadius: prototype.radius.pill,
-    height: 16,
-    width: 112,
-  },
-  statusBar: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: prototype.size.statusHeight,
-    paddingHorizontal: 1,
-  },
-  statusText: {
-    color: 'rgba(203, 213, 225, 0.70)',
-    fontSize: 12,
-    lineHeight: 16,
   },
 });

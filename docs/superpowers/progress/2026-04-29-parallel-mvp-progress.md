@@ -415,15 +415,15 @@ git worktree list
 ### 2026-04-30
 
 - 设计总监返工启动：用户明确要求移动端前端界面按 `prototype/index.html` 1:1 还原，不再只做结构参考。
-- 新增原型还原红测 `apps/mobile/tests/prototype-parity.spec.js`：初始失败点为缺少原型状态栏、冷启动文案不一致、成长树仍为占位。
-- 公共视觉壳完成：新增 `PrototypeShell`，补齐原型内状态栏 `09:07 / 87%`、深绿色背景、玻璃卡和页面光晕；底部 Tab 改为原型胶囊式悬浮导航。
+- 新增原型还原红测 `apps/mobile/tests/prototype-parity.spec.js`：初始失败点为缺少原型顶部 chrome、冷启动文案不一致、成长树仍为占位；2026-05-06 已按用户反馈移除人工时间、电量和中间胶囊占位。
+- 公共视觉壳完成：新增 `PrototypeShell`，补齐深绿色背景、玻璃卡和页面光晕；底部 Tab 改为原型胶囊式悬浮导航；2026-05-06 顶部人工时间、电量和中间胶囊占位已移除。
 - C5-C8 视觉返工完成：冷启动三路径卡片改为原型玻璃样式并修正文案为 `先快速规划这个季度`；能量页、清单页、计划页改回原型深绿玻璃层级、圆角、光效和间距。
 - C9 成长树完成：新增 `GrowthTree`、`FruitCapsule` 和果实数据，展示树干、枝干、树冠、6 个金色果实、`Q2 阶段`、`1 荣誉`，点击果实可打开时间胶囊。
 - 依赖更新：移动端新增 `expo-linear-gradient@^15.0.8` 用于还原原型背景渐变；Metro 需要 `expo start -c` 清缓存后识别新依赖。
 - 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 2 个用例通过；使用 Playwright 生成 `final-onboarding/energy/todo/plan/tree` 截图完成肉眼检查。
 - 总监续跑代码级还原补强：按用户要求派发 3 个只读子 agent，分别审计原型 CSS token/布局、交互状态机、移动端实现差异；全程未使用截图、浏览器视觉检查或图像工具作为验收依据。
 - 新增并扩展 `apps/mobile/tests/prototype-parity.spec.js` 交互红测：初始失败于能量确认提醒文案不一致；review 后继续补红测覆盖访问清单后返回能量不再重复提醒、`AI 重规划` 生成 W17 新任务、左滑删除 `跑步 30 分钟`、`/settlement` 确认后生成第 17 周果实并跳成长树、成长树 time capsule 文案。
-- 设计 token/公共壳补强：`colors.ts` 对齐深林绿、能量青、果实金和原型文本色；`PrototypeShell`、`Button`、底部 Tab 继续向原型 phone 内状态栏、深绿背景、玻璃卡、70px 胶囊导航靠拢。
+- 设计 token/公共壳补强：`colors.ts` 对齐深林绿、能量青、果实金和原型文本色；`PrototypeShell`、`Button`、底部 Tab 继续向原型 phone 内深绿背景、玻璃卡、70px 胶囊导航靠拢；2026-05-06 顶部人工时间、电量和中间胶囊占位已移除。
 - 能量页补强：提醒弹层文案改为 `要不要先看看今天的清单？`，按钮改为 `先看清单` 跳转 `/todo`、`继续注入` 直接确认；新增 `prototype.store` 保存 `viewedList`，访问清单后返回能量页不再重复提醒；默认能量值和本周重点数据对齐原型。
 - 清单页补强：默认标题改为 `4 月 26 日`，默认 4 条任务、本周重点标签和本周 7 天概览数据对齐原型；TodoItem 改为左滑露出 78px 垃圾桶删除，编辑按钮保留在 surface 内。
 - 计划页补强：默认 `planSource=ai` 时不再展示手动来源卡；月视图标题改为 `只规划最近一个月，避免计划过远失效`，`AI 重规划` 可打开反馈面板，提交后进入生成中并更新 W17 后续计划；年视图 AI 来源文案对齐原型。
@@ -439,7 +439,7 @@ git worktree list
 - 用户复核后修正口径：此前“视觉还原完成”不准确，实际只是页面级视觉锚点靠拢，底栏之外的按钮、胶囊、弹窗、sheet、toast 等 UI 原语仍与 `prototype/index.html` 差异明显。本轮验收标准改为“原型原语级复刻”。
 - TDD 记录：先升级 `apps/mobile/tests/prototype-visual-regression.spec.js`，将底部 nav 几何容差从 60px 收紧到 2px，并新增 `prototype-bottom-nav`、`prototype-button-primary`、`prototype-button-pill`、`prototype-modal-card`、`prototype-edit-sheet`、`prototype-button-replan`、`prototype-button-tree-tool`、`prototype-toast` 等结构断言；红测初始失败于缺失自绘原语/编辑 sheet 几何。
 - 原语层实现：新增 `apps/mobile/src/shared/components/PrototypePrimitives.tsx`，统一 `PrototypeBottomNav`、`PrototypeButton`、`PrototypeModalLayer`、`PrototypeModalCard`、`PrototypeEditSheet`、`PrototypeActionRow`、`PrototypeToast`、`PrototypeInput`、`PrototypeTextarea`、`PrototypeTreeTool`；`apps/mobile/app/(tabs)/_layout.tsx` 隐藏 Expo Router 默认 tabbar，由自绘底栏接管视觉。
-- 页面引用改造：能量提醒、清单本周弹窗、编辑底部 sheet、添加待办、计划 `AI 重规划`、成长树侧边工具、周结算输入与按钮均切到 prototype 原语；`PrototypeScreen` 修正状态栏与 `phone-main` 的 12px 顶距，避免页面首屏整体下沉；清单卡片恢复原型主区域填充，待办条目回到 58px 节奏。
+- 页面引用改造：能量提醒、清单本周弹窗、编辑底部 sheet、添加待办、计划 `AI 重规划`、成长树侧边工具、周结算输入与按钮均切到 prototype 原语；`PrototypeScreen` 统一顶部节奏；2026-05-06 移除人工时间、电量和中间胶囊占位后，`phone-main` 顶距归零，页面内容从 phone 容器安全留白后开始；清单卡片恢复原型主区域填充，待办条目回到 58px 节奏。
 - Demo 数据校准：能量页 `weekEnergy` 改为按原型本周已记录能量均值计算，默认首屏回到 78%，避免视觉截图与原型主数值不一致。
 - 文档同步：`产品需求设计文档.md` 与本进度日志均已说明“视觉还原完成”旧表述不准确，当前改为“原型原语级复刻”；剩余差异主要来自 RN Web 与原生 HTML/CSS 的字体渲染、Ionicons 图标路径和滤镜能力差异。
 - 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 4 个用例通过；`npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line` 1 个用例通过。
@@ -512,6 +512,14 @@ git worktree list
 - 阶段验证记录：`npx playwright test apps/mobile/tests/f2-quick-onboarding.spec.js apps/mobile/tests/f2-vision-onboarding.spec.js apps/mobile/tests/f2-manual-ai-assist.spec.js apps/mobile/tests/f3-daily-api.spec.js apps/mobile/tests/f4-plan-api.spec.js apps/mobile/tests/f4-settlement-tree-api.spec.js --reporter=line` 9 个用例通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`node scripts/full-app-http-smoke.cjs` 23 项 PASS。
 - 全量收口验证记录：`pnpm -r typecheck` 通过；`pnpm --filter @newme/api test -- --runInBand` 16 suites / 41 tests 通过；`pnpm --filter @newme/api build` 通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`docker compose config` 通过；`pnpm test:full-http-smoke` 23 项 PASS；`pnpm test:mobile:e2e` Node smoke 7 项 + Playwright 25 tests 通过；`pnpm test:prototype` 通过。
 - 设备级 SQLite smoke 交接：新增 `docs/testing/2026-05-05-device-sqlite-smoke.md` 与 `scripts/device-sqlite-smoke.cjs`，根 `package.json` 增加 `test:device-sqlite-smoke`。该入口自动预检 Node、`expo-sqlite`、`newme.db`、migration、F5 runtime exports 和 API health，并输出真机操作者清单；真实设备步骤仍需在 Expo Go/dev build 中手动留证。
+
+### 2026-05-06
+
+- 顶部假时间/电量移除：按用户截图反馈，从 `prototype/index.html` 和移动端 `PrototypeShell` 删除人工 `09:07`、`87%` 和中间黑色胶囊占位；`phone-main` 顶距归零，页面内容从 phone 容器 16px 安全留白后开始。
+- 测试同步：`apps/mobile/tests/prototype-parity.spec.js` 将顶部 fake chrome 断言改为不可见，并把能量页纵向节奏断言整体上移约 32px。
+- 文档同步：`产品需求设计文档.md` 已更新最后更新时间与顶部还原口径，本进度日志同步记录改动范围、验证结果和当前无阻塞。
+- 验证记录：首次运行 `npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 因 `http://localhost:37300` 未启动失败；随后用 `pnpm --filter @newme/mobile exec expo start --web --port 37300 --host localhost` 启动 Expo Web，`curl -I http://localhost:37300` 返回 HTTP 200；重跑 `npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 8 个用例通过；`pnpm --filter @newme/mobile typecheck` 通过。
+- 阻塞与下一步：本轮无阻塞；Expo Web 当前保持在 `http://localhost:37300` 供本机实时预览。
 
 ## 阻塞与风险
 

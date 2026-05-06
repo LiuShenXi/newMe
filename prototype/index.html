@@ -103,25 +103,10 @@
       padding: 16px 20px 20px;
       color: #f1f5f9;
     }
-    .status-bar {
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: rgba(203, 213, 225, .70);
-      font-size: 12px;
-    }
-    .speaker {
-      width: 112px;
-      height: 16px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, .35);
-      box-shadow: inset 0 2px 8px rgba(0, 0, 0, .32);
-    }
     .phone-main {
       min-height: 0;
       flex: 1;
-      padding-top: 12px;
+      padding-top: 0;
     }
     .bottom-nav {
       height: 70px;
@@ -3135,7 +3120,6 @@
           <div class="phone-bg"></div>
           <div class="phone-grid"></div>
           <div class="phone-content">
-            <div class="status-bar"><span>09:07</span><div class="speaker"></div><span>87%</span></div>
             <main class="phone-main">${children}</main>
             ${showNav ? renderNav(activeTab) : ""}
           </div>
