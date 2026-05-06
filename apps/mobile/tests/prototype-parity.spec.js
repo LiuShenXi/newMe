@@ -48,9 +48,14 @@ test('bottom nav sits on the prototype bottom edge', async ({ page }) => {
   await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
 
   const nav = await page.getByTestId('prototype-bottom-nav').boundingBox();
+  const activeTab = page.getByTestId('prototype-nav-button').first();
+  const activeTabBackground = await activeTab.evaluate((element) => getComputedStyle(element).backgroundColor);
 
   expect(nav).not.toBeNull();
-  expect(Math.round(844 - (nav.y + nav.height))).toBeLessThanOrEqual(24);
+  expect(Math.round(nav.x)).toBe(0);
+  expect(Math.round(nav.width)).toBe(390);
+  expect(Math.round(844 - (nav.y + nav.height))).toBe(0);
+  expect(activeTabBackground).toBe('rgba(0, 0, 0, 0)');
 });
 
 test('energy bar matches the gold capsule reference composition', async ({ page }) => {

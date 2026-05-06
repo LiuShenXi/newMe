@@ -75,6 +75,23 @@ git worktree list
 剩余：
 - 头像上传、拍照文件处理、对象存储和头像 URL 后端字段后续补齐。
 
+### 2026-05-06 底部菜单栏沉底修正
+
+本轮完成：
+- 按用户截图反馈，将 `prototype/index.html` 底部菜单从半透明悬浮胶囊改为 88px 实色贴底栏：左右铺满、底边贴住 phone 舞台、取消 backdrop blur。
+- 移动端 `PrototypeBottomNav` 同步改为 `x=0,width=390,bottomGap=0` 的实体底栏，`prototype.size.bottomNavHeight=88`、`bottomNavInsetWeb=0`。
+- 激活 tab 只保留 icon 与文字高亮，移除单个 tab 的选中底色、外框感和内发光。
+- TDD/验证记录：先扩展 `bottom nav sits on the prototype bottom edge` 和视觉锚点断言；红测取样确认旧实现为 `x=20,width=350,bottomGap=20,activeBg=rgba(165,243,252,0.1)`；修复后轻量 Playwright 取样为 `x=0,width=390,bottomGap=0,activeBg=rgba(0,0,0,0),navBg=rgb(13,20,20)`；`npx --no-install playwright test apps/mobile/tests/prototype-parity.spec.js -g "bottom nav sits" --reporter=line --workers=1 --timeout=30000 --output=.tmp/pw-mobile-output` 1 个用例通过。
+
+修改文件：
+- `prototype/index.html`
+- `apps/mobile/src/shared/theme/prototype.ts`
+- `apps/mobile/src/shared/components/PrototypePrimitives.tsx`
+- `apps/mobile/tests/prototype-parity.spec.js`
+- `apps/mobile/tests/prototype-visual-regression.spec.js`
+- `产品需求设计文档.md`
+- `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
+
 ### 2026-05-06 iOS 真机 Dev Build 准备
 
 本轮完成：

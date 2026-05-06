@@ -6,8 +6,8 @@ export const prototype = {
     phoneHeight: 812,
     contentX: 20,
     contentTop: 16,
-    bottomNavHeight: 70,
-    bottomNavInsetWeb: 20,
+    bottomNavHeight: 88,
+    bottomNavInsetWeb: 0,
   },
   color: {
     bg: '#030606',
@@ -19,6 +19,7 @@ export const prototype = {
     softCyan: '#CFFAFE',
     gold: '#FEF3C7',
     amber: '#FACC15',
+    navSolid: '#0D1414',
     glass: 'rgba(255, 255, 255, 0.045)',
     glassStrong: 'rgba(10, 22, 19, 0.85)',
     glassBorder: 'rgba(167, 243, 208, 0.10)',

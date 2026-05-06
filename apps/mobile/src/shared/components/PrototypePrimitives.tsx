@@ -63,7 +63,7 @@ interface PrototypeTopActionsProps {
 
 export function PrototypeBottomNav({ activeTab }: PrototypeBottomNavProps) {
   return (
-    <View style={[styles.bottomNav, prototypeGlassBlur]} testID="prototype-bottom-nav">
+    <View style={styles.bottomNav} testID="prototype-bottom-nav">
       {tabs.map((tab) => {
         const active = tab.id === activeTab;
 
@@ -247,18 +247,20 @@ const styles = StyleSheet.create({
     color: 'rgba(236, 253, 245, 0.80)',
   },
   bottomNav: {
-    backgroundColor: prototype.color.glassStrong,
-    borderColor: 'rgba(209, 250, 229, 0.10)',
-    borderRadius: prototype.radius.nav,
-    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: prototype.color.navSolid,
+    borderColor: 'rgba(209, 250, 229, 0.08)',
+    borderRadius: 0,
+    borderTopWidth: StyleSheet.hairlineWidth,
     bottom: prototype.size.bottomNavInsetWeb,
-    boxShadow: '0 -10px 40px rgba(0, 0, 0, .30)',
+    boxShadow: '0 -1px 0 rgba(0, 0, 0, .38)',
     flexDirection: 'row',
     height: prototype.size.bottomNavHeight,
-    left: 20,
-    padding: 8,
+    left: 0,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
     position: 'absolute',
-    right: 20,
+    right: 0,
     zIndex: 40,
   } as ViewStyle,
   buttonBase: {
@@ -381,15 +383,16 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   navButton: {
     alignItems: 'center',
-    borderRadius: prototype.radius.navItem,
+    backgroundColor: 'transparent',
+    borderRadius: 0,
     flex: 1,
     gap: 4,
-    height: 54,
+    height: 58,
     justifyContent: 'center',
   },
   navButtonActive: {
-    backgroundColor: 'rgba(165, 243, 252, 0.10)',
-    boxShadow: 'inset 0 0 24px rgba(65, 255, 226, .11)',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
   } as ViewStyle,
   navLabel: {
     color: prototype.color.dim,
