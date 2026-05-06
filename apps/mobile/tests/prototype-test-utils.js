@@ -17,6 +17,8 @@ async function mockPrototypeApp(page) {
         json: {
           currentQuarterId: '2026-Q2',
           currentWeekId: '2026-W17',
+          displayName: '林间行者',
+          email: 'wzz@example.com',
           hasCompletedOnboarding: true,
           id: 'prototype-user',
           phone: '+8613800138000',

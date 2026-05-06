@@ -5,7 +5,7 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-06 已新增第一版 Mermaid 架构图谱，并完成 iOS Dev Build 代码准备、Docker Desktop 安装、Docker Compose 后端启动和 iOS 模拟器 Dev Build 登录/AI 规划/确认写入/能量页 smoke；因当前没有 iPhone，真机 SQLite/推送到达仍待实机补测
+- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-06 已新增第一版 Mermaid 架构图谱，完成 iOS Dev Build 模拟器 smoke，并新增 5 Tab「我的」页与昵称/邮箱资料后端；因当前没有 iPhone，真机 SQLite/推送到达仍待实机补测
 - 当前主控：docs/architecture-diagrams（当前工作区）
 - 最近更新时间：2026-05-06
 - 最近更新人：Codex
@@ -20,6 +20,60 @@ git branch --show-current
 git log --oneline -5
 git worktree list
 ```
+
+### 2026-05-06 登录与我的页
+
+本轮完成：
+- 按用户提供设计稿新增底部第 5 个 `我的` tab，静态原型和移动端均实现头像、昵称、登录状态、手机号、邮箱、退出登录入口。
+- 移动端新增 `/(tabs)/me` 页面，完成昵称编辑 sheet、头像操作 sheet、退出确认 modal 和 toast；退出确认调用 `/auth/logout` 后清除本机登录态并回到验证码登录页。
+- 后端新增用户资料能力：`users.display_name`、`users.email` 字段和迁移；`GET /me` 返回昵称/邮箱；`PATCH /me/profile` 保存昵称/邮箱。
+- `prototype/index.html` 同步 5 tab 和我的页交互；产品设计文档与前端架构文档同步更新。
+
+修改文件：
+- `apps/api/prisma/schema.prisma`
+- `apps/api/prisma/migrations/20260506090000_add_user_profile_fields/migration.sql`
+- `apps/api/src/modules/users/users.controller.ts`
+- `apps/api/src/modules/users/users.service.ts`
+- `apps/api/src/modules/users/tests/users.service.spec.ts`
+- `packages/shared/src/dto/auth.ts`
+- `apps/mobile/app/(tabs)/_layout.tsx`
+- `apps/mobile/app/(tabs)/me.tsx`
+- `apps/mobile/src/shared/components/PrototypePrimitives.tsx`
+- `apps/mobile/src/stores/auth.store.ts`
+- `apps/mobile/tests/e2e-auth-utils.js`
+- `apps/mobile/tests/f1-auth-login.spec.js`
+- `apps/mobile/tests/f1-me-profile.spec.js`
+- `apps/mobile/tests/f3-daily-api.spec.js`
+- `apps/mobile/tests/prototype-p0-parity.spec.js`
+- `apps/mobile/tests/prototype-test-utils.js`
+- `apps/mobile/tests/prototype-visual-regression.spec.js`
+- `prototype/index.html`
+- `prototype/prototype-regression.test.cjs`
+- `prototype/prototype-interaction-smoke.cjs`
+- `产品需求设计文档.md`
+- `docs/architecture/02-前端架构设计.md`
+- `docs/architecture/diagrams/14-prototype-parity-map.mmd`
+- `docs/architecture/diagrams/assets/14-prototype-parity-map.svg`
+- `scripts/full-app-http-smoke.cjs`
+
+验证记录：
+- 已通过：`pnpm --filter @newme/shared typecheck`
+- 已通过：`DATABASE_URL="postgresql://user:password@localhost:5432/newme" pnpm --filter @newme/api exec prisma validate --schema prisma/schema.prisma`
+- 已通过：`pnpm --filter @newme/api test -- --runTestsByPath src/modules/users/tests/users.service.spec.ts --runInBand`
+- 计划中的 `pnpm --filter @newme/api test -- --runInBand` 在当前 pnpm/Jest 参数传递下会变成 `jest -- --runInBand`，Jest 将 `--runInBand` 当作文件 pattern，未执行用例；改跑等价命令 `pnpm --filter @newme/api test --runInBand` 已通过，16 suites / 43 tests。
+- 已通过：`pnpm --filter @newme/api typecheck`
+- 已通过：`pnpm --filter @newme/mobile typecheck`
+- 已通过：`node prototype/prototype-regression.test.cjs`
+- 已通过：`node prototype/prototype-interaction-smoke.cjs`
+- 已通过：`npx playwright test apps/mobile/tests/f1-me-profile.spec.js --reporter=line --workers=1 --timeout=45000 --output=.tmp/pw-mobile-output`
+- 已通过：`npx playwright test apps/mobile/tests/f3-daily-api.spec.js --reporter=line --workers=1 --timeout=45000 --output=.tmp/pw-mobile-output`
+- 已通过：`npx playwright test apps/mobile/tests --reporter=line --workers=1 --timeout=45000 --output=.tmp/pw-mobile-output`，Node smoke 7 项 + Playwright 26 tests。
+- 已通过：`PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i docs/architecture/diagrams/14-prototype-parity-map.mmd -o docs/architecture/diagrams/assets/14-prototype-parity-map.svg`
+- 已通过：`node --check scripts/full-app-http-smoke.cjs`
+- 未跑完整 `node scripts/full-app-http-smoke.cjs`：当前本地 `127.0.0.1:4100` 模型服务不可访问，完整 HTTP smoke 的 AI 段依赖可用模型或 fallback 环境变量；本轮已把 `/me/profile` 与 `/auth/logout` 路径同步进脚本。
+
+剩余：
+- 头像上传、拍照文件处理、对象存储和头像 URL 后端字段后续补齐。
 
 ### 2026-05-06 iOS 真机 Dev Build 准备
 
@@ -218,7 +272,7 @@ git worktree list
 | F2 Quick Plan Confirm Backend | DONE | feat/track-f2-cold-start | 本轮提交 | ai.service RED/GREEN；pnpm --filter @newme/shared typecheck；pnpm --filter @newme/api typecheck；pnpm --filter @newme/api test --runInBand 均通过 | 快速规划 AI 草案确认时按用户写入季度目标、WeekPlan、WeeklyFocus、今日 Todo，并标记 onboarding 完成；移动端真实调用待下一步 |
 | F2 Quick Plan Mobile API | DONE | feat/track-f2-quick-mobile | 本轮提交 | Playwright RED/GREEN；pnpm --filter @newme/shared typecheck；pnpm --filter @newme/mobile typecheck；expo export；prototype-parity 均通过 | `onboarding/quick` 从占位草案改为真实调用 `/ai/generations` 与 `/ai/generations/:id/confirm`，确认后进入能量页；真实后端运行仍依赖 F1 Auth 登录态与 provider 配置 |
 | C1 Mobile Shell 初始化 | DONE | feat/track-c-mobile-shell -> main | 4e85a49 / merge 5372cd9 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；短启动 expo start --web HTTP 200；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | Expo 项目、核心依赖、Web 验证依赖、最小 router 页面已完成 |
-| C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 根 Stack、4 Tab、onboarding choose、settlement layout 已完成 |
+| C2 Navigation | DONE | feat/track-c-navigation -> main | c6729da / merge 9d8c73d | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test 导航用例通过；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 初始根 Stack、4 Tab、onboarding choose、settlement layout 已完成；2026-05-06 扩展为 5 Tab，新增我的页 |
 | C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
 | C5 Onboarding 三路径 | DONE | feat/track-c-onboarding -> main | 4df1237 / merge 38fab3c | pnpm -r typecheck；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test .tmp/c5-onboarding.spec.js --reporter=line；main 上 api test/typecheck/build 均通过 | 三路径入口、快速/深度输入页、手动 OKR 五层流转完成；真实 AI 生成与确认写入留到 F2 |

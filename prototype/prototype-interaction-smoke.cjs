@@ -102,6 +102,29 @@ async function waitForSuggestion(page) {
   await page.locator('[data-action="open-week"]').click();
   assert(await page.getByText("整理本周 3 个重点承诺和边界").count() === 0, "本周概览仍显示已删除待办");
   await expectVisible(page, "跑步 30 分钟");
+  await page.locator('[data-action="close-week"]').click();
+
+  await page.locator('[data-action="change-tab"][data-tab="me"]').first().click();
+  await expectVisible(page, "林间行者");
+  await page.locator('[data-action="profile-edit-name"]').click();
+  await page.locator("#profile-name-input").fill("改名后的我");
+  await page.locator('[data-action="profile-save-name"]').click();
+  await expectVisible(page, "改名后的我");
+  await expectVisible(page, "昵称已更新");
+  await page.locator('[data-action="profile-avatar"]').click();
+  await expectVisible(page, "更换头像");
+  await page.locator('[data-action="profile-avatar-upload"]').click();
+  await expectVisible(page, "头像上传后端后续接入");
+  await page.locator('[data-action="profile-avatar"]').click();
+  await page.locator('[data-action="profile-avatar-default"]').click();
+  await expectVisible(page, "已恢复默认头像");
+  await page.locator('[data-action="profile-logout"]').click();
+  await expectVisible(page, "要退出当前账号吗？");
+  await page.locator('[data-action="profile-cancel-logout"]').click();
+  assert(await page.getByText("要退出当前账号吗？").count() === 0, "取消退出后确认弹窗仍然存在");
+  await page.locator('[data-action="profile-logout"]').click();
+  await page.locator('[data-action="profile-confirm-logout"]').click();
+  await expectVisible(page, "已退出当前账号");
 
   await page.goto(prototypeUrl);
   await page.locator('[data-action="onboard-next"]').click();

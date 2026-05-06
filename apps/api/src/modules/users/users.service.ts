@@ -1,5 +1,5 @@
 import { Injectable, Optional } from '@nestjs/common';
-import type { UserContext } from '@newme/shared';
+import type { UpdateUserProfileRequest, UserContext } from '@newme/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export interface UsersServiceOptions {
@@ -22,13 +22,33 @@ export class UsersService {
   async getMe(userId: string): Promise<UserContext> {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { id: userId },
-      select: {
-        id: true,
-        phone: true,
-        timezone: true,
-        hasCompletedOnboarding: true,
-      },
+      select: userContextSelect,
     });
+
+    return this.toUserContext(user);
+  }
+
+  async updateProfile(
+    userId: string,
+    request: UpdateUserProfileRequest,
+  ): Promise<UserContext> {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(request.displayName !== undefined
+          ? { displayName: normalizeNullableText(request.displayName) }
+          : {}),
+        ...(request.email !== undefined
+          ? { email: normalizeNullableText(request.email) }
+          : {}),
+      },
+      select: userContextSelect,
+    });
+
+    return this.toUserContext(user);
+  }
+
+  private toUserContext(user: UserContextRecord): UserContext {
     const localDate = this.getLocalDateParts(
       this.options?.now?.() ?? new Date(),
       user.timezone,
@@ -36,6 +56,8 @@ export class UsersService {
 
     return {
       id: user.id,
+      displayName: user.displayName,
+      email: user.email,
       phone: user.phone,
       timezone: user.timezone,
       currentWeekId: this.getIsoWeekId(localDate),
@@ -84,4 +106,29 @@ export class UsersService {
 
     return `${localDate.year}-Q${quarter}`;
   }
+}
+
+const userContextSelect = {
+  displayName: true,
+  email: true,
+  hasCompletedOnboarding: true,
+  id: true,
+  phone: true,
+  timezone: true,
+} as const;
+
+interface UserContextRecord {
+  displayName: string | null;
+  email: string | null;
+  hasCompletedOnboarding: boolean;
+  id: string;
+  phone: string;
+  timezone: string;
+}
+
+function normalizeNullableText(value: string | null | undefined) {
+  if (value === null || value === undefined) return null;
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }

@@ -23,6 +23,7 @@ const listScreen = sliceBetween("function renderListScreen()", "function renderP
 const weekModal = sliceBetween("function renderWeekModal()", "function renderFruitModal()");
 const weekData = sliceBetween("const DEFAULT_WEEK", "const DEFAULT_FOCUS");
 const planScreen = sliceBetween("function renderPlanScreen()", "function renderTreeCanvas()");
+const profileScreen = sliceBetween("function renderProfileScreen()", "function renderSettlementScreen()");
 const onboarding = sliceBetween("function renderOnboardingTopActions", "function renderEnergyOrb()");
 const clickHandler = sliceBetween('document.addEventListener("click"', 'document.addEventListener("input"');
 const settlement = sliceBetween("function renderSettlementScreen()", "function renderReminderModal()");
@@ -45,6 +46,11 @@ assert(onboarding.includes("年度 OKR") && onboarding.includes("4 个季度 OKR
 assert(onboarding.includes("首月 4 周承诺"), "深度愿景规划应拆到首月 4 周承诺。");
 assert(settlement.includes("settlement-score") && settlement.includes("settlement-reflection"), "周结算应支持微调最终周结果并填写本周感悟。");
 assert(fruitModal.includes("本周重点") && fruitModal.includes("fruit.focuses"), "果实时间胶囊应展示该周重点列表。");
+assert(html.includes('["me", "我的"]'), "底部导航需要包含第 5 个“我的”tab。");
+assert(profileScreen.includes("profile-avatar") && profileScreen.includes("profile-edit-name"), "我的页需要提供头像和昵称编辑入口。");
+assert(html.includes("profile-save-name") && html.includes("profile-confirm-logout"), "我的页需要支持保存昵称和确认退出。");
+assert(clickHandler.includes('if (action === "profile-avatar")'), "点击处理需要支持头像 sheet。");
+assert(clickHandler.includes('if (action === "profile-confirm-logout")'), "点击处理需要支持退出登录确认。");
 
 assert(onboarding.includes('data-action="onboarding-back"'), "冷启动后续步骤需要提供返回上一步。");
 assert(onboarding.includes('data-action="regenerate-current-onboarding"'), "冷启动 AI 草案层级需要提供重新生成入口。");

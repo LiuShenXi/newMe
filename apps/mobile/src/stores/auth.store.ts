@@ -20,6 +20,7 @@ interface AuthState {
   loadMe: () => Promise<UserContext>;
   refreshSession: () => Promise<boolean>;
   setSession: (tokens: TokenResponse, user?: UserContext | null) => Promise<void>;
+  setUser: (user: UserContext | null) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -79,6 +80,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       setStoredToken(refreshTokenKey, tokens.refreshToken),
     ]);
     set({ accessToken: tokens.accessToken, hydrated: true, refreshToken: tokens.refreshToken, user });
+  },
+  setUser(user) {
+    set({ user });
   },
 }));
 

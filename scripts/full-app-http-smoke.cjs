@@ -30,7 +30,14 @@ async function main() {
   const me = await mark('me', () => request('/me'));
   const weekId = me?.currentWeekId || '2026-W19';
   const quarterId = me?.currentQuarterId || '2026-Q2';
-  const date = '2026-05-05';
+  const date = new Date().toISOString().slice(0, 10);
+
+  await mark('me_profile_patch', () =>
+    request('/me/profile', {
+      body: { displayName: 'HTTP Smoke User', email: 'smoke@example.com' },
+      method: 'PATCH',
+    }),
+  );
 
   await mark('goals_vision_put', () =>
     request('/goals/vision', {
@@ -150,6 +157,7 @@ async function main() {
   );
 
   await mark('todos_delete', () => request(`/todos/${state.todoId}`, { method: 'DELETE' }));
+  await mark('auth_logout', () => request('/auth/logout', { method: 'POST' }));
 
   const failed = results.filter((result) => !result.ok);
   for (const result of results) {

@@ -2,7 +2,7 @@ const { expect, test } = require('@playwright/test');
 const { apiBase, useLoggedInSession } = require('./e2e-auth-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
-const today = '2026-05-05';
+const today = new Date().toISOString().slice(0, 10);
 const weekId = '2026-W18';
 
 test.use({

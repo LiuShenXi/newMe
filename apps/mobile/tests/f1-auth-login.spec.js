@@ -41,6 +41,8 @@ test('auth login requests a code, stores the JWT session, and loads /me before o
       json: {
         currentQuarterId: '2026-Q2',
         currentWeekId: '2026-W18',
+        displayName: null,
+        email: null,
         hasCompletedOnboarding: false,
         id: 'user-f1',
         phone: '+8613800138000',

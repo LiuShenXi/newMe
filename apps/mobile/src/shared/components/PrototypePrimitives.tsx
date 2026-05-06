@@ -17,7 +17,7 @@ import { prototype, prototypeGlassBlur, prototypePrimaryShadow } from '../theme'
 
 export type PrototypeButtonVariant = 'primary' | 'ghost' | 'secondary' | 'pill' | 'icon' | 'replan' | 'add';
 export type PrototypeModalKind = 'center' | 'sheet';
-export type PrototypeNavTab = 'energy' | 'todo' | 'plan' | 'tree';
+export type PrototypeNavTab = 'energy' | 'todo' | 'plan' | 'tree' | 'me';
 
 type TabIconName = keyof typeof Ionicons.glyphMap;
 
@@ -26,6 +26,7 @@ const tabs: Array<{ icon: TabIconName; id: PrototypeNavTab; label: string; path:
   { icon: 'list-outline', id: 'todo', label: '清单', path: '/(tabs)/todo' },
   { icon: 'flag-outline', id: 'plan', label: '计划', path: '/(tabs)/plan' },
   { icon: 'leaf-outline', id: 'tree', label: '成长树', path: '/(tabs)/tree' },
+  { icon: 'person-outline', id: 'me', label: '我的', path: '/(tabs)/me' },
 ];
 
 interface PrototypeButtonProps extends PropsWithChildren {

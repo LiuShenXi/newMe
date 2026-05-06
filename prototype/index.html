@@ -111,7 +111,7 @@
     .bottom-nav {
       height: 70px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 0;
       padding: 8px;
       border-radius: 26px;
@@ -1216,6 +1216,198 @@
       white-space: nowrap;
       backdrop-filter: blur(20px);
       animation: panel .28s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .profile-screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+    }
+    .profile-card {
+      padding: 6px 0 0;
+    }
+    .profile-row {
+      display: grid;
+      grid-template-columns: 68px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+    }
+    .avatar {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background:
+        radial-gradient(circle at 36% 28%, rgba(255, 255, 255, .74), transparent 18%),
+        radial-gradient(circle at 42% 38%, rgba(123, 255, 194, .24), rgba(22, 62, 48, .70));
+      box-shadow: none;
+    }
+    .avatar::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      top: 16px;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: rgba(236, 254, 255, .88);
+      box-shadow: 0 0 16px rgba(207, 250, 254, .32);
+    }
+    .avatar::after {
+      content: "";
+      position: absolute;
+      left: 15px;
+      bottom: 11px;
+      width: 42px;
+      height: 26px;
+      border-radius: 999px 999px 16px 16px;
+      background: rgba(236, 254, 255, .72);
+    }
+    .avatar.default-restored::before,
+    .avatar.default-restored::after {
+      opacity: .82;
+    }
+    .avatar-edit {
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(6, 12, 11, .92);
+      color: rgba(226, 232, 240, .86);
+      font-size: 12px;
+      box-shadow: none;
+    }
+    .name-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .user-name {
+      margin: 0;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+    .name-edit {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(207, 250, 254, .72);
+      font-size: 13px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      margin-top: 9px;
+      padding: 0;
+      color: rgba(209, 250, 229, .68);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #7bffc2;
+      box-shadow: 0 0 10px rgba(123, 255, 194, .80);
+    }
+    .account-lines {
+      display: grid;
+      gap: 0;
+      margin-top: 28px;
+    }
+    .account-line {
+      display: grid;
+      grid-template-columns: 58px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 0;
+    }
+    .account-line + .account-line {
+      border-top: 1px solid rgba(255, 255, 255, .07);
+    }
+    .account-label {
+      color: rgba(148, 163, 184, .78);
+      font-size: 13px;
+    }
+    .account-value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(226, 232, 240, .92);
+      font-size: 14px;
+      text-align: right;
+    }
+    .logout-button {
+      width: 100%;
+      margin-top: 22px;
+      border-top: 1px solid rgba(255, 255, 255, .07);
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      background: transparent;
+      padding: 17px 0;
+      color: rgba(254, 205, 211, .92);
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: none;
+      transition: opacity .18s ease;
+    }
+    .logout-button:active {
+      opacity: .72;
+    }
+    .profile-input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid rgba(207, 250, 254, .20);
+      outline: none;
+      border-radius: 18px;
+      background: rgba(3, 14, 15, .96);
+      padding: 0 14px;
+      color: #fff;
+      font-size: 15px;
+    }
+    .profile-action-list {
+      display: grid;
+      gap: 9px;
+    }
+    .profile-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 48px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .065);
+      background: rgba(0, 0, 0, .16);
+      padding: 10px 12px;
+      color: #e2e8f0;
+      font-size: 13px;
+      text-align: left;
+    }
+    .logout-confirm {
+      background: rgba(244, 63, 94, .13) !important;
+      color: #fecdd3 !important;
+      border: 1px solid rgba(244, 63, 94, .20);
     }
     .chip-row {
       display: flex;
@@ -2846,10 +3038,20 @@
       settlementScore: null,
       settlementReflection: "这一周虽然有几次节奏被打断，但关键推进没有断线。",
       toast: false,
+      profileName: "林间行者",
+      profileEmail: "wzz@example.com",
+      profilePhone: "+8613800138000",
+      profileNameDraft: "林间行者",
+      profileNameSheetOpen: false,
+      profileAvatarSheetOpen: false,
+      profileLogoutOpen: false,
+      profileAvatarDefault: false,
+      profileToast: "",
     };
 
     let swipeGesture = null;
     let suppressNextClick = false;
+    let profileToastTimer = null;
 
     function icon(type) {
       const paths = {
@@ -2857,6 +3059,7 @@
         list: '<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />',
         plan: '<path d="M7 3v18M7 6h9l-2 3 2 3H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />',
         tree: '<path d="M12 21v-8M12 13c-4.2 0-6-2.2-6-5.5C9 7.5 11 9 12 13Zm0 0c4.2 0 6-2.2 6-5.5-3 0-5 1.5-6 5.5ZM12 21c3.5-1.6 6-4.4 6-8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />',
+        me: '<path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.7" /><path d="M4.8 20a7.2 7.2 0 0 1 14.4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />',
       };
       return `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${paths[type] || paths.tree}</svg>`;
     }
@@ -3104,7 +3307,7 @@
     }
 
     function renderNav(activeTab) {
-      const tabs = [["energy", "能量"], ["list", "清单"], ["plan", "计划"], ["tree", "成长树"]];
+      const tabs = [["energy", "能量"], ["list", "清单"], ["plan", "计划"], ["tree", "成长树"], ["me", "我的"]];
       return `<nav class="bottom-nav">${tabs.map(([id, label]) => `
         <button class="nav-button ${activeTab === id ? "active" : ""}" data-action="change-tab" data-tab="${id}">
           ${icon(id)}
@@ -3556,6 +3759,33 @@
       return renderPhone(`<div style="height:100%;padding-bottom:8px">${state.treeDetail ? renderTreeDetail() : renderTreeCanvas()}</div>`, { tab: "tree" });
     }
 
+    function renderProfileScreen() {
+      return renderPhone(`
+        <div class="profile-screen">
+          <section class="profile-card">
+            <div class="profile-row">
+              <button class="avatar ${state.profileAvatarDefault ? "default-restored" : ""}" data-action="profile-avatar" aria-label="点击更换头像"><span class="avatar-edit">✎</span></button>
+              <div>
+                <div class="name-line">
+                  <h1 class="user-name">${escapeHtml(state.profileName || "林间行者")}</h1>
+                  <button class="name-edit" data-action="profile-edit-name" aria-label="编辑昵称">✎</button>
+                </div>
+                <span class="status-pill"><i class="status-dot"></i> 已登录 · 同步正常</span>
+              </div>
+            </div>
+
+            <div class="account-lines">
+              <div class="account-line"><span class="account-label">手机号</span><span class="account-value">${escapeHtml(state.profilePhone)}</span></div>
+              <div class="account-line"><span class="account-label">邮箱</span><span class="account-value">${escapeHtml(state.profileEmail || "wzz***@gmail.com")}</span></div>
+            </div>
+          </section>
+
+          <button class="logout-button" data-action="profile-logout">退出登录</button>
+          <div style="flex:1"></div>
+          ${state.profileToast ? `<div class="toast">${escapeHtml(state.profileToast)}</div>` : ""}
+        </div>`, { tab: "me" });
+    }
+
     function renderSettlementScreen() {
       const score = state.settlementScore ?? weekEnergy();
       return renderPhone(`
@@ -3682,8 +3912,60 @@
         </div>`;
     }
 
+    function renderProfileNameSheet() {
+      if (!state.profileNameSheetOpen) return "";
+      return `
+        <div class="modal-layer sheet-layer" data-modal="profile-name">
+          <div class="modal-card edit-sheet">
+            <div class="sheet-handle"></div>
+            <p class="sheet-title">编辑昵称</p>
+            <p class="sheet-copy">昵称只用于 App 内展示。</p>
+            <input id="profile-name-input" class="profile-input" aria-label="昵称" value="${escapeHtml(state.profileNameDraft)}" maxlength="16" />
+            <div class="modal-actions">
+              <button data-action="profile-save-name">保存</button>
+              <button data-action="profile-cancel-name">取消</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderProfileAvatarSheet() {
+      if (!state.profileAvatarSheetOpen) return "";
+      return `
+        <div class="modal-layer sheet-layer" data-modal="profile-avatar">
+          <div class="modal-card edit-sheet">
+            <div class="sheet-handle"></div>
+            <p class="sheet-title">更换头像</p>
+            <p class="sheet-copy">点击头像进入这里，不在页面上再放重复按钮。</p>
+            <div class="profile-action-list">
+              <button class="profile-action-row" data-action="profile-avatar-upload"><span>从相册选择</span><span>›</span></button>
+              <button class="profile-action-row" data-action="profile-avatar-camera"><span>拍照上传</span><span>›</span></button>
+              <button class="profile-action-row" data-action="profile-avatar-default"><span>恢复默认头像</span><span>›</span></button>
+            </div>
+            <div class="modal-actions" style="grid-template-columns:1fr">
+              <button data-action="profile-cancel-avatar">取消</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderProfileLogoutModal() {
+      if (!state.profileLogoutOpen) return "";
+      return `
+        <div class="modal-layer" data-modal="profile-logout">
+          <div class="modal-card">
+            <p class="modal-title">要退出当前账号吗？</p>
+            <p class="modal-copy">退出后，本机将清除登录态。已同步的成长树、清单和计划会保留在云端。</p>
+            <div class="modal-actions">
+              <button class="logout-confirm" data-action="profile-confirm-logout" aria-label="确认退出登录">退出登录</button>
+              <button data-action="profile-cancel-logout">取消</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
     function renderOverlays() {
-      return `${state.showReminder ? renderReminderModal() : ""}${state.showWeek ? renderWeekModal() : ""}${state.selectedFruit ? renderFruitModal() : ""}${state.editingTodoId !== null ? renderEditModal() : ""}`;
+      return `${state.showReminder ? renderReminderModal() : ""}${state.showWeek ? renderWeekModal() : ""}${state.selectedFruit ? renderFruitModal() : ""}${state.editingTodoId !== null ? renderEditModal() : ""}${renderProfileNameSheet()}${renderProfileAvatarSheet()}${renderProfileLogoutModal()}`;
     }
 
     function renderSidePanel() {
@@ -3692,6 +3974,7 @@
         ["list", "清单页"],
         ["plan", "计划页"],
         ["tree", "成长树"],
+        ["me", "我的"],
         ["settlement", "周结算"],
       ];
       return `
@@ -3725,13 +4008,17 @@
               ? renderPlanScreen()
               : state.tab === "tree"
                 ? renderTreeScreen()
-                : renderSettlementScreen();
+                : state.tab === "me"
+                  ? renderProfileScreen()
+                  : renderSettlementScreen();
       document.getElementById("phoneHost").innerHTML = screen + renderOverlays();
       document.getElementById("sidePanel").innerHTML = renderSidePanel();
       const draft = document.getElementById("draft-input");
       if (draft) draft.focus();
       const editInput = document.getElementById("edit-input");
       if (editInput) editInput.focus();
+      const profileInput = document.getElementById("profile-name-input");
+      if (profileInput) profileInput.focus();
       const visionInput = document.getElementById("vision-input");
       if (visionInput) visionInput.focus();
       const manualInput = document.querySelector(".manual-input");
@@ -3746,6 +4033,9 @@
       state.showReminder = false;
       state.showWeek = false;
       state.selectedFruit = null;
+      state.profileNameSheetOpen = false;
+      state.profileAvatarSheetOpen = false;
+      state.profileLogoutOpen = false;
       renderApp();
     }
 
@@ -3762,6 +4052,16 @@
       }, 1300);
       window.setTimeout(() => {
         state.toast = false;
+        renderApp();
+      }, 1400);
+    }
+
+    function showProfileToast(message) {
+      if (profileToastTimer) window.clearTimeout(profileToastTimer);
+      state.profileToast = message;
+      renderApp();
+      profileToastTimer = window.setTimeout(() => {
+        state.profileToast = "";
         renderApp();
       }, 1400);
     }
@@ -3805,6 +4105,15 @@
       state.settlementScore = null;
       state.settlementReflection = "这一周虽然有几次节奏被打断，但关键推进没有断线。";
       state.toast = false;
+      state.profileName = "林间行者";
+      state.profileEmail = "wzz@example.com";
+      state.profilePhone = "+8613800138000";
+      state.profileNameDraft = "林间行者";
+      state.profileNameSheetOpen = false;
+      state.profileAvatarSheetOpen = false;
+      state.profileLogoutOpen = false;
+      state.profileAvatarDefault = false;
+      state.profileToast = "";
       renderApp();
     }
 
@@ -3821,6 +4130,9 @@
         if (modal === "reminder") state.showReminder = false;
         if (modal === "week") state.showWeek = false;
         if (modal === "fruit") state.selectedFruit = null;
+        if (modal === "profile-name") state.profileNameSheetOpen = false;
+        if (modal === "profile-avatar") state.profileAvatarSheetOpen = false;
+        if (modal === "profile-logout") state.profileLogoutOpen = false;
         if (modal === "edit") {
           state.editingTodoId = null;
           state.editDraft = "";
@@ -3899,6 +4211,47 @@
       if (action === "change-tab") {
         if (!state.booted) return;
         changeTab(target.dataset.tab);
+        return;
+      }
+      if (action === "profile-avatar") {
+        state.profileAvatarSheetOpen = true;
+      }
+      if (action === "profile-edit-name") {
+        state.profileNameDraft = state.profileName || "林间行者";
+        state.profileNameSheetOpen = true;
+      }
+      if (action === "profile-save-name") {
+        state.profileName = state.profileNameDraft.trim() || "未命名用户";
+        state.profileNameSheetOpen = false;
+        showProfileToast("昵称已更新");
+        return;
+      }
+      if (action === "profile-cancel-name") {
+        state.profileNameSheetOpen = false;
+      }
+      if (action === "profile-avatar-upload" || action === "profile-avatar-camera") {
+        state.profileAvatarSheetOpen = false;
+        showProfileToast("头像上传后端后续接入");
+        return;
+      }
+      if (action === "profile-avatar-default") {
+        state.profileAvatarDefault = true;
+        state.profileAvatarSheetOpen = false;
+        showProfileToast("已恢复默认头像");
+        return;
+      }
+      if (action === "profile-cancel-avatar") {
+        state.profileAvatarSheetOpen = false;
+      }
+      if (action === "profile-logout") {
+        state.profileLogoutOpen = true;
+      }
+      if (action === "profile-cancel-logout") {
+        state.profileLogoutOpen = false;
+      }
+      if (action === "profile-confirm-logout") {
+        state.profileLogoutOpen = false;
+        showProfileToast("已退出当前账号");
         return;
       }
       if (action === "confirm-energy") {
@@ -4108,6 +4461,9 @@
       if (event.target.id === "edit-input") {
         state.editDraft = event.target.value;
       }
+      if (event.target.id === "profile-name-input") {
+        state.profileNameDraft = event.target.value;
+      }
       if (event.target.id === "energy-range") {
         state.energyValue = Number(event.target.value);
         syncEnergyRail(state.energyValue, true);
@@ -4203,6 +4559,12 @@
         state.editDraft = "";
         syncTodayTodos();
         renderApp();
+      }
+      if (event.target.id === "profile-name-input" && event.key === "Enter") {
+        event.preventDefault();
+        state.profileName = state.profileNameDraft.trim() || "未命名用户";
+        state.profileNameSheetOpen = false;
+        showProfileToast("昵称已更新");
       }
     });
 

@@ -13,6 +13,7 @@ export default function TabLayout() {
       <Tabs.Screen name="todo" options={{ title: '清单' }} />
       <Tabs.Screen name="plan" options={{ title: '计划' }} />
       <Tabs.Screen name="tree" options={{ title: '成长树' }} />
+      <Tabs.Screen name="me" options={{ title: '我的' }} />
     </Tabs>
   );
 }

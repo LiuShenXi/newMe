@@ -4,6 +4,8 @@ async function useLoggedInSession(page, overrides = {}) {
   const user = {
     currentQuarterId: '2026-Q2',
     currentWeekId: '2026-W18',
+    displayName: '林间行者',
+    email: 'wzz@example.com',
     hasCompletedOnboarding: true,
     id: 'e2e-user',
     phone: '+8613800138000',
