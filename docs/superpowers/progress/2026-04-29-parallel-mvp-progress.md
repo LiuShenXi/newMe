@@ -21,6 +21,43 @@ git log --oneline -5
 git worktree list
 ```
 
+### 2026-05-05 Android 模拟器与发布前全矩阵复测
+
+本轮完成：
+- Android Studio 图形安装器下载卡住后，改用命令行安装 Android SDK/Emulator/API 36 system image，创建并启动 `newme_api36` AVD；通过 `adb reverse tcp:8081 tcp:8081` 与 `exp://127.0.0.1:8081` 跑通 Expo Go。
+- 定位并修复 Expo Go Android 红屏根因：`react-native-screens` JS 版本 4.24.0 与 Expo SDK 54 原生期望不匹配，已在 `apps/mobile/package.json` 显式锁定 `react-native-screens@~4.16.0`。
+- 定位并规避 Android Expo Go 中 `expo-notifications` remote push 模块限制：`useNotifications` 改为 Android Expo Go 下跳过通知模块加载，保留 Web/dev build/真机构建可用路径。
+- 完成真实 Android 模拟器手动 smoke：验证码来自 `/auth/code` 动态 `devCode`，通过登录页进入三路径 onboarding；快速规划调用真实 AI generation，生成 weeklyFocuses/todayTodos；确认后进入清单页并看到 3 条 AI 今日任务；能量页、清单页、底部导航可运行，无新红屏、无 SQLite/open/migration 异常日志。
+- 发现 Playwright 全量测试卡住的根因是默认 outputDir 指向 `test-results/`，启动前清理目录会碰到设备证据文件；`package.json` 的 `test:mobile:e2e` 已改为 `--output=.tmp/pw-mobile-output`。
+
+修改文件：
+- `apps/mobile/package.json`
+- `apps/mobile/src/features/notifications/hooks/useNotifications.ts`
+- `apps/mobile/src/shared/theme/prototype.ts`
+- `apps/mobile/app/_layout.tsx`
+- `apps/mobile/app/onboarding/_layout.tsx`
+- `apps/mobile/app/settlement/_layout.tsx`
+- `scripts/device-sqlite-smoke.cjs`
+- `docs/testing/2026-05-05-device-sqlite-smoke.md`
+- `package.json`
+- `pnpm-lock.yaml`
+
+验证命令：
+- `pnpm -r typecheck` 通过
+- `pnpm --filter @newme/api test -- --runInBand` 通过，16 suites / 41 tests
+- `pnpm --filter @newme/api build` 通过
+- `pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过
+- `docker compose config` 通过
+- `node scripts/full-app-http-smoke.cjs` 通过，auth/me/goals/plans/todos/energy/settlement/tree/sync/notifications/AI generation/confirm 全 PASS
+- `node scripts/device-sqlite-smoke.cjs` 通过；模拟器实测使用 `http://10.0.2.2:37200/api/v1`
+- `npx playwright test apps/mobile/tests --reporter=line --workers=1 --timeout=45000 --output=.tmp/pw-mobile-output` 通过，Node smoke 7 项 + Playwright 25 tests
+- `node prototype/prototype-regression.test.cjs` 通过
+- `node prototype/prototype-interaction-smoke.cjs` 通过
+
+未完成：
+- iOS 模拟器无法在当前 Windows 本机直接测，需要 macOS/Xcode 或云真机。
+- Android 离线断网入队 + 恢复网络 push/pull 仍建议下一轮在模拟器网络面板或真机上做一次人工补证。
+
 然后阅读：
 
 1. `docs/superpowers/plans/2026-04-29-parallel-mvp-implementation.md`

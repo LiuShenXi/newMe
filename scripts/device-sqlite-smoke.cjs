@@ -4,7 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const apiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.API_BASE_URL || 'http://127.0.0.1:37200/api/v1';
+const deviceApiBaseUrl = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://127.0.0.1:37200/api/v1';
+const hostApiBaseUrl = process.env.API_BASE_URL || toHostApiBaseUrl(deviceApiBaseUrl);
 const docPath = path.join(root, 'docs/testing/2026-05-05-device-sqlite-smoke.md');
 const appJsonPath = path.join(root, 'apps/mobile/app.json');
 const runtimePath = path.join(root, 'apps/mobile/src/db/sync/runtime.ts');
@@ -41,16 +42,20 @@ function requireFile(filePath, label) {
 
 async function checkApiHealth() {
   try {
-    const response = await fetch(`${apiBaseUrl}/health`, { headers: { Accept: 'application/json' } });
+    const response = await fetch(`${hostApiBaseUrl}/health`, { headers: { Accept: 'application/json' } });
     if (!response.ok) {
-      fail('api health', `${apiBaseUrl}/health returned ${response.status}`);
+      fail('api health', `${hostApiBaseUrl}/health returned ${response.status}`);
       return;
     }
 
-    pass('api health', `${apiBaseUrl}/health`);
+    pass('api health', `${hostApiBaseUrl}/health`);
   } catch (error) {
-    fail('api health', `${apiBaseUrl}/health unreachable: ${error.message}`);
+    fail('api health', `${hostApiBaseUrl}/health unreachable: ${error.message}`);
   }
+}
+
+function toHostApiBaseUrl(baseUrl) {
+  return baseUrl.replace('://10.0.2.2:', '://127.0.0.1:');
 }
 
 async function main() {
@@ -101,10 +106,14 @@ async function main() {
     }
   }
 
-  if (/127\.0\.0\.1|localhost/.test(apiBaseUrl)) {
-    warn('device api base url', `${apiBaseUrl} works for web/simulator; physical devices need a LAN IP`);
+  if (/127\.0\.0\.1|localhost/.test(deviceApiBaseUrl)) {
+    warn('device api base url', `${deviceApiBaseUrl} works for web/simulator; physical devices need a LAN IP`);
   } else {
-    pass('device api base url', apiBaseUrl);
+    pass('device api base url', deviceApiBaseUrl);
+  }
+
+  if (hostApiBaseUrl !== deviceApiBaseUrl) {
+    pass('host api health base url', hostApiBaseUrl);
   }
 
   await checkApiHealth();

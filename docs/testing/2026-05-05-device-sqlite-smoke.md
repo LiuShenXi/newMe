@@ -12,7 +12,7 @@ pnpm test:device-sqlite-smoke
 pnpm --filter @newme/mobile exec expo start --clear --host lan
 ```
 
-如果用模拟器且 API 跑在同一台电脑，可继续使用 `http://127.0.0.1:37200/api/v1`。如果是真机，必须使用电脑局域网 IP，不能用 `127.0.0.1`。
+如果用 Android 模拟器且 API 跑在同一台电脑，App 需要使用 `http://10.0.2.2:37200/api/v1`，预检脚本会自动把宿主机 health check 映射回 `http://127.0.0.1:37200/api/v1`。如果是真机，必须使用电脑局域网 IP，不能用 `127.0.0.1`。
 
 ## 前置条件
 

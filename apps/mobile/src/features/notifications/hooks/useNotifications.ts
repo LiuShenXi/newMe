@@ -1,4 +1,4 @@
-import * as Notifications from 'expo-notifications';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
@@ -8,6 +8,8 @@ import type { RegisterPushTokenRequest } from '@newme/shared';
 import { apiFetch } from '../../../shared/api/client';
 import { useAuthStore } from '../../../stores/auth.store';
 import { getNotificationRoute } from './notification-routing';
+
+type NotificationsModule = typeof import('expo-notifications');
 
 export function useNotifications() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -21,6 +23,11 @@ export function useNotifications() {
 
     async function registerToken() {
       try {
+        const Notifications = await loadNotifications();
+        if (!Notifications || cancelled) {
+          return;
+        }
+
         const permission = await Notifications.requestPermissionsAsync();
         if (!permission.granted || cancelled) {
           return;
@@ -51,8 +58,16 @@ export function useNotifications() {
   }, [accessToken]);
 
   useEffect(() => {
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
+    let subscription: { remove: () => void } | null = null;
+    let cancelled = false;
+
+    async function subscribe() {
+      const Notifications = await loadNotifications();
+      if (!Notifications || cancelled) {
+        return;
+      }
+
+      subscription = Notifications.addNotificationResponseReceivedListener((response) => {
         const route = getNotificationRoute(
           response.notification.request.content.data,
         );
@@ -60,13 +75,35 @@ export function useNotifications() {
         if (route) {
           router.push(route as never);
         }
-      },
-    );
+      });
+    }
+
+    void subscribe();
 
     return () => {
-      subscription.remove();
+      cancelled = true;
+      subscription?.remove();
     };
   }, []);
+}
+
+async function loadNotifications(): Promise<NotificationsModule | null> {
+  if (isExpoGoAndroid()) {
+    return null;
+  }
+
+  try {
+    return await import('expo-notifications');
+  } catch {
+    return null;
+  }
+}
+
+function isExpoGoAndroid() {
+  return (
+    Platform.OS === 'android' &&
+    Constants.executionEnvironment === ExecutionEnvironment.StoreClient
+  );
 }
 
 function getPlatform(): RegisterPushTokenRequest['platform'] {

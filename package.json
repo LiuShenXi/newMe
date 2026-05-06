@@ -7,7 +7,7 @@
     "shared": "pnpm --filter @newme/shared",
     "test:full-http-smoke": "node scripts/full-app-http-smoke.cjs",
     "test:device-sqlite-smoke": "node scripts/device-sqlite-smoke.cjs",
-    "test:mobile:e2e": "npx playwright test apps/mobile/tests --reporter=line",
+    "test:mobile:e2e": "npx playwright test apps/mobile/tests --reporter=line --output=.tmp/pw-mobile-output",
     "test:prototype": "node prototype/prototype-regression.test.cjs && node prototype/prototype-interaction-smoke.cjs"
   },
   "engines": {

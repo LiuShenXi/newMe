@@ -1,4 +1,4 @@
-import type { TextStyle, ViewStyle } from 'react-native';
+import { Platform, type TextStyle, type ViewStyle } from 'react-native';
 
 export const prototype = {
   size: {
@@ -38,28 +38,32 @@ export const prototype = {
   },
 } as const;
 
-export const prototypePhoneBackground = {
+function webOnlyStyle<T extends ViewStyle>(style: T): ViewStyle {
+  return Platform.OS === 'web' ? (style as unknown as ViewStyle) : {};
+}
+
+export const prototypePhoneBackground = webOnlyStyle({
   backgroundImage:
     'radial-gradient(circle at 50% 8%, rgba(37, 255, 219, .12), transparent 28%), radial-gradient(circle at 20% 90%, rgba(120, 255, 175, .10), transparent 35%), linear-gradient(180deg, #091411 0%, #060b0a 55%, #030605 100%)',
-} as unknown as ViewStyle;
+} as unknown as ViewStyle);
 
-export const prototypeGridBackground = {
+export const prototypeGridBackground = webOnlyStyle({
   backgroundImage:
     'linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px)',
   backgroundSize: '22px 22px',
-} as unknown as ViewStyle;
+} as unknown as ViewStyle);
 
-export const prototypeGlassBlur = {
+export const prototypeGlassBlur = webOnlyStyle({
   backdropFilter: 'blur(20px)',
-} as unknown as ViewStyle;
+} as unknown as ViewStyle);
 
-export const prototypeGlassShadow = {
+export const prototypeGlassShadow = webOnlyStyle({
   boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, .08), 0 20px 48px rgba(0, 0, 0, .22)',
-} as unknown as ViewStyle;
+} as unknown as ViewStyle);
 
-export const prototypePrimaryShadow = {
+export const prototypePrimaryShadow = webOnlyStyle({
   boxShadow: '0 0 30px rgba(63, 255, 227, .12)',
-} as unknown as ViewStyle;
+} as unknown as ViewStyle);
 
 export const prototypeNumberFont = {
   fontWeight: '300',

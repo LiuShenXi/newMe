@@ -55,8 +55,6 @@ export default function RootLayout() {
           <AuthGuard />
           <Stack
             screenOptions={{
-              animation: 'fade',
-              contentStyle: { backgroundColor: '#0A0E1A' },
               headerShown: false,
             }}
           />
