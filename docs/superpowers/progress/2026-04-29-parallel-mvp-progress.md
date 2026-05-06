@@ -5,9 +5,9 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；下一步为发布前真机 SQLite smoke 与远端推送/发布流程
+- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-06 已新增第一版 Mermaid 架构图谱；下一步为发布前真机 SQLite smoke 与远端推送/发布流程
 - 当前主控：main（领先 origin/main）
-- 最近更新时间：2026-05-05
+- 最近更新时间：2026-05-06
 - 最近更新人：Codex
 
 ## 快速续跑入口
@@ -20,6 +20,37 @@ git branch --show-current
 git log --oneline -5
 git worktree list
 ```
+
+### 2026-05-06 架构图谱第一版
+
+本轮完成：
+- 新增 `docs/architecture/diagrams/` Mermaid 图谱目录和 README。
+- 生成 15 张架构图：系统上下文、容器架构、移动端架构、后端组件、核心业务闭环、冷启动三路径、AI 生成时序、离线同步时序、领域 ER、API 契约映射、部署拓扑、鉴权会话时序、周结算到成长树时序、原型还原映射、状态机。
+- 同步更新 `docs/architecture/README.md` 与 `docs/architecture/00-技术架构总览.md`，把图谱纳入阅读顺序和维护规则。
+- 根据 VS Code Mermaid 插件只支持 Markdown 的实际情况，新增 `docs/architecture/diagrams/preview.md` 与 `docs/architecture/diagrams/assets/*.svg`，可直接用 Markdown Preview 查看全部架构图。
+- 补充 4 张正式 UML 视角图：用例图、组件图、领域类图、部署图，并同步导出 SVG 和预览页。
+
+修改文件：
+- `docs/architecture/diagrams/README.md`
+- `docs/architecture/diagrams/*.mmd`
+- `docs/architecture/diagrams/preview.md`
+- `docs/architecture/diagrams/assets/*.svg`
+- `docs/architecture/README.md`
+- `docs/architecture/00-技术架构总览.md`
+- `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
+
+验证命令：
+- `pnpm dlx @mermaid-js/mermaid-cli --version` 通过，版本 `11.14.0`。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i docs/architecture/diagrams/01-system-context.mmd -o .tmp/architecture-diagrams/01-system-context.svg` 通过。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i <每个 .mmd> -o .tmp/architecture-diagrams/<同名>.svg` 全部通过，15 张图均可渲染。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i <每个 .mmd> -o docs/architecture/diagrams/assets/<同名>.svg` 全部通过，15 张预览 SVG 已生成。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i docs/architecture/diagrams/16-uml-use-case.mmd -o docs/architecture/diagrams/assets/16-uml-use-case.svg` 通过。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i docs/architecture/diagrams/17-uml-component.mmd -o docs/architecture/diagrams/assets/17-uml-component.svg` 通过。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i docs/architecture/diagrams/18-uml-domain-class.mmd -o docs/architecture/diagrams/assets/18-uml-domain-class.svg` 通过。
+- `PUPPETEER_EXECUTABLE_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' pnpm dlx @mermaid-js/mermaid-cli -i docs/architecture/diagrams/19-uml-deployment.mmd -o docs/architecture/diagrams/assets/19-uml-deployment.svg` 通过。
+
+未完成：
+- 暂未导出 PNG；当前保留 `.mmd` 源文件和 SVG 预览文件。
 
 ### 2026-05-05 Android 模拟器与发布前全矩阵复测
 

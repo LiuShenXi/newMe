@@ -20,8 +20,24 @@
 5. `04-数据与AI架构.md` — 核心数据模型、同步、AI 编排、结构化输出、成本和质量控制。
 6. `05-部署与运维方案.md` — Docker 单体部署、环境配置、CI/CD、备份、日志、监控和发布。
 7. `06-技术风险与演进路线.md` — 关键风险、缓解策略、阶段性演进条件和决策门槛。
+8. `diagrams/README.md` — Mermaid 架构图谱索引，包含系统上下文、容器架构、移动端、后端、ER、时序、状态机、部署和原型还原映射。
 
-## 3. MVP 技术原则
+## 3. 架构图谱
+
+第一版图谱位于 `docs/architecture/diagrams/`，以 Mermaid `.mmd` 文件维护，便于进入 git、随代码评审和导出 SVG/PNG。
+
+推荐查看顺序：
+
+1. `diagrams/01-system-context.mmd` — 系统边界。
+2. `diagrams/02-container-architecture.mmd` — monorepo 与运行时容器。
+3. `diagrams/05-core-business-loop.mmd` — 产品核心闭环。
+4. `diagrams/03-mobile-architecture.mmd` 和 `diagrams/04-backend-components.mmd` — 前后端分层。
+5. `diagrams/09-domain-er.mmd` 和 `diagrams/10-api-contract-map.mmd` — 数据与接口边界。
+6. `diagrams/07-ai-generation-sequence.mmd`、`diagrams/08-offline-sync-sequence.mmd`、`diagrams/12-auth-session-sequence.mmd`、`diagrams/13-settlement-tree-sequence.mmd` — 关键链路时序。
+7. `diagrams/15-state-machines.mmd` — onboarding、AI、同步和周结算状态。
+8. `diagrams/11-deployment-topology.mmd` 和 `diagrams/14-prototype-parity-map.mmd` — 部署与原型还原验收。
+
+## 4. MVP 技术原则
 
 1. 移动端优先跑通体验闭环，不把首期复杂度投入到后台管理或多端扩张。
 2. TypeScript 全栈，前后端类型共享，最大化 AI 编码效率。
@@ -32,7 +48,7 @@
 7. 动画和成长树属于核心体验，前端架构要给自绘、动效和性能预留空间。
 8. UI 实现以 `prototype/index.html` 终稿静态原型为参照基准。
 
-## 4. 文档维护规则
+## 5. 文档维护规则
 
 当产品需求、原型或实际实现发生变化时，需要同步检查本目录：
 
@@ -41,3 +57,4 @@
 3. 新增后端业务模块或接口边界变化优先同步 `03-后端架构设计.md`。
 4. 部署方式、环境变量、数据库迁移和监控策略变化优先同步 `05-部署与运维方案.md`。
 5. 如果实际实现偏离本目录结论，需要在对应章节补充"当前实际方案"和"后续修正条件"。
+6. 如果数据模型、API、AI、同步、部署或原型还原映射变化，需要同步更新 `diagrams/` 下对应 Mermaid 图。

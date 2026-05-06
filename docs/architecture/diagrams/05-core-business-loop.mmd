@@ -1,0 +1,30 @@
+flowchart LR
+  Start["首次进入 App"] --> Path{"选择规划路径"}
+  Path --> Vision["深度愿景<br/>五年愿景 -> 年度 OKR -> 季度 OKR -> 4 周承诺"]
+  Path --> Quick["快速规划<br/>季度目标 -> 本周重点 + 今日建议"]
+  Path --> Manual["手动 OKR<br/>年 -> 季 -> 月 -> 周 -> 今日，可留空"]
+
+  Vision --> Confirm["用户确认 / 修改 AI 草案"]
+  Quick --> Confirm
+  Manual --> Confirm
+  Confirm --> Focus["本周重点<br/>3-5 条方向锚点"]
+  Focus --> Todo["今日清单<br/>手动 CRUD / AI 建议"]
+  Todo --> Energy["每日能量记录<br/>0-100 主观推进"]
+  Energy --> WeekAverage["本周累计<br/>按已记录天数均值"]
+  WeekAverage --> Settlement["周结算<br/>建议分 + 用户最终确认"]
+  Settlement --> Fruit["每周果实<br/>时间胶囊快照"]
+  Fruit --> Tree["年度成长树<br/>季度阶段 + 荣誉层"]
+  Tree --> Review["回看成长<br/>低频正反馈"]
+  Review -.-> Focus
+
+  Todo -.->|"任务完成只作参考<br/>不自动决定能量分"| Energy
+  Settlement -.->|"结算快照防止历史漂移"| Fruit
+  Tree -.->|"季度均值达标时新增永久荣誉"| Honor["QuarterHonor<br/>只增不减"]
+
+  classDef product fill:#064e3b,stroke:#86efac,color:#f0fdf4
+  classDef decision fill:#713f12,stroke:#fde68a,color:#fffbeb
+  classDef reward fill:#4c1d95,stroke:#ddd6fe,color:#faf5ff
+
+  class Start,Vision,Quick,Manual,Confirm,Focus,Todo,Energy,WeekAverage,Settlement product
+  class Path decision
+  class Fruit,Tree,Review,Honor reward

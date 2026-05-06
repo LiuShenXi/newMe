@@ -1,0 +1,103 @@
+flowchart TB
+  subgraph MobileNode["<<component>> Expo Mobile App"]
+    Router["<<component>> App Router"]
+    FeatureHooks["<<component>> Feature Hooks"]
+    UiPrimitives["<<component>> Prototype Primitives"]
+    Stores["<<component>> Zustand Stores"]
+    Query["<<component>> React Query"]
+    ApiClient["<<component>> API Client"]
+    LocalRepos["<<component>> SQLite Repositories"]
+    SyncEngine["<<component>> Sync Engine"]
+  end
+
+  subgraph SharedNode["<<library>> packages/shared"]
+    Dto["<<component>> DTO Contracts"]
+    Validators["<<component>> Zod Validators"]
+    Enums["<<component>> Enums / Constants"]
+  end
+
+  subgraph ApiNode["<<component>> NestJS API"]
+    Auth["<<component>> Auth"]
+    Users["<<component>> Users"]
+    Goals["<<component>> Goals"]
+    Plans["<<component>> Plans"]
+    Todos["<<component>> Todos"]
+    Energy["<<component>> Energy"]
+    Settlement["<<component>> Settlement"]
+    Tree["<<component>> Tree"]
+    AiModule["<<component>> AI Orchestration"]
+    SyncModule["<<component>> Sync"]
+    Notifications["<<component>> Notifications"]
+    Prisma["<<component>> Prisma Service"]
+  end
+
+  subgraph External["外部组件"]
+    SQLite[("<<database>> SQLite")]
+    Postgres[("<<database>> PostgreSQL")]
+    LocalAi["<<service>> Local AI"]
+    Glm["<<service>> GLM Fallback"]
+    ExpoPush["<<service>> Expo Push"]
+  end
+
+  Router --> FeatureHooks
+  FeatureHooks --> UiPrimitives
+  FeatureHooks --> Stores
+  FeatureHooks --> Query
+  Query --> ApiClient
+  FeatureHooks --> LocalRepos
+  SyncEngine --> LocalRepos
+  SyncEngine --> ApiClient
+  LocalRepos --> SQLite
+
+  ApiClient --> Auth
+  ApiClient --> Users
+  ApiClient --> Goals
+  ApiClient --> Plans
+  ApiClient --> Todos
+  ApiClient --> Energy
+  ApiClient --> Settlement
+  ApiClient --> Tree
+  ApiClient --> AiModule
+  ApiClient --> SyncModule
+  ApiClient --> Notifications
+
+  Router -.-> Dto
+  FeatureHooks -.-> Dto
+  ApiClient -.-> Dto
+  Auth -.-> Dto
+  Users -.-> Dto
+  Goals -.-> Dto
+  Plans -.-> Dto
+  Todos -.-> Dto
+  Energy -.-> Dto
+  Settlement -.-> Dto
+  Tree -.-> Dto
+  AiModule -.-> Validators
+  SyncModule -.-> Enums
+
+  Auth --> Prisma
+  Users --> Prisma
+  Goals --> Prisma
+  Plans --> Prisma
+  Todos --> Prisma
+  Energy --> Prisma
+  Settlement --> Prisma
+  Tree --> Prisma
+  AiModule --> Prisma
+  SyncModule --> Prisma
+  Notifications --> Prisma
+  Prisma --> Postgres
+
+  AiModule --> LocalAi
+  AiModule -.-> Glm
+  Notifications --> ExpoPush
+
+  classDef mobile fill:#064e3b,stroke:#99f6e4,color:#ecfeff
+  classDef api fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef shared fill:#4c1d95,stroke:#ddd6fe,color:#faf5ff
+  classDef external fill:#422006,stroke:#fde68a,color:#fffbeb
+
+  class Router,FeatureHooks,UiPrimitives,Stores,Query,ApiClient,LocalRepos,SyncEngine mobile
+  class Auth,Users,Goals,Plans,Todos,Energy,Settlement,Tree,AiModule,SyncModule,Notifications,Prisma api
+  class Dto,Validators,Enums shared
+  class SQLite,Postgres,LocalAi,Glm,ExpoPush external

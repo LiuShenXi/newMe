@@ -1,0 +1,36 @@
+flowchart LR
+  User["用户<br/>长期成长目标 / 每日推进确认"]
+  App["NewMe 移动端<br/>Expo / React Native"]
+  LocalDb[("端侧 SQLite<br/>离线读写 / 同步队列")]
+  Api["NewMe API<br/>NestJS 模块化单体"]
+  Shared["共享契约<br/>@newme/shared DTO / Enum / Zod"]
+  Pg[("PostgreSQL<br/>云端归档 / 长期历史")]
+  AiLocal["本地 OpenAI-compatible 服务<br/>local-qwen-coder"]
+  AiFallback["智谱 GLM<br/>glm-4-flash"]
+  Push["Expo Push API<br/>提醒与召回"]
+  Prototype["终稿静态原型<br/>prototype/index.html"]
+  Ops["部署环境<br/>Nginx / Docker Compose / ECS"]
+
+  User -->|"规划 / 执行 / 能量记录 / 结算"| App
+  Prototype -->|"视觉与交互真源"| App
+  App -->|"本地优先读写"| LocalDb
+  App -->|"HTTPS API / JWT"| Api
+  App -.->|"类型引用"| Shared
+  Api -.->|"类型与校验引用"| Shared
+  Api -->|"Prisma"| Pg
+  Api -->|"AI 草案生成<br/>优先本地"| AiLocal
+  Api -->|"本地不可用时降级"| AiFallback
+  Api -->|"推送 token / 通知下发"| Push
+  Push -->|"系统通知 / Deep Link"| App
+  Ops -->|"运行 api / postgres / nginx"| Api
+  Ops --> Pg
+
+  classDef primary fill:#0f766e,stroke:#99f6e4,color:#ecfeff
+  classDef data fill:#172554,stroke:#93c5fd,color:#eff6ff
+  classDef external fill:#422006,stroke:#facc15,color:#fffbeb
+  classDef doc fill:#312e81,stroke:#c4b5fd,color:#f5f3ff
+
+  class App,Api primary
+  class LocalDb,Pg data
+  class AiLocal,AiFallback,Push,Ops external
+  class Shared,Prototype doc

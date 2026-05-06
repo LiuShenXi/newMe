@@ -1,0 +1,186 @@
+classDiagram
+  direction TB
+
+  class User {
+    +String id
+    +String phone
+    +String timezone
+    +Boolean hasCompletedOnboarding
+    +Json preferencesJson
+    +Int version
+  }
+
+  class Vision {
+    +String id
+    +String content
+    +Source source
+    +Int version
+  }
+
+  class AnnualObjective {
+    +String id
+    +Int year
+    +Json objectives
+    +Source source
+    +Int version
+  }
+
+  class Quarter {
+    +String id
+    +Int year
+    +Int quarter
+    +Date startsOn
+    +Date endsOn
+    +Source source
+  }
+
+  class QuarterGoal {
+    +String id
+    +String title
+    +GoalType goalType
+    +Source source
+    +Int version
+  }
+
+  class MonthGoal {
+    +String id
+    +String monthId
+    +String title
+    +Source source
+  }
+
+  class MonthPlan {
+    +String id
+    +String monthId
+    +Source source
+  }
+
+  class WeekPlan {
+    +String id
+    +String weekId
+    +Source source
+    +Int version
+  }
+
+  class WeeklyFocus {
+    +String id
+    +String weekId
+    +String title
+    +String reason
+    +DateTime invalidatedAt
+    +Source source
+  }
+
+  class Todo {
+    +String id
+    +String title
+    +Date date
+    +Boolean completed
+    +Int estimatedMinutes
+    +Boolean userEdited
+    +Source source
+    +Int version
+  }
+
+  class EnergyEntry {
+    +String id
+    +String weekId
+    +Date date
+    +Int score
+    +Boolean hasViewedTodos
+    +Source source
+  }
+
+  class WeeklySettlement {
+    +String id
+    +String weekId
+    +Int suggestedScore
+    +Int finalScore
+    +String reflection
+    +Json snapshotJson
+    +DateTime confirmedAt
+    +Source source
+  }
+
+  class TreeFruit {
+    +String id
+    +String weekId
+    +Int score
+    +String label
+    +String capsuleSummary
+    +Source source
+  }
+
+  class QuarterHonor {
+    +String id
+    +Float averageScore
+    +DateTime earnedAt
+    +Source source
+  }
+
+  class AiGeneration {
+    +String id
+    +AiScenario scenario
+    +String promptVersion
+    +String model
+    +String inputHash
+    +Json inputJson
+    +Json outputJson
+    +AiGenerationStatus status
+    +DateTime confirmedAt
+  }
+
+  class SyncDevice {
+    +String id
+    +String deviceId
+    +String platform
+    +String pullCursor
+    +DateTime lastSyncedAt
+  }
+
+  class RefreshToken {
+    +String id
+    +String tokenHash
+    +DateTime expiresAt
+    +DateTime revokedAt
+  }
+
+  class PushToken {
+    +String id
+    +String token
+    +PushPlatform platform
+    +Boolean enabled
+  }
+
+  User "1" --> "0..*" Vision
+  User "1" --> "0..*" AnnualObjective
+  User "1" --> "0..*" Quarter
+  User "1" --> "0..*" QuarterGoal
+  User "1" --> "0..*" MonthGoal
+  User "1" --> "0..*" MonthPlan
+  User "1" --> "0..*" WeekPlan
+  User "1" --> "0..*" WeeklyFocus
+  User "1" --> "0..*" Todo
+  User "1" --> "0..*" EnergyEntry
+  User "1" --> "0..*" WeeklySettlement
+  User "1" --> "0..*" TreeFruit
+  User "1" --> "0..*" QuarterHonor
+  User "1" --> "0..*" AiGeneration
+  User "1" --> "0..*" SyncDevice
+  User "1" --> "0..*" RefreshToken
+  User "1" --> "0..*" PushToken
+
+  AnnualObjective "0..1" --> "0..*" QuarterGoal
+  Quarter "0..1" --> "0..*" QuarterGoal
+  Quarter "0..1" --> "0..*" QuarterHonor
+  QuarterGoal "0..1" --> "0..*" MonthGoal
+  MonthGoal "0..1" --> "0..*" MonthPlan
+  MonthPlan "0..1" --> "0..*" WeekPlan
+  WeekPlan "0..1" --> "0..*" WeeklyFocus
+  WeeklyFocus "0..1" --> "0..*" Todo
+  WeekPlan "0..1" --> "0..*" Todo
+  WeekPlan "0..1" --> "0..*" EnergyEntry
+  WeekPlan "0..1" --> "0..1" WeeklySettlement
+  WeeklySettlement "0..1" --> "0..1" TreeFruit
+  WeekPlan "0..1" --> "0..1" TreeFruit
+  AiGeneration "0..1" --> "0..*" AiGeneration : regenerateFrom

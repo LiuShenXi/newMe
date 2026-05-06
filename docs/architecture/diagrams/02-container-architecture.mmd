@@ -1,0 +1,66 @@
+flowchart TB
+  subgraph Repo["newMe pnpm monorepo"]
+    subgraph Mobile["apps/mobile - Expo React Native"]
+      Router["expo-router<br/>auth / onboarding / tabs / settlement"]
+      Features["features/*<br/>energy / todo / plan / tree / onboarding"]
+      Stores["Zustand stores<br/>auth / onboarding / sync / prototype"]
+      Query["React Query<br/>服务端状态缓存"]
+      ApiClient["shared/api/client.ts<br/>JWT / refresh / timeout"]
+      MobileDb["db/*<br/>SQLite migrations / repositories / sync runtime"]
+    end
+
+    subgraph Api["apps/api - NestJS API"]
+      Controllers["Controllers<br/>REST / Guard / DTO"]
+      Modules["Business Modules<br/>Auth / Goals / Plans / Todos / Energy / Settlement / Tree / AI / Sync / Notifications"]
+      Prisma["PrismaService<br/>schema.prisma"]
+      AiProvider["AI Provider Adapter<br/>OpenAI-compatible local first, GLM fallback"]
+    end
+
+    Shared["packages/shared<br/>contracts / dto / validators / enums / constants"]
+    Prototype["prototype/index.html<br/>phone 结构与视觉真源"]
+    Scripts["scripts/* + tests/*<br/>HTTP smoke / SQLite smoke / Playwright"]
+  end
+
+  subgraph Runtime["运行时依赖"]
+    SQLite[("设备 SQLite")]
+    Postgres[("PostgreSQL 16")]
+    LocalAi["127.0.0.1:4100/v1<br/>local-qwen-coder"]
+    Glm["open.bigmodel.cn<br/>glm-4-flash"]
+    ExpoPush["Expo Push API"]
+    Nginx["Nginx<br/>/api/v1 反向代理"]
+  end
+
+  Router --> Features
+  Features --> Stores
+  Features --> Query
+  Features --> MobileDb
+  Query --> ApiClient
+  ApiClient --> Nginx
+  MobileDb --> SQLite
+  MobileDb --> ApiClient
+  Prototype -.-> Router
+  Prototype -.-> Features
+
+  Nginx --> Controllers
+  Controllers --> Modules
+  Modules --> Prisma
+  Prisma --> Postgres
+  Modules --> AiProvider
+  AiProvider --> LocalAi
+  AiProvider -.->|"fallback"| Glm
+  Modules --> ExpoPush
+
+  Mobile -.-> Shared
+  Api -.-> Shared
+  Scripts -.-> Mobile
+  Scripts -.-> Api
+
+  classDef mobile fill:#064e3b,stroke:#5eead4,color:#ecfeff
+  classDef api fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef shared fill:#4c1d95,stroke:#c4b5fd,color:#faf5ff
+  classDef runtime fill:#451a03,stroke:#facc15,color:#fffbeb
+
+  class Router,Features,Stores,Query,ApiClient,MobileDb mobile
+  class Controllers,Modules,Prisma,AiProvider api
+  class Shared,Prototype,Scripts shared
+  class SQLite,Postgres,LocalAi,Glm,ExpoPush,Nginx runtime

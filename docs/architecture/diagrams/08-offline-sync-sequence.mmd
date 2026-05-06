@@ -1,0 +1,48 @@
+sequenceDiagram
+  autonumber
+  actor User as 用户
+  participant UI as 移动端页面
+  participant Repo as SQLite Repository
+  participant Queue as sync_queue
+  participant Engine as sync-engine
+  participant Api as SyncController
+  participant Sync as SyncService
+  participant DB as PostgreSQL
+
+  User->>UI: 离线新增 Todo / 记录能量
+  UI->>Repo: 写入 local_todos / local_energy_entries
+  Repo->>Queue: 追加 pending item(create/update/delete)
+  Repo-->>UI: 本地立即可见
+
+  UI->>Engine: syncNow(deviceId, lastPulledAt)
+  Engine->>Queue: listPendingSyncItems(limit)
+  Queue-->>Engine: pending items
+  Engine->>Engine: 映射本地表到远端表名<br/>过滤不支持项
+  Engine->>Api: POST /sync/push(items)
+  Api->>Sync: pushChanges(userId, request)
+
+  loop 每条变更
+    Sync->>DB: 查找 / 创建 / 更新远端记录
+    alt 服务端版本大于客户端版本
+      DB-->>Sync: serverVersion
+      Sync-->>Api: status=conflict
+    else 写入成功
+      DB-->>Sync: remoteId + newVersion
+      Sync-->>Api: status=success
+    else 写入失败
+      Sync-->>Api: status=error
+    end
+  end
+
+  Api-->>Engine: push results
+  Engine->>Repo: success -> 更新 remote_id/version/sync_status
+  Engine->>Queue: success -> 标记 synced
+  Engine->>Queue: conflict/error -> 标记 failed 并保存错误
+
+  Engine->>Api: POST /sync/pull(lastPulledAt)
+  Api->>Sync: pullChanges(userId, request)
+  Sync->>DB: 遍历同步表 updatedAt > lastPulledAt
+  DB-->>Sync: changes
+  Sync-->>Api: changes + pulledAt
+  Api-->>Engine: pull response
+  Engine-->>UI: SyncSummary(pushed, pulled, conflicts, errors)

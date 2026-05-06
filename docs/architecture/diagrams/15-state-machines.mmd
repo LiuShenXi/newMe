@@ -1,0 +1,40 @@
+stateDiagram-v2
+  state "Onboarding 用户状态" as Onboarding {
+    [*] --> 未登录
+    未登录 --> 已登录未规划: 登录成功
+    已登录未规划 --> 快速规划中: 选择快速规划
+    已登录未规划 --> 深度愿景中: 选择深度愿景
+    已登录未规划 --> 手动OKR中: 选择手动 OKR
+    快速规划中 --> 草案确认中: AI 生成成功
+    深度愿景中 --> 草案确认中: 阶段草案生成成功
+    手动OKR中 --> 草案确认中: 可选局部 AI 辅助
+    草案确认中 --> 已完成Onboarding: 用户确认落库
+    手动OKR中 --> 已完成Onboarding: 用户继续到今日 ToDo
+    已完成Onboarding --> 主App: 进入四 tab
+  }
+
+  state "AI Generation 状态" as AiGeneration {
+    [*] --> PENDING: 创建请求
+    PENDING --> COMPLETED: Provider 返回且结构化校验通过
+    PENDING --> FAILED: Provider / JSON / Zod / 限流失败
+    COMPLETED --> CONFIRMED: 用户确认并成功落库
+    COMPLETED --> PENDING: regenerateFromId 重新生成
+    FAILED --> PENDING: 用户重试
+  }
+
+  state "Sync Queue 状态" as SyncQueue {
+    [*] --> PENDING_SYNC: 本地写入后入队
+    PENDING_SYNC --> SYNCED: push success
+    PENDING_SYNC --> FAILED: unsupported table / error
+    PENDING_SYNC --> CONFLICT: serverVersion > localVersion
+    CONFLICT --> PENDING_SYNC: 后续冲突处理后重试
+    FAILED --> PENDING_SYNC: 用户或运行态重试
+  }
+
+  state "周结算状态" as WeeklySettlement {
+    [*] --> 可记录中: 周内每日能量记录
+    可记录中 --> 待结算: 到达结算入口
+    待结算 --> 已确认: 用户确认 finalScore
+    已确认 --> 已生成果实: 创建 TreeFruit
+    已生成果实 --> 年度树可回看: GET /tree/years/:year
+  }

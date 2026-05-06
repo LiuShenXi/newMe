@@ -1,0 +1,57 @@
+flowchart TB
+  subgraph UserDevice["<<device>> 用户手机"]
+    MobileApp["<<artifact>> NewMe App<br/>Expo / React Native"]
+    SQLite[("<<database>> SQLite<br/>本地缓存 / 同步队列")]
+    SecureStore["<<storage>> SecureStore / localStorage<br/>token"]
+  end
+
+  subgraph DevMachine["<<node>> 开发机 / CI"]
+    Source["<<artifact>> pnpm monorepo"]
+    ApiImage["<<artifact>> api Docker image"]
+    AppBuild["<<artifact>> APK / AAB / IPA"]
+  end
+
+  subgraph Ecs["<<node>> 国内云服务器 ECS"]
+    subgraph DockerCompose["<<executionEnvironment>> Docker Compose"]
+      Nginx["<<node>> nginx container<br/>port ${NGINX_PORT:-37200}"]
+      ApiContainer["<<node>> api container<br/>NestJS PORT=3000"]
+      PgContainer["<<node>> postgres container<br/>PostgreSQL 16"]
+      PgVolume[("<<volume>> postgres_data")]
+    end
+  end
+
+  subgraph AiHost["<<node>> 本地 AI 运行环境"]
+    LocalAi["<<service>> OpenAI-compatible<br/>http://127.0.0.1:4100/v1"]
+  end
+
+  subgraph Internet["<<external>> 外部服务"]
+    Glm["<<service>> 智谱 GLM<br/>open.bigmodel.cn"]
+    ExpoPush["<<service>> Expo Push API"]
+    AppStores["<<service>> 应用市场 / TestFlight / App Store"]
+  end
+
+  Source --> ApiImage
+  Source --> AppBuild
+  AppBuild --> AppStores
+  AppStores --> MobileApp
+  MobileApp --> SQLite
+  MobileApp --> SecureStore
+  MobileApp -->|"HTTPS /api/v1"| Nginx
+  Nginx --> ApiContainer
+  ApiImage --> ApiContainer
+  ApiContainer -->|"DATABASE_URL"| PgContainer
+  PgContainer --> PgVolume
+  ApiContainer -->|"AI_LOCAL_*"| LocalAi
+  ApiContainer -.->|"AI_FALLBACK_*"| Glm
+  ApiContainer -->|"push token / notification"| ExpoPush
+  ExpoPush -.->|"Deep Link 通知"| MobileApp
+
+  classDef device fill:#064e3b,stroke:#99f6e4,color:#ecfeff
+  classDef build fill:#4c1d95,stroke:#ddd6fe,color:#faf5ff
+  classDef cloud fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef external fill:#422006,stroke:#fde68a,color:#fffbeb
+
+  class MobileApp,SQLite,SecureStore device
+  class Source,ApiImage,AppBuild build
+  class Nginx,ApiContainer,PgContainer,PgVolume cloud
+  class LocalAi,Glm,ExpoPush,AppStores external

@@ -1,0 +1,68 @@
+flowchart LR
+  User["actor<br/>用户"]
+  Time["actor<br/>系统时间"]
+  Ai["actor<br/>AI Provider"]
+  Push["actor<br/>Expo Push"]
+  Store["actor<br/>应用分发渠道"]
+
+  subgraph System["NewMe App 系统边界"]
+    UCLogin(["登录与恢复会话"])
+    UCChoose(["选择冷启动规划路径"])
+    UCVision(["深度愿景规划"])
+    UCQuick(["快速季度规划"])
+    UCManual(["手动 OKR 创建"])
+    UCAssist(["局部 AI 辅助"])
+    UCConfirm(["确认 AI 草案并落库"])
+    UCTodo(["管理今日清单"])
+    UCEnergy(["记录每日能量"])
+    UCPlan(["查看与调整计划"])
+    UCSettlement(["确认周结算"])
+    UCTree(["查看年度成长树"])
+    UCSync(["离线同步"])
+    UCNotify(["接收提醒与召回"])
+    UCRelease(["安装 / 更新 App"])
+  end
+
+  User --> UCLogin
+  User --> UCChoose
+  User --> UCTodo
+  User --> UCEnergy
+  User --> UCPlan
+  User --> UCSettlement
+  User --> UCTree
+  User --> UCRelease
+
+  UCChoose --> UCVision
+  UCChoose --> UCQuick
+  UCChoose --> UCManual
+  UCVision --> UCAssist
+  UCQuick --> UCAssist
+  UCManual --> UCAssist
+  UCAssist --> UCConfirm
+  UCVision --> UCConfirm
+  UCQuick --> UCConfirm
+
+  UCEnergy --> UCSettlement
+  UCSettlement --> UCTree
+  UCTodo -.->|"作为能量记录参考"| UCEnergy
+  UCPlan -.->|"提供本周重点锚点"| UCEnergy
+  UCSync -.->|"同步清单 / 能量 / 结算 / 树数据"| UCTodo
+  UCSync -.-> UCEnergy
+  UCSync -.-> UCSettlement
+  UCSync -.-> UCTree
+
+  Ai --> UCAssist
+  Ai --> UCVision
+  Ai --> UCQuick
+  Push --> UCNotify
+  Time --> UCSettlement
+  Time --> UCNotify
+  Store --> UCRelease
+
+  classDef actor fill:#111827,stroke:#e5e7eb,color:#f9fafb
+  classDef usecase fill:#064e3b,stroke:#99f6e4,color:#ecfeff
+  classDef system fill:#0f172a,stroke:#475569,color:#e2e8f0
+
+  class User,Time,Ai,Push,Store actor
+  class UCLogin,UCChoose,UCVision,UCQuick,UCManual,UCAssist,UCConfirm,UCTodo,UCEnergy,UCPlan,UCSettlement,UCTree,UCSync,UCNotify,UCRelease usecase
+  class System system

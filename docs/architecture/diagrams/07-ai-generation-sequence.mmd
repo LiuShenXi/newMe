@@ -1,0 +1,47 @@
+sequenceDiagram
+  autonumber
+  actor User as 用户
+  participant Mobile as 移动端 Expo App
+  participant Api as NestJS AiController
+  participant AiService as AiService
+  participant Prompt as PromptRegistry
+  participant Guard as RateLimiter / CircuitBreaker
+  participant Provider as OpenAiAdapter
+  participant Local as 本地 AI 服务
+  participant GLM as 智谱 GLM 降级
+  participant Validator as OutputValidator
+  participant DB as PostgreSQL
+
+  User->>Mobile: 输入目标 / 愿景 / 局部辅助上下文
+  Mobile->>Api: POST /ai/generations 或 /ai/assist
+  Api->>AiService: generateDraft(userId, scenario, input)
+  AiService->>Guard: 检查限流与熔断
+  AiService->>Prompt: 读取场景模板并 build prompt
+  AiService->>Provider: generate(prompt, model, timeout)
+  Provider->>Local: POST /chat/completions
+  alt 本地服务成功
+    Local-->>Provider: JSON 字符串内容
+  else 本地服务失败且配置了 fallback key
+    Provider->>GLM: POST /chat/completions
+    GLM-->>Provider: JSON 字符串内容
+  else 双 provider 失败
+    Provider-->>AiService: 抛错
+    AiService->>Guard: 记录失败
+    AiService-->>Api: 错误响应
+    Api-->>Mobile: HTTP error
+  end
+  Provider-->>AiService: rawOutput
+  AiService->>AiService: JSON.parse(rawOutput)
+  AiService->>Validator: 按 scenario 做 Zod 校验
+  Validator-->>AiService: outputJson
+  AiService->>DB: 创建 AiGeneration(status=COMPLETED)
+  AiService->>Guard: 记录成功
+  AiService-->>Api: GenerationDto
+  Api-->>Mobile: 草案 id + outputJson
+  User->>Mobile: 修改并确认草案
+  Mobile->>Api: POST /ai/generations/:id/confirm
+  Api->>AiService: confirmGeneration(userId, id, target, edits)
+  AiService->>DB: 事务落库业务对象并更新 status=CONFIRMED
+  DB-->>AiService: applied counts + generation
+  AiService-->>Api: ConfirmGenerationResponse
+  Api-->>Mobile: 确认结果

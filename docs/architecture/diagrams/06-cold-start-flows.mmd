@@ -1,0 +1,60 @@
+flowchart TB
+  Choose["onboarding/choose<br/>选择启动路径"]
+
+  subgraph QuickPath["快速规划路径"]
+    Q1["输入季度最想推进的一件事"]
+    Q2["POST /ai/generations<br/>quick_quarter_plan"]
+    Q3["展示 weeklyFocuses / todayTodos 草案"]
+    Q4["POST /ai/generations/:id/confirm<br/>target: quarter_goals / week_plan / todos"]
+    Q5["落库 QuarterGoal / WeekPlan / WeeklyFocus / Todo<br/>标记 onboarding 完成"]
+  end
+
+  subgraph VisionPath["深度愿景路径"]
+    V1["输入五年愿景"]
+    V2["愿景 -> 年度 OKR 草案"]
+    V3["确认 AnnualObjective"]
+    V4["年度 OKR -> 四个季度 OKR 草案"]
+    V5["确认 QuarterGoal"]
+    V6["季度 OKR -> 首月 4 周承诺"]
+    V7["确认 WeekPlan / WeeklyFocus"]
+  end
+
+  subgraph ManualPath["手动 OKR 路径"]
+    M1["年目标<br/>可空继续"]
+    M2["季度目标<br/>可空继续"]
+    M3["本月目标<br/>可空继续"]
+    M4["本周计划<br/>可空继续"]
+    M5["今日 ToDo"]
+    M6["每层可选 POST /ai/assist<br/>manual_local_assist"]
+  end
+
+  AppHome["进入主 App<br/>默认能量 / 清单闭环"]
+
+  Choose --> Q1
+  Q1 --> Q2 --> Q3 --> Q4 --> Q5 --> AppHome
+
+  Choose --> V1
+  V1 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7 --> AppHome
+
+  Choose --> M1
+  M1 --> M2 --> M3 --> M4 --> M5 --> AppHome
+  M1 -.-> M6
+  M2 -.-> M6
+  M3 -.-> M6
+  M4 -.-> M6
+  M5 -.-> M6
+  M6 -.->|"只回填当前层，不反向补上游"| M1
+  M6 -.-> M2
+  M6 -.-> M3
+  M6 -.-> M4
+  M6 -.-> M5
+
+  classDef quick fill:#0f766e,stroke:#99f6e4,color:#ecfeff
+  classDef vision fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef manual fill:#4c1d95,stroke:#c4b5fd,color:#faf5ff
+  classDef common fill:#111827,stroke:#e5e7eb,color:#f9fafb
+
+  class Q1,Q2,Q3,Q4,Q5 quick
+  class V1,V2,V3,V4,V5,V6,V7 vision
+  class M1,M2,M3,M4,M5,M6 manual
+  class Choose,AppHome common

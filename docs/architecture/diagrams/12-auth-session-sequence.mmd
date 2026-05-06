@@ -1,0 +1,49 @@
+sequenceDiagram
+  autonumber
+  actor User as 用户
+  participant Mobile as 移动端登录页
+  participant Store as auth.store / SecureStore
+  participant ApiClient as API Client
+  participant AuthApi as AuthController
+  participant AuthService as AuthService
+  participant Jwt as JwtService
+  participant DB as PostgreSQL
+  participant Me as UsersController
+
+  User->>Mobile: 输入手机号
+  Mobile->>AuthApi: POST /auth/code
+  AuthApi->>AuthService: sendVerificationCode(phone)
+  AuthService->>AuthService: 进程内保存 5 分钟验证码
+  AuthService-->>AuthApi: expiresAt + devCode
+  AuthApi-->>Mobile: 验证码响应
+
+  User->>Mobile: 输入验证码并登录
+  Mobile->>AuthApi: POST /auth/login
+  AuthApi->>AuthService: login(phone, code)
+  AuthService->>DB: upsert User
+  AuthService->>Jwt: sign access token
+  AuthService->>DB: 保存 refresh token hash
+  AuthService-->>AuthApi: accessToken + refreshToken
+  AuthApi-->>Mobile: TokenResponse
+  Mobile->>Store: 保存 token 与登录态
+
+  Mobile->>ApiClient: 请求受保护接口
+  ApiClient->>Me: GET /me + Bearer accessToken
+  Me->>DB: 查询 User 并计算 currentWeekId/currentQuarterId
+  Me-->>ApiClient: UserContext
+  ApiClient-->>Mobile: 恢复会话成功
+
+  alt access token 过期
+    ApiClient->>AuthApi: POST /auth/refresh
+    AuthApi->>AuthService: refreshTokens(refreshToken)
+    AuthService->>DB: 查找未吊销且未过期 token hash
+    AuthService->>DB: 吊销旧 refresh token
+    AuthService->>Jwt: 签发新 access token
+    AuthService->>DB: 保存新 refresh token hash
+    AuthApi-->>ApiClient: 新 token
+    ApiClient->>Store: 更新 token
+    ApiClient->>Me: 重试原请求
+  else refresh 失败
+    ApiClient->>Store: 清空登录态
+    ApiClient-->>Mobile: 跳回登录
+  end

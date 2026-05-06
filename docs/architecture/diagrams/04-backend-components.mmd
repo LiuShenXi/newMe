@@ -1,0 +1,72 @@
+flowchart TB
+  Request["HTTP Request<br/>/api/v1/*"] --> Main["main.ts<br/>ValidationPipe / ExceptionFilter / RequestIdInterceptor"]
+  Main --> Guards["JWT Auth Guard<br/>受保护接口"]
+  Main --> Controllers["NestJS Controllers"]
+
+  subgraph Modules["业务模块边界"]
+    Auth["AuthModule<br/>验证码 / JWT / RefreshToken"]
+    Users["UsersModule<br/>/me / 周期上下文"]
+    Goals["GoalsModule<br/>愿景 / 年 / 季 / 月目标"]
+    Plans["PlansModule<br/>WeekPlan / WeeklyFocus"]
+    Todos["TodosModule<br/>今日清单 CRUD"]
+    Energy["EnergyModule<br/>每日能量 / 周均值"]
+    Settlement["SettlementModule<br/>周结算 / 快照 / 果实"]
+    Tree["TreeModule<br/>年度树 / 果实 / 荣誉读取"]
+    Ai["AiModule<br/>prompt / schema / confirm 落库"]
+    Sync["SyncModule<br/>push / pull / 版本冲突"]
+    Notifications["NotificationsModule<br/>push token / 偏好 / 下发"]
+    Health["HealthController<br/>DB 健康检查"]
+  end
+
+  Controllers --> Auth
+  Controllers --> Users
+  Controllers --> Goals
+  Controllers --> Plans
+  Controllers --> Todos
+  Controllers --> Energy
+  Controllers --> Settlement
+  Controllers --> Tree
+  Controllers --> Ai
+  Controllers --> Sync
+  Controllers --> Notifications
+  Controllers --> Health
+
+  subgraph CrossCutting["横切能力"]
+    Shared["packages/shared<br/>DTO / Enum / Zod"]
+    Prisma["PrismaService"]
+    Prompt["PromptRegistry<br/>7 个 AI 场景模板"]
+    Validator["OutputValidator<br/>结构化输出校验"]
+    Limit["RateLimiter + CircuitBreaker"]
+    Provider["AI_PROVIDER<br/>OpenAiAdapter"]
+  end
+
+  Auth --> Prisma
+  Users --> Prisma
+  Goals --> Prisma
+  Plans --> Prisma
+  Todos --> Prisma
+  Energy --> Prisma
+  Settlement --> Prisma
+  Tree --> Prisma
+  Ai --> Prisma
+  Sync --> Prisma
+  Notifications --> Prisma
+  Health --> Prisma
+
+  Controllers -.-> Shared
+  Ai --> Prompt
+  Ai --> Validator
+  Ai --> Limit
+  Ai --> Provider
+  Provider --> Local["本地 AI 服务<br/>AI_LOCAL_BASE_URL"]
+  Provider -.-> Fallback["GLM 降级<br/>AI_FALLBACK_BASE_URL"]
+
+  Prisma --> Db[("PostgreSQL")]
+
+  classDef module fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef cross fill:#312e81,stroke:#c4b5fd,color:#faf5ff
+  classDef external fill:#422006,stroke:#fde68a,color:#fffbeb
+
+  class Auth,Users,Goals,Plans,Todos,Energy,Settlement,Tree,Ai,Sync,Notifications,Health module
+  class Shared,Prisma,Prompt,Validator,Limit,Provider cross
+  class Local,Fallback,Db external

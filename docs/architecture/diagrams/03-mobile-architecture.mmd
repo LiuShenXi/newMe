@@ -1,0 +1,89 @@
+flowchart TB
+  subgraph Screens["App Router 页面层"]
+    Entry["app/index.tsx<br/>启动分流"]
+    Auth["auth/login<br/>验证码登录"]
+    Choose["onboarding/choose<br/>三路径选择"]
+    Vision["onboarding/vision<br/>深度愿景"]
+    Quick["onboarding/quick<br/>快速规划"]
+    Manual["onboarding/manual/*<br/>手动 OKR 五层"]
+    Tabs["(tabs)<br/>energy / todo / plan / tree"]
+    Settlement["settlement/index<br/>周结算"]
+  end
+
+  subgraph FeatureLayer["Feature 层"]
+    AuthHook["features/auth/useAuthLogin"]
+    OnboardingHook["features/onboarding/hooks<br/>useOnboarding / useManualAiAssist"]
+    EnergyFeature["features/energy<br/>EnergyOrb / EnergySlider / useEnergy"]
+    TodoFeature["features/todo<br/>TodoList / TodoItem / useTodos"]
+    PlanFeature["features/plan<br/>MonthView / YearView / usePlan"]
+    TreeFeature["features/tree<br/>GrowthTree / FruitCapsule"]
+    Notifications["features/notifications<br/>useNotifications / routing"]
+  end
+
+  subgraph SharedUi["共享 UI 与状态"]
+    PrototypePrimitives["PrototypeShell / PrototypePrimitives<br/>原型原语"]
+    Theme["theme/prototype / colors / spacing / typography"]
+    AuthStore["auth.store<br/>token / user context"]
+    OnboardingStore["onboarding.store<br/>草案与路径状态"]
+    SyncStore["sync.store<br/>deviceId / pull cursor"]
+    ApiClient["api/client<br/>token 注入 / 401 refresh"]
+    QueryClient["React Query client"]
+  end
+
+  subgraph LocalData["端侧数据层"]
+    Migrations["SQLite migrations v1"]
+    Repos["repositories<br/>todo / energy / goal / focus / settlement / sync_queue"]
+    SyncRuntime["sync/runtime + sync-engine"]
+    ConflictResolver["conflict-resolver<br/>版本冲突策略"]
+  end
+
+  Entry --> Auth
+  Entry --> Choose
+  Entry --> Tabs
+  Choose --> Vision
+  Choose --> Quick
+  Choose --> Manual
+  Tabs --> EnergyFeature
+  Tabs --> TodoFeature
+  Tabs --> PlanFeature
+  Tabs --> TreeFeature
+  Settlement --> TreeFeature
+
+  Auth --> AuthHook
+  Vision --> OnboardingHook
+  Quick --> OnboardingHook
+  Manual --> OnboardingHook
+  EnergyFeature --> PrototypePrimitives
+  TodoFeature --> PrototypePrimitives
+  PlanFeature --> PrototypePrimitives
+  TreeFeature --> PrototypePrimitives
+  PrototypePrimitives --> Theme
+
+  AuthHook --> AuthStore
+  AuthHook --> ApiClient
+  OnboardingHook --> OnboardingStore
+  OnboardingHook --> ApiClient
+  EnergyFeature --> QueryClient
+  TodoFeature --> QueryClient
+  PlanFeature --> QueryClient
+  Notifications --> ApiClient
+  QueryClient --> ApiClient
+
+  EnergyFeature --> Repos
+  TodoFeature --> Repos
+  PlanFeature --> Repos
+  SyncStore --> SyncRuntime
+  SyncRuntime --> Repos
+  SyncRuntime --> ApiClient
+  SyncRuntime --> ConflictResolver
+  Repos --> Migrations
+
+  classDef screen fill:#083344,stroke:#67e8f9,color:#ecfeff
+  classDef feature fill:#14532d,stroke:#86efac,color:#f0fdf4
+  classDef state fill:#312e81,stroke:#c4b5fd,color:#f5f3ff
+  classDef data fill:#1e3a8a,stroke:#bfdbfe,color:#eff6ff
+
+  class Entry,Auth,Choose,Vision,Quick,Manual,Tabs,Settlement screen
+  class AuthHook,OnboardingHook,EnergyFeature,TodoFeature,PlanFeature,TreeFeature,Notifications feature
+  class PrototypePrimitives,Theme,AuthStore,OnboardingStore,SyncStore,ApiClient,QueryClient state
+  class Migrations,Repos,SyncRuntime,ConflictResolver data

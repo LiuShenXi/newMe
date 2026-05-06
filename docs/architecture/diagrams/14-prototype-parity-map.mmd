@@ -1,0 +1,72 @@
+flowchart TB
+  Prototype["prototype/index.html<br/>唯一视觉与交互基准"]
+
+  subgraph PrototypePrimitives["原型原语"]
+    Phone["phone / phone-content<br/>393x812 设备结构"]
+    Bg["深林绿背景<br/>radial + grid"]
+    Status["status-bar / speaker"]
+    Nav["70px bottom-nav<br/>4 tab 胶囊"]
+    Glass["glass-card<br/>毛玻璃卡片"]
+    Buttons["primary / ghost / small-pill"]
+    Inputs["input / textarea"]
+    Modal["modal / bottom sheet / toast"]
+    EnergyVisual["能量球 / 氮气能量条"]
+    TreeTools["成长树 / 侧边工具 / 果实胶囊"]
+  end
+
+  subgraph MobileCode["移动端实现映射"]
+    Shell["PrototypeShell<br/>app/_layout + shared/components"]
+    Theme["theme/prototype.ts<br/>颜色 / 圆角 / 阴影 / spacing"]
+    Primitives["PrototypePrimitives.tsx<br/>按钮 / 胶囊 / sheet / toast"]
+    Tabs["app/(tabs)/_layout.tsx<br/>隐藏默认 Expo tabbar，自绘底栏"]
+    Energy["features/energy<br/>EnergyOrb / EnergySlider"]
+    Todo["features/todo<br/>TodoList / TodoItem / AddTodoInput"]
+    Plan["features/plan<br/>MonthView / YearView / EmptyLevel"]
+    Tree["features/tree<br/>GrowthTree / FruitCapsule"]
+    Settlement["app/settlement/index.tsx<br/>结算弹层和跳树"]
+  end
+
+  subgraph Verification["视觉还原验证"]
+    ProtoSmoke["prototype/prototype-regression.test.cjs"]
+    ProtoInteraction["prototype/prototype-interaction-smoke.cjs"]
+    MobileParity["apps/mobile/tests/prototype-parity.spec.js"]
+    VisualRegression["apps/mobile/tests/prototype-visual-regression.spec.js"]
+  end
+
+  Prototype --> Phone
+  Prototype --> Bg
+  Prototype --> Status
+  Prototype --> Nav
+  Prototype --> Glass
+  Prototype --> Buttons
+  Prototype --> Inputs
+  Prototype --> Modal
+  Prototype --> EnergyVisual
+  Prototype --> TreeTools
+
+  Phone --> Shell
+  Bg --> Theme
+  Status --> Shell
+  Nav --> Tabs
+  Glass --> Primitives
+  Buttons --> Primitives
+  Inputs --> Primitives
+  Modal --> Primitives
+  EnergyVisual --> Energy
+  TreeTools --> Tree
+  Primitives --> Todo
+  Primitives --> Plan
+  Primitives --> Settlement
+
+  Prototype --> ProtoSmoke
+  Prototype --> ProtoInteraction
+  MobileCode --> MobileParity
+  MobileCode --> VisualRegression
+
+  classDef proto fill:#064e3b,stroke:#99f6e4,color:#ecfeff
+  classDef code fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef test fill:#4c1d95,stroke:#ddd6fe,color:#faf5ff
+
+  class Prototype,Phone,Bg,Status,Nav,Glass,Buttons,Inputs,Modal,EnergyVisual,TreeTools proto
+  class Shell,Theme,Primitives,Tabs,Energy,Todo,Plan,Tree,Settlement code
+  class ProtoSmoke,ProtoInteraction,MobileParity,VisualRegression test

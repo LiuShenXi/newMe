@@ -1,0 +1,46 @@
+flowchart TB
+  Dev["开发机 / CI<br/>pnpm install / test / build"] --> Image["Docker build<br/>apps/api/Dockerfile"]
+  Dev --> MobileBuild["Expo 本地构建<br/>Android APK/AAB / iOS IPA"]
+
+  subgraph Device["用户设备"]
+    Mobile["NewMe App<br/>Expo / React Native"]
+    SQLite[("SQLite<br/>本地记录与同步队列")]
+  end
+
+  subgraph Cloud["国内云服务器 ECS"]
+    Nginx["nginx:1.27-alpine<br/>端口 ${NGINX_PORT:-37200}<br/>反向代理 /api/v1"]
+    Api["api 容器<br/>NestJS / PORT=3000"]
+    Postgres["postgres:16-alpine<br/>newme_dev"]
+    Volume[("postgres_data<br/>持久化卷")]
+  end
+
+  subgraph External["外部服务"]
+    LocalAi["host.docker.internal:4100/v1<br/>local-qwen-coder"]
+    Glm["open.bigmodel.cn/api/paas/v4<br/>glm-4-flash"]
+    ExpoPush["Expo Push API"]
+    Stores["应用市场 / TestFlight / App Store"]
+  end
+
+  MobileBuild --> Stores
+  Stores --> Mobile
+  Mobile --> SQLite
+  Mobile -->|"HTTPS /api/v1"| Nginx
+  Nginx --> Api
+  Image --> Api
+  Api -->|"DATABASE_URL"| Postgres
+  Postgres --> Volume
+  Api -->|"AI_LOCAL_*"| LocalAi
+  Api -.->|"AI_FALLBACK_*"| Glm
+  Api --> ExpoPush
+
+  Health["GET /api/v1/health<br/>数据库连通性"] --> Nginx
+
+  classDef device fill:#064e3b,stroke:#86efac,color:#f0fdf4
+  classDef cloud fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef external fill:#422006,stroke:#facc15,color:#fffbeb
+  classDef build fill:#312e81,stroke:#c4b5fd,color:#faf5ff
+
+  class Mobile,SQLite device
+  class Nginx,Api,Postgres,Volume cloud
+  class LocalAi,Glm,ExpoPush,Stores external
+  class Dev,Image,MobileBuild,Health build

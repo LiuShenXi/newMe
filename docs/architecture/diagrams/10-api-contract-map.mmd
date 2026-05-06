@@ -1,0 +1,68 @@
+flowchart TB
+  subgraph Mobile["移动端页面 / 功能"]
+    Login["auth/login"]
+    Entry["app/index<br/>会话恢复"]
+    Quick["onboarding/quick"]
+    Vision["onboarding/vision"]
+    Manual["onboarding/manual/*"]
+    Energy["tab: 能量"]
+    Todo["tab: 清单"]
+    Plan["tab: 计划"]
+    Tree["tab: 成长树"]
+    Settlement["settlement/index"]
+    Notify["notifications hook"]
+    SyncRuntime["sync runtime"]
+  end
+
+  subgraph Api["后端 API"]
+    AuthApi["POST /auth/code<br/>POST /auth/login<br/>POST /auth/refresh<br/>POST /auth/logout"]
+    MeApi["GET /me"]
+    AiApi["POST /ai/generations<br/>POST /ai/generations/:id/confirm<br/>POST /ai/assist"]
+    GoalApi["PUT /goals/vision<br/>POST /goals/quarters/:id/goals<br/>POST /goals/months/:id/goals<br/>GET /goals/current"]
+    PlanApi["GET /plans/weeks/:weekId/focuses<br/>PUT /plans/weeks/:weekId/focuses"]
+    TodoApi["GET /todos/today<br/>POST /todos<br/>PATCH /todos/:id<br/>DELETE /todos/:id"]
+    EnergyApi["GET /energy/weeks/:weekId<br/>PUT /energy/days/:date"]
+    SettlementApi["POST /settlements/weeks/:weekId"]
+    TreeApi["GET /tree/years/:year"]
+    SyncApi["POST /sync/push<br/>POST /sync/pull"]
+    NotificationApi["POST /notifications/tokens<br/>PATCH /notifications/preferences<br/>POST /notifications/test"]
+  end
+
+  Login --> AuthApi
+  Entry --> MeApi
+  Entry --> AuthApi
+  Quick --> AiApi
+  Vision --> AiApi
+  Manual --> AiApi
+  Manual --> GoalApi
+  Energy --> EnergyApi
+  Energy --> PlanApi
+  Todo --> TodoApi
+  Todo --> PlanApi
+  Plan --> PlanApi
+  Plan --> GoalApi
+  Tree --> TreeApi
+  Settlement --> SettlementApi
+  Settlement --> TreeApi
+  Notify --> NotificationApi
+  SyncRuntime --> SyncApi
+
+  Shared["packages/shared<br/>请求/响应 DTO + Zod Schema"] -.-> AuthApi
+  Shared -.-> MeApi
+  Shared -.-> AiApi
+  Shared -.-> GoalApi
+  Shared -.-> PlanApi
+  Shared -.-> TodoApi
+  Shared -.-> EnergyApi
+  Shared -.-> SettlementApi
+  Shared -.-> TreeApi
+  Shared -.-> SyncApi
+  Shared -.-> NotificationApi
+
+  classDef mobile fill:#064e3b,stroke:#86efac,color:#f0fdf4
+  classDef api fill:#1e3a8a,stroke:#93c5fd,color:#eff6ff
+  classDef shared fill:#4c1d95,stroke:#c4b5fd,color:#faf5ff
+
+  class Login,Entry,Quick,Vision,Manual,Energy,Todo,Plan,Tree,Settlement,Notify,SyncRuntime mobile
+  class AuthApi,MeApi,AiApi,GoalApi,PlanApi,TodoApi,EnergyApi,SettlementApi,TreeApi,SyncApi,NotificationApi api
+  class Shared shared

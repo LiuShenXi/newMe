@@ -1,0 +1,227 @@
+erDiagram
+  User ||--o{ Vision : owns
+  User ||--o{ AnnualObjective : owns
+  User ||--o{ Quarter : owns
+  User ||--o{ QuarterGoal : owns
+  User ||--o{ MonthGoal : owns
+  User ||--o{ MonthPlan : owns
+  User ||--o{ WeekPlan : owns
+  User ||--o{ WeeklyFocus : owns
+  User ||--o{ Todo : owns
+  User ||--o{ EnergyEntry : owns
+  User ||--o{ WeeklySettlement : owns
+  User ||--o{ TreeFruit : owns
+  User ||--o{ QuarterHonor : owns
+  User ||--o{ AiGeneration : owns
+  User ||--o{ SyncDevice : owns
+  User ||--o{ RefreshToken : owns
+  User ||--o{ PushToken : owns
+
+  AnnualObjective ||--o{ QuarterGoal : decomposes_to
+  Quarter ||--o{ QuarterGoal : contains
+  Quarter ||--o{ QuarterHonor : earns
+  QuarterGoal ||--o{ MonthGoal : decomposes_to
+  MonthGoal ||--o{ MonthPlan : guides
+  MonthPlan ||--o{ WeekPlan : contains
+  WeekPlan ||--o{ WeeklyFocus : contains
+  WeeklyFocus ||--o{ Todo : suggests
+  WeekPlan ||--o{ Todo : schedules
+  WeekPlan ||--o{ EnergyEntry : anchors
+  WeekPlan ||--o| WeeklySettlement : settles
+  WeeklySettlement ||--o| TreeFruit : creates
+  WeekPlan ||--o| TreeFruit : grows
+  AiGeneration ||--o{ AiGeneration : regenerates
+
+  User {
+    uuid id PK
+    string phone UK
+    string timezone
+    boolean hasCompletedOnboarding
+    json preferencesJson
+    int version
+  }
+
+  Vision {
+    uuid id PK
+    uuid userId FK
+    string content
+    Source source
+    int version
+  }
+
+  AnnualObjective {
+    uuid id PK
+    uuid userId FK
+    int year
+    json objectives
+    Source source
+    int version
+  }
+
+  Quarter {
+    uuid id PK
+    uuid userId FK
+    int year
+    int quarter
+    date startsOn
+    date endsOn
+    Source source
+    int version
+  }
+
+  QuarterGoal {
+    uuid id PK
+    uuid userId FK
+    uuid quarterId FK
+    uuid annualObjectiveId FK
+    string title
+    GoalType goalType
+    Source source
+    int version
+  }
+
+  MonthGoal {
+    uuid id PK
+    uuid userId FK
+    string monthId
+    uuid quarterGoalId FK
+    string title
+    Source source
+    int version
+  }
+
+  MonthPlan {
+    uuid id PK
+    uuid userId FK
+    string monthId
+    uuid monthGoalId FK
+    Source source
+    int version
+  }
+
+  WeekPlan {
+    uuid id PK
+    uuid userId FK
+    string weekId UK
+    uuid monthPlanId FK
+    Source source
+    int version
+  }
+
+  WeeklyFocus {
+    uuid id PK
+    uuid userId FK
+    uuid weekPlanId FK
+    string weekId
+    string title
+    string reason
+    datetime invalidatedAt
+    Source source
+    int version
+  }
+
+  Todo {
+    uuid id PK
+    uuid userId FK
+    uuid weekPlanId FK
+    uuid sourceFocusId FK
+    string title
+    date date
+    boolean completed
+    int estimatedMinutes
+    boolean userEdited
+    Source source
+    int version
+  }
+
+  EnergyEntry {
+    uuid id PK
+    uuid userId FK
+    uuid weekPlanId FK
+    string weekId
+    date date UK
+    int score
+    boolean hasViewedTodos
+    Source source
+    int version
+  }
+
+  WeeklySettlement {
+    uuid id PK
+    uuid userId FK
+    uuid weekPlanId FK
+    string weekId UK
+    int suggestedScore
+    int finalScore
+    string reflection
+    json snapshotJson
+    datetime confirmedAt
+    Source source
+    int version
+  }
+
+  TreeFruit {
+    uuid id PK
+    uuid userId FK
+    uuid weekPlanId FK
+    uuid weeklySettlementId FK
+    string weekId
+    int score
+    string label
+    string capsuleSummary
+    Source source
+    int version
+  }
+
+  QuarterHonor {
+    uuid id PK
+    uuid userId FK
+    uuid quarterId FK
+    float averageScore
+    datetime earnedAt
+    Source source
+    int version
+  }
+
+  AiGeneration {
+    uuid id PK
+    uuid userId FK
+    AiScenario scenario
+    string promptVersion
+    string model
+    string inputHash
+    json inputJson
+    json outputJson
+    AiGenerationStatus status
+    uuid regenerateFromId FK
+    datetime confirmedAt
+    Source source
+    int version
+  }
+
+  SyncDevice {
+    uuid id PK
+    uuid userId FK
+    string deviceId UK
+    string pullCursor
+    datetime lastSyncedAt
+    int version
+  }
+
+  RefreshToken {
+    uuid id PK
+    uuid userId FK
+    string tokenHash
+    datetime expiresAt
+    datetime revokedAt
+    int version
+  }
+
+  PushToken {
+    uuid id PK
+    uuid userId FK
+    string token UK
+    PushPlatform platform
+    boolean enabled
+    int version
+  }

@@ -1,0 +1,31 @@
+sequenceDiagram
+  autonumber
+  actor User as 用户
+  participant Mobile as settlement 页面
+  participant Api as SettlementsController
+  participant Service as SettlementsService
+  participant Energy as EnergyEntry 表
+  participant Todo as Todo 表
+  participant Settlement as WeeklySettlement 表
+  participant Fruit as TreeFruit 表
+  participant TreeApi as TreeController
+  participant TreeService as TreeService
+
+  User->>Mobile: 打开周结算并确认最终周结果
+  Mobile->>Api: POST /settlements/weeks/:weekId
+  Api->>Service: settleWeek(userId, weekId, finalScore, reflection)
+  Service->>Energy: 读取本周每日能量记录
+  Service->>Todo: 读取本周任务完成情况
+  Service->>Service: 计算 suggestedScore 并生成 snapshotJson
+  Service->>Settlement: upsert WeeklySettlement<br/>保存 finalScore / reflection / confirmedAt
+  Service->>Fruit: create TreeFruit<br/>label / score / capsuleSummary
+  Service-->>Api: settlement + fruit
+  Api-->>Mobile: 周结算结果
+  Mobile->>TreeApi: GET /tree/years/:year
+  TreeApi->>TreeService: getYearTree(userId, year)
+  TreeService->>Fruit: 读取年度果实列表
+  TreeService->>Settlement: 读取结算关联信息
+  TreeService->>TreeService: 按当前季度计算树阶段
+  TreeService-->>TreeApi: stage / fruits / honors
+  TreeApi-->>Mobile: 年度成长树数据
+  Mobile-->>User: 展示新果实与时间胶囊
