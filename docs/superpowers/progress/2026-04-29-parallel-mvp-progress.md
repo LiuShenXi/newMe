@@ -5,8 +5,8 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-06 已新增第一版 Mermaid 架构图谱；下一步为发布前真机 SQLite smoke 与远端推送/发布流程
-- 当前主控：main（领先 origin/main）
+- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-06 已新增第一版 Mermaid 架构图谱，并完成 iOS Dev Build 代码准备、Docker Desktop 安装、Docker Compose 后端启动和 iOS 模拟器 Dev Build 登录/AI 规划/确认写入/能量页 smoke；因当前没有 iPhone，真机 SQLite/推送到达仍待实机补测
+- 当前主控：docs/architecture-diagrams（当前工作区）
 - 最近更新时间：2026-05-06
 - 最近更新人：Codex
 
@@ -20,6 +20,101 @@ git branch --show-current
 git log --oneline -5
 git worktree list
 ```
+
+### 2026-05-06 iOS 真机 Dev Build 准备
+
+本轮完成：
+- 按 iOS 真机 Dev Build 测试计划接入 `expo-dev-client`，版本由 Expo SDK 54 匹配为 `~6.0.21`。
+- 在移动端根布局顶部引入 `expo-dev-client`，用于 Dev Build 下增强 native module mismatch 错误提示。
+- 为 iOS 配置 bundle identifier：`com.newme.mobile`。
+- 保留原有 Expo Go 启动脚本，新增 `dev-client` 和 `ios:device` 脚本，便于后续真机安装与日常调试。
+- 新增 iOS Dev Build smoke 文档，覆盖 Xcode/设备/局域网 API/SQLite/通知/周结算/视觉验收步骤。
+- 尝试执行 `expo run:ios --device --no-bundler`：已触发 Expo prebuild 并通过 Homebrew 安装 CocoaPods 1.16.2，但因本机未安装完整 Xcode，被 `xcodebuild` 前置检查阻塞。
+
+修改文件：
+- `apps/mobile/app.json`
+- `apps/mobile/app/_layout.tsx`
+- `apps/mobile/package.json`
+- `pnpm-lock.yaml`
+- `docs/testing/2026-05-06-ios-dev-build-smoke.md`
+- `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
+
+验证命令：
+- `pnpm --filter @newme/mobile exec expo install expo-dev-client` 通过。
+- `pnpm --filter @newme/mobile typecheck` 通过。
+- `pnpm --filter @newme/mobile exec expo config --type public` 通过，确认 `ios.bundleIdentifier = com.newme.mobile`。
+- `pnpm --filter @newme/mobile exec expo install --check` 通过。
+- `pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；首次失败原因是 `@newme/shared/dist` 不存在，先执行 `pnpm --filter @newme/shared build` 后通过。
+- `pod --version` 返回 `1.16.2`；终端仍提示建议设置 UTF-8 locale。
+
+阻塞：
+- `xcodebuild -version` 失败：当前 `xcode-select -p` 为 `/Library/Developer/CommandLineTools`，没有完整 Xcode；`xcrun xctrace list devices` 也不可用。
+- `/Applications/Xcode*.app` 未发现本机 Xcode。
+- `docker` 命令不存在，`docker compose config` 无法运行，`http://127.0.0.1:37200/api/v1/health` 当前不可访问。
+- `ipconfig getifaddr en0` 未返回地址；当前可用局域网地址来自 `en1`：`192.168.43.20`。
+
+下一步：
+- 安装完整 Xcode，首次打开完成组件安装，然后执行 `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`。
+- 在 shell profile 中补充 `export LANG=en_US.UTF-8` 与必要时 `export LC_ALL=en_US.UTF-8`，重新打开终端后再跑 CocoaPods。
+- 安装/启动 Docker Desktop，执行 `docker compose up --build -d`，并用 iPhone Safari 验证 `http://192.168.43.20:37200/api/v1/health`。
+- 连接 iPhone 并开启开发者模式后，执行 `EXPO_PUBLIC_API_BASE_URL="http://192.168.43.20:37200/api/v1" pnpm --filter @newme/mobile ios:device`。
+- 安装成功后执行 `EXPO_PUBLIC_API_BASE_URL="http://192.168.43.20:37200/api/v1" pnpm --filter @newme/mobile dev-client -- --clear`，按 `docs/testing/2026-05-06-ios-dev-build-smoke.md` 收集证据。
+
+### 2026-05-06 Docker + iOS 模拟器 Dev Build Smoke
+
+本轮完成：
+- 用户确认当前没有 iPhone，本轮从真机验收临时切换为 iOS 模拟器 Dev Build smoke；真机专属能力仍保持为待补测。
+- 安装并启动 Docker Desktop，因 Homebrew cask 在非交互 sudo 创建 `/usr/local/bin` 软链阶段失败，改用已下载 DMG 标准挂载复制到 `/Applications/Docker.app`。
+- Docker Desktop 首次启动后验证 Docker CLI、Compose 和 `desktop-linux` context 可用；当前未创建 `/usr/local/bin/docker` 软链，命令使用 `/Applications/Docker.app/Contents/Resources/bin/docker`。
+- 执行 `/Applications/Docker.app/Contents/Resources/bin/docker compose up --build -d`，Postgres、API、Nginx 均已启动，Nginx 暴露 `37200`。
+- 使用 iOS 18.4 `iPhone 16` 模拟器启动已安装 Dev Build，并通过 Metro URL `exp+mobile://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081` 打开 App。
+- 登录页 smoke 截图已保存到 `/tmp/newme-ios-docker-health-login.png`；页面显示验证码登录表单，无红屏、无 native module missing。
+- 通过真实 Docker 后端请求验证码与登录接口：`/auth/code` 返回开发验证码，`/auth/login` 返回 access/refresh token。
+
+验证命令：
+- `/Applications/Docker.app/Contents/Resources/bin/docker --version` 返回 Docker version 28.1.1。
+- `/Applications/Docker.app/Contents/Resources/bin/docker compose version` 返回 Docker Compose version v2.35.1-desktop.1。
+- `/Applications/Docker.app/Contents/Resources/bin/docker compose ps` 显示 `newme-postgres-1` healthy，`newme-api-1` 和 `newme-nginx-1` running。
+- `curl -i --max-time 10 http://127.0.0.1:37200/api/v1/health` 返回 HTTP 200，JSON 为 `{"status":"ok","database":"connected","version":"0.1.0",...}`。
+- `curl -sS -X POST http://127.0.0.1:37200/api/v1/auth/code ...` 返回 `devCode`。
+- `curl -sS -X POST http://127.0.0.1:37200/api/v1/auth/login ...` 返回 access/refresh token。
+- `xcrun simctl io 8797ECD5-67F1-4840-B328-551882163DA7 screenshot /tmp/newme-ios-docker-health-login.png` 通过。
+
+阻塞：
+- 当前没有 iPhone，无法验证 SecureStore 真实设备持久化、APNs/Expo push token、真实系统通知到达、真机相机/权限弹窗和真机 SQLite 文件持久化。
+- `osascript` 未获辅助功能权限，无法由脚本自动点按模拟器登录表单；UI 登录需要用户手动输入手机号 `13800138000` 和当前 `/auth/code` 返回的 `devCode`。
+
+下一步：
+- 若继续模拟器验收：保持 Docker Compose 和 Metro 运行，在模拟器手动输入验证码登录，继续走 onboarding、今日清单、能量、周结算和成长树 smoke。
+- 若恢复真机验收：准备 iPhone 后，使用 Mac 局域网 IP 替换 `EXPO_PUBLIC_API_BASE_URL`，重新构建/安装 Dev Build 并按 `docs/testing/2026-05-06-ios-dev-build-smoke.md` 补齐实机证据。
+
+### 2026-05-06 AI 规划服务修复与模拟器闭环
+
+本轮完成：
+- 根据模拟器截图复现“服务暂时不可用”：登录、`/me` 和 health 均正常，失败集中在 `POST /api/v1/ai/generations` 返回 500。
+- 根因 1：Docker API 容器内 `AI_LOCAL_BASE_URL=http://host.docker.internal:4100/v1`，但本机 4100 未启动；同时初始容器 `AI_FALLBACK_API_KEY` 为空，没有降级到 GLM。
+- 根因 2：配置 GLM fallback key 后，智谱 `glm-4-flash` 实际返回 ```json fenced code block，后端 `AiService` 直接 `JSON.parse(rawOutput)` 导致 500。
+- 通过 TDD 修复 `OpenAiAdapter`：当 provider 返回 fenced JSON 时，先剥离外层代码块再交给业务层解析，兼容 GLM 常见输出格式。
+- 重新构建并启动 Docker API 镜像，使用本地运行环境注入 GLM fallback key；未把真实 key 写入仓库。
+- 使用真实 Docker 后端跑通 HTTP 闭环：验证码登录 -> quick_quarter_plan AI 生成 -> confirm 写入 quarter goal / week focuses / today todos -> `/todos/today` 读取。
+- 重新启动 iOS 模拟器 Dev Build 到后台 Metro，模拟器已进入能量页；截图保存到 `/tmp/newme-ios-flow-after-fix.png`。
+
+修改文件：
+- `apps/api/src/modules/ai/providers/openai.adapter.ts`
+- `apps/api/src/modules/ai/providers/openai.adapter.spec.ts`
+- `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
+
+验证命令：
+- `pnpm --filter @newme/api test -- --runTestsByPath src/modules/ai/providers/openai.adapter.spec.ts --runInBand`：先红后绿，最终 4 个测试通过。
+- `pnpm --filter @newme/api typecheck` 通过。
+- `AI_FALLBACK_API_KEY=<local> /Applications/Docker.app/Contents/Resources/bin/docker compose up --build -d api nginx` 通过。
+- `curl -fsS http://127.0.0.1:37200/api/v1/health` 返回 `status=ok`、`database=connected`。
+- 真实 HTTP quick plan smoke 返回 `status=completed`、`weeklyFocuses=4`、`todayTodos=4`；confirm 返回 `quarterGoals=1`、`weeklyFocuses=4`、`todayTodos=4`；`/todos/today` 返回 4 条今日任务。
+- `xcrun simctl io 8797ECD5-67F1-4840-B328-551882163DA7 screenshot /tmp/newme-ios-flow-after-fix.png` 通过。
+
+当前运行：
+- Docker Compose 保持运行：Nginx `127.0.0.1:37200`，API `newme-api:latest`，Postgres healthy。
+- Metro 通过 detached `screen` 会话 `newme-metro` 后台运行，监听 `8081`，模拟器连接 URL 为 `exp+mobile://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081`。
 
 ### 2026-05-06 架构图谱第一版
 

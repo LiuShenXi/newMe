@@ -103,7 +103,7 @@ export class OpenAiAdapter implements ProviderAdapter {
         throw new Error(`${endpoint.label} provider returned empty content`);
       }
 
-      return content;
+      return this.normalizeContent(content);
     } finally {
       clearTimeout(timer);
     }
@@ -143,6 +143,13 @@ export class OpenAiAdapter implements ProviderAdapter {
 
   private trimTrailingSlash(value: string) {
     return value.replace(/\/+$/, '');
+  }
+
+  private normalizeContent(content: string) {
+    const trimmed = content.trim();
+    const fencedJson = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+
+    return fencedJson?.[1]?.trim() ?? trimmed;
   }
 
   private toError(prefix: string, error: unknown) {

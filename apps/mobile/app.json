@@ -20,7 +20,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.newme.mobile"
     },
     "android": {
       "adaptiveIcon": {

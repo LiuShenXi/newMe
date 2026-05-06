@@ -1,3 +1,5 @@
+import 'expo-dev-client';
+
 import { QueryClientProvider } from '@tanstack/react-query';
 import { Redirect, Stack, usePathname } from 'expo-router';
 import { useEffect } from 'react';

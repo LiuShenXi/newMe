@@ -80,6 +80,33 @@ describe('OpenAiAdapter', () => {
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).model).toBe('glm-4-flash');
   });
 
+  it('normalizes fenced JSON returned by GLM fallback', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('local service down'))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          choices: [
+            {
+              message: {
+                content: '```json\n{"goalType":"result","weeklyFocuses":[],"todayTodos":[]}\n```',
+              },
+            },
+          ],
+        }),
+      );
+    const adapter = new OpenAiAdapter({ fetch: fetchMock });
+
+    const result = await adapter.generate('请生成计划', {
+      maxTokens: 2000,
+      model: 'local-qwen-coder',
+      temperature: 0.2,
+      timeoutMs: 25_000,
+    });
+
+    expect(result).toBe('{"goalType":"result","weeklyFocuses":[],"todayTodos":[]}');
+  });
+
   it('surfaces both provider failures when local and fallback fail', async () => {
     const fetchMock = jest
       .fn()
