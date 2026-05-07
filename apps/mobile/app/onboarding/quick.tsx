@@ -14,7 +14,7 @@ import {
   PrototypeTopActions,
 } from '../../src/shared/components';
 import { useOnboarding } from '../../src/features/onboarding/hooks/useOnboarding';
-import { apiFetch, ApiError } from '../../src/shared/api/client';
+import { apiFetch, ApiError, AI_REQUEST_TIMEOUT_MS } from '../../src/shared/api/client';
 import { colors, fontSizes, fontWeights, lineHeights, spacing } from '../../src/shared/theme';
 import { usePlanningContext } from '../../src/shared/time/usePlanningContext';
 
@@ -59,6 +59,7 @@ export default function QuickPlanScreen() {
           },
           scenario: AiScenario.QUICK_QUARTER_PLAN,
         },
+        timeoutMs: AI_REQUEST_TIMEOUT_MS,
       });
       onboarding.applyAiDraft('week', {
         id: generation.id,

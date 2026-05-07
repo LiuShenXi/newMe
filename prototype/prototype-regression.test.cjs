@@ -28,8 +28,12 @@ const onboarding = sliceBetween("function renderOnboardingTopActions", "function
 const clickHandler = sliceBetween('document.addEventListener("click"', 'document.addEventListener("input"');
 const settlement = sliceBetween("function renderSettlementScreen()", "function renderReminderModal()");
 const fruitModal = sliceBetween("function renderFruitModal()", "function renderOverlays()");
+const phoneShell = sliceBetween("function renderPhone(children, options = {})", "function renderOnboarding()");
 
 assert(!listScreen.includes("week-strip"), "清单页应专注今日事项，不应再渲染底部日期切换条。");
+assert(phoneShell.includes("phone-status-spacer"), "移除虚拟时间/电量后仍需要保留顶部状态栏安全占位。");
+assert(!phoneShell.includes("09:07") && !phoneShell.includes("87%"), "顶部占位不应重新渲染写死的虚拟时间或电量。");
+assert(html.includes("height: 32px;") && html.includes("flex: 0 0 32px;"), "顶部状态栏安全占位需要为灵动岛设备保留 32px。");
 assert(weekData.includes("todos:"), "本周数据需要为每天提供 todos 明细，而不是只有完成数和百分比。");
 assert(weekModal.includes("day.todos") && weekModal.includes("week-modal-task"), "本周弹窗应展开每天的 TDL 明细。");
 assert(planScreen.includes("plan-task-list"), "计划页的周计划应列出具体行动明细，而不是只给标签。");

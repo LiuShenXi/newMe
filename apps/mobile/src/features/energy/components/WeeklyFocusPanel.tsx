@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, prototype, prototypeGlassBlur, prototypeGlassShadow, radii, spacing } from '../../../shared/theme';
+import { fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
 import type { WeeklyFocusProgress } from '../hooks/useEnergy';
 
 interface WeeklyFocusPanelProps {
@@ -9,10 +9,10 @@ interface WeeklyFocusPanelProps {
 
 export function WeeklyFocusPanel({ focuses }: WeeklyFocusPanelProps) {
   return (
-    <View style={styles.panel}>
+    <View style={styles.panel} testID="weekly-progress-panel">
       <View style={styles.header}>
         <Text style={styles.title}>本周进度概览</Text>
-        <Text style={styles.badge}>打分参照</Text>
+        <Text style={styles.badge} testID="weekly-progress-badge">打分参照</Text>
       </View>
       <View style={styles.list}>
         {focuses.length > 0 ? (
@@ -22,10 +22,10 @@ export function WeeklyFocusPanel({ focuses }: WeeklyFocusPanelProps) {
                 <Text numberOfLines={1} style={styles.itemTitle}>
                   {item.title}
                 </Text>
-                <Text style={styles.value}>{item.value}%</Text>
+                <Text style={styles.value} testID="weekly-progress-value">{item.value}%</Text>
               </View>
-              <View style={styles.track}>
-                <View style={[styles.fill, { width: `${item.value}%` }]} />
+              <View style={styles.track} testID="weekly-progress-track">
+                <View style={[styles.fill, { width: `${item.value}%` }]} testID="weekly-progress-fill" />
               </View>
             </View>
           ))
@@ -41,9 +41,11 @@ export function WeeklyFocusPanel({ focuses }: WeeklyFocusPanelProps) {
 
 const styles = StyleSheet.create({
   badge: {
-    backgroundColor: 'rgba(167, 243, 208, 0.10)',
+    backgroundColor: 'transparent',
+    borderColor: 'rgba(143, 179, 170, 0.24)',
     borderRadius: radii.pill,
-    color: 'rgba(209, 250, 229, 0.72)',
+    borderWidth: StyleSheet.hairlineWidth,
+    color: 'rgba(144, 190, 178, 0.74)',
     fontSize: fontSizes.xs,
     lineHeight: lineHeights.xs,
     paddingHorizontal: spacing[3],
@@ -60,27 +62,28 @@ const styles = StyleSheet.create({
     padding: spacing[3],
   },
   fill: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#7DD3CA',
     borderRadius: radii.pill,
     height: '100%',
+    opacity: 0.9,
   },
   header: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: spacing[3],
+    marginBottom: 16,
   },
   item: {
-    gap: 6,
+    gap: 7,
   },
   itemTitle: {
-    color: '#E2E8F0',
+    color: 'rgba(214, 224, 222, 0.74)',
     flex: 1,
-    fontSize: fontSizes.xs,
-    lineHeight: lineHeights.xs,
+    fontSize: 13,
+    lineHeight: 18,
   },
   list: {
-    gap: spacing[3],
+    gap: 16,
   },
   meta: {
     alignItems: 'center',
@@ -89,30 +92,30 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   panel: {
-    ...prototypeGlassBlur,
-    ...prototypeGlassShadow,
-    backgroundColor: prototype.color.glass,
-    borderColor: prototype.color.glassBorder,
-    borderRadius: prototype.radius.card,
-    borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderRadius: 0,
+    borderWidth: 0,
     opacity: 1,
-    padding: 16,
+    paddingBottom: 6,
+    paddingHorizontal: 16,
+    paddingTop: 6,
   },
   title: {
-    color: colors.text,
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.sm,
+    color: 'rgba(241, 245, 242, 0.88)',
+    fontSize: 16,
+    fontWeight: fontWeights.medium,
+    lineHeight: 22,
   },
   track: {
-    backgroundColor: 'rgba(241, 245, 249, 0.10)',
+    backgroundColor: 'rgba(158, 178, 171, 0.20)',
     borderRadius: radii.pill,
-    height: 6,
+    height: 2,
     overflow: 'hidden',
   },
   value: {
-    color: '#CFFAFE',
-    fontSize: fontSizes.xs,
-    lineHeight: lineHeights.xs,
+    color: '#CFDDDA',
+    fontSize: 13,
+    lineHeight: 18,
   },
 });

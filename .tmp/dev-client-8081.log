@@ -1,0 +1,40 @@
+
+> @newme/mobile@1.0.0 dev-client /Users/shenxi/Desktop/WORK-SPACE/newMe/apps/mobile
+> expo start --dev-client -- --clear --host localhost
+
+Starting project at /Users/shenxi/Desktop/WORK-SPACE/newMe/apps/mobile
+Starting Metro Bundler
+warning: Bundler cache is empty, rebuilding (this may take a minute)
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+iOS node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+| (node:80222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:80223) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:80227) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:80224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:80225) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:80226) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:80228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+iOS node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓░░░░░░ 68.0% (711/862)
+iOS node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 84.5% (1628/1792)
+iOS Bundled 8448ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (2029 modules)
+iOS Bundled 729ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (785 modules)
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433
+iOS node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 50ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+iOS Bundled 22ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433
+iOS node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 143ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+iOS Bundled 48ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433
+ WARN  🟡 expo-notifications: obtaining a push token may not work on iOS simulators due to an iOS issue. To obtain a push token, use a real device. Read more: https://developer.apple.com/forums/thread/795433

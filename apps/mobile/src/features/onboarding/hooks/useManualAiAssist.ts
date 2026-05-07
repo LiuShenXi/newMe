@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import type { GenerationDto } from '@newme/shared';
 import { AiScenario } from '@newme/shared';
 
-import { apiFetch, ApiError } from '../../../shared/api/client';
+import { apiFetch, ApiError, AI_REQUEST_TIMEOUT_MS } from '../../../shared/api/client';
 import { usePlanningContext } from '../../../shared/time/usePlanningContext';
 import { useOnboarding } from './useOnboarding';
 
@@ -63,6 +63,7 @@ export function useManualAiAssist(level: ManualLevel) {
           },
           scenario: AiScenario.MANUAL_LOCAL_ASSIST,
         },
+        timeoutMs: AI_REQUEST_TIMEOUT_MS,
       });
 
       onboarding.applyAiDraft(level, {
@@ -93,4 +94,3 @@ export function useManualAiAssist(level: ManualLevel) {
 function toUserMessage(error: unknown, fallback: string) {
   return error instanceof ApiError ? error.message : fallback;
 }
-

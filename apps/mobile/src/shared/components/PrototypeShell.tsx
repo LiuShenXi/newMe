@@ -31,6 +31,7 @@ export function PrototypeScreen({
   const shouldScroll = contentMode ? contentMode === 'scroll' : scroll;
   const content = (
     <View style={styles.content}>
+      <View style={styles.statusSpacer} testID="prototype-status-spacer" />
       <View style={[styles.main, shouldShowNav ? styles.mainWithNav : null, contentStyle]}>{children}</View>
     </View>
   );
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 12,
     minHeight: 0,
-    paddingTop: 0,
+    paddingTop: prototype.size.mainTop,
   },
   mainWithNav: {
     paddingBottom: prototype.size.bottomNavHeight + prototype.size.bottomNavInsetWeb,
@@ -97,5 +98,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     minHeight: '100%',
     width: '100%',
+  },
+  statusSpacer: {
+    height: prototype.size.statusHeight,
   },
 });

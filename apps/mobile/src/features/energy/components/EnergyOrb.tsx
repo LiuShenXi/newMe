@@ -61,10 +61,16 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
   const coreScale = pulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.025] });
 
   return (
-    <View style={styles.wrap}>
-      <Animated.View style={[styles.aura, auraBlur, charging ? styles.auraCharging : null, { transform: [{ scale: auraScale }] }]} />
-      <Animated.View style={[styles.core, coreGradient, charging ? styles.coreCharging : null, { transform: [{ scale: coreScale }] }]} />
-      <View style={[styles.shadow, shadowBlur]} />
+    <View style={styles.wrap} testID="energy-orb">
+      <Animated.View
+        style={[styles.aura, auraBlur, charging ? styles.auraCharging : null, { transform: [{ scale: auraScale }] }]}
+        testID="energy-orb-aura"
+      />
+      <Animated.View
+        style={[styles.core, coreGradient, charging ? styles.coreCharging : null, { transform: [{ scale: coreScale }] }]}
+        testID="energy-orb-core"
+      />
+      <View style={[styles.shadow, shadowBlur]} testID="energy-orb-shadow" />
       {bubbleSpecs.map((bubble) => (
         <View
           key={`${bubble.left}-${bubble.bottom}`}
@@ -79,6 +85,7 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
             },
             bubbleShadow,
           ]}
+          testID="energy-orb-bubble"
         />
       ))}
       <View style={styles.textWrap}>
@@ -87,7 +94,7 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
           <Text style={styles.percent}>%</Text>
         </Text>
         <Text style={styles.label}>本周能量</Text>
-        <Text style={[styles.status, charging ? styles.statusCharging : null]}>
+        <Text style={[styles.status, charging ? styles.statusCharging : null]} testID="energy-orb-status">
           {charging ? '能量注入中' : '静默充能中'}
         </Text>
       </View>

@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, GestureResponderEvent, LayoutChangeEvent, PanResponder, StyleSheet, Text, View } from 'react-native';
 
-import { colors, fontSizes, fontWeights, lineHeights, prototypeGlassShadow, radii, spacing } from '../../../shared/theme';
+import { fontSizes, fontWeights, lineHeights, radii, spacing } from '../../../shared/theme';
 
 interface EnergySliderProps {
   onChange: (value: number) => void;
@@ -213,19 +213,16 @@ export function EnergySlider({ onChange, value }: EnergySliderProps) {
 
 const styles = StyleSheet.create({
   card: {
-    ...prototypeGlassShadow,
-    backgroundColor: 'rgba(42, 40, 8, 0.46)',
-    borderColor: 'rgba(234, 179, 8, 0.32)',
-    borderRadius: 27,
-    borderWidth: 1,
-    minHeight: 142,
-    overflow: 'hidden',
-    paddingBottom: 17,
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderRadius: 0,
+    borderWidth: 0,
+    marginTop: 16,
+    minHeight: 112,
+    overflow: 'visible',
+    paddingBottom: 0,
     paddingHorizontal: spacing[4],
-    paddingTop: 17,
-    shadowColor: '#FACC15',
-    shadowOpacity: 0.16,
-    shadowRadius: 26,
+    paddingTop: 0,
   },
   capGlow: {
     backgroundColor: 'rgba(255, 208, 86, 0.34)',
@@ -370,10 +367,10 @@ const styles = StyleSheet.create({
     top: 0,
   },
   title: {
-    color: colors.text,
-    fontSize: fontSizes.sm,
-    fontWeight: fontWeights.semibold,
-    lineHeight: lineHeights.sm,
+    color: 'rgba(246, 242, 215, 0.88)',
+    fontSize: 16,
+    fontWeight: fontWeights.medium,
+    lineHeight: 22,
   },
   trackFrame: {
     backgroundColor: 'rgba(2, 6, 10, 0.82)',

@@ -1,0 +1,388 @@
+Starting project at /Users/shenxi/Desktop/WORK-SPACE/newMe/apps/mobile
+Starting Metro Bundler
+Waiting on http://localhost:37300
+Logs for your project will appear below.
+Web Bundled 839ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1484 modules)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 1219ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (311 modules)
+Web node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 91.2% (297/311)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 106ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 15ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+| (node:52960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 52ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 15ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 36ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 26ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 26ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 10ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 17ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+| (node:52963) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:52961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:52964) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:52965) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:52966) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:52962) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 116ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 14ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 22ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 23ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 30ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 23ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 4ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 23ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 11ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 22ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 14ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 22ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 14ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 106ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 19ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 77ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 14ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 81ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 223ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 26ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 27ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 16ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 23ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 10ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 12ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 56ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 26ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 54ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 28ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 15ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 22ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 18ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 14ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 48ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 17ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 61ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 16ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 47ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 54ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 35ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 4ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 27ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 23ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 47ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 10ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 30ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 22ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 24ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 34ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 17ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 11ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 25ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 7ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 13ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 12ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 10ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 39ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 19ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 102ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 17ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 51ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 14ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 50ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 63ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 13ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 5ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 23ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 19ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 25ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 16ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 21ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 24ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 22ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 8ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+Web node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 11ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 18ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 6ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 47ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 10ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 19ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 21ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 20ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 9ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)
+Web Bundled 40ms node_modules/.pnpm/expo-router@6.0.23_8b8edca78f33d7508a9b877b4aef6701/node_modules/expo-router/entry.js (1 module)
+ LOG  [web] Logs will appear in the browser console
+Web Bundled 10ms node_modules/.pnpm/expo-notifications@0.32.17_expo@54.0.34_react-native@0.81.5_@babel+core@7.29.0_@react-n_416b89c917ade51cf9dc08f04f53a4bf/node_modules/expo-notifications/build/index.js (1 module)

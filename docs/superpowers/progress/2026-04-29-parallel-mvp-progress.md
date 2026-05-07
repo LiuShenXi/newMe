@@ -5,9 +5,9 @@
 ## 当前总状态
 
 - 当前批次：Batch 2（已完成）
-- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-06 已新增第一版 Mermaid 架构图谱，完成 iOS Dev Build 模拟器 smoke，并新增 5 Tab「我的」页与昵称/邮箱资料后端；因当前没有 iPhone，真机 SQLite/推送到达仍待实机补测
+- 当前阶段：MVP 后续开发计划已全部完成并合并回 `main`；发布前测试收口已补齐移动端登录态测试基座、prototype smoke、真实 HTTP smoke 脚本和 `/me` 会话恢复；2026-05-07 已修正顶部安全占位，保持移除虚拟时间/电量，同时把不可见占位上调到 32px，避免内容贴近 iPhone 灵动岛；因当前没有 iPhone，真机 SQLite/推送到达仍待实机补测
 - 当前主控：docs/architecture-diagrams（当前工作区）
-- 最近更新时间：2026-05-06
+- 最近更新时间：2026-05-07
 - 最近更新人：Codex
 
 ## 快速续跑入口
@@ -20,6 +20,52 @@ git branch --show-current
 git log --oneline -5
 git worktree list
 ```
+
+### 2026-05-07 根目录快速上手文档
+
+本轮完成：
+- 新增根目录 `README.md`，把前端 Expo Web 固定预览端口 `37300`、Metro `8081`、后端 API `37200`、API 容器内部 `3000`、PostgreSQL 容器内部 `5432`、本地大模型 `4100` 做成端口速查表。
+- 补充第一次启动顺序：`pnpm install`、`docker compose up --build -d`、health check、`EXPO_PUBLIC_API_BASE_URL=... pnpm --filter @newme/mobile web -- --port 37300`。
+- 补充开发登录验证码、常用 typecheck/test 命令，以及端口冲突时的替换方式。
+
+修改文件：
+- `README.md`
+- `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
+
+验证记录：
+- 已通过：`rg -n "37300|37200|8081|3000|4100|EXPO_PUBLIC_API_BASE_URL|EXPO_BASE_URL" README.md package.json apps/mobile/package.json docker-compose.yml apps/mobile/src/shared/api/client.ts apps/mobile/tests`，确认文档端口和当前实现、测试默认值一致。
+
+### 2026-05-07 顶部状态栏安全占位修正
+
+本轮完成：
+- 按用户截图反馈修复“去掉顶部虚拟时间后内容整体上移遮挡”的问题：`prototype/index.html` 恢复不可见 `phone-status-spacer`，并根据 iPhone 16 灵动岛截图把状态栏安全占位从 `20px` 上调到 `32px`，主内容起始间距保持 `12px`。
+- 移动端 `PrototypeScreen` 同步新增 `prototype-status-spacer`，`prototype.size` 补齐 `statusHeight=32`、`mainTop=12`，继续不渲染写死的 `09:07`、`87%` 或中间胶囊。
+- 回归测试新增顶部 chrome 断言，确保后续不会再次把安全占位一起删掉。
+- 产品需求设计文档同步更新顶部规则：移除人工系统文字/电量，但保留不可见安全区容器。
+
+修改文件：
+- `prototype/index.html`
+- `prototype/prototype-regression.test.cjs`
+- `apps/mobile/src/shared/components/PrototypeShell.tsx`
+- `apps/mobile/src/shared/theme/prototype.ts`
+- `apps/mobile/tests/prototype-parity.spec.js`
+- `产品需求设计文档.md`
+- `docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md`
+
+验证记录：
+- 已通过：`node prototype/prototype-regression.test.cjs`
+- 已通过：`node prototype/prototype-interaction-smoke.cjs`
+- 已通过：`pnpm --filter @newme/mobile typecheck`
+- 已通过：启动 Expo Web 预览 `pnpm --filter @newme/mobile web -- --port 37300`，监听 `http://localhost:37300`
+- 已通过：`npx --no-install playwright test apps/mobile/tests/prototype-parity.spec.js -g "top chrome" --reporter=line --workers=1 --timeout=30000 --output=.tmp/pw-mobile-output`
+- 已通过：`npx --no-install playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=30000 --output=.tmp/pw-mobile-output`，9 tests
+- 二次微调后已通过：`node prototype/prototype-regression.test.cjs`
+- 二次微调后已通过：`node prototype/prototype-interaction-smoke.cjs`
+- 二次微调后已通过：`pnpm --filter @newme/mobile typecheck`
+- 二次微调后已通过：`npx --no-install playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=30000 --output=.tmp/pw-mobile-output`，9 tests
+
+下一步：
+- 若继续做真机/模拟器视觉验收，刷新当前 Expo Web 或 Dev Build 后复核计划页顶部，确认标题不再顶进系统状态栏。
 
 ### 2026-05-06 登录与我的页
 
@@ -293,7 +339,7 @@ git worktree list
 | C3 Design System | DONE | feat/track-c-design-system -> main | f8efcc0 / merge a9382f7 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 深色主题 token、Button/Card/Input/LoadingOverlay 已完成 |
 | C4 Mobile State | DONE | feat/track-c-state -> main | 1508f00 / merge 0961b89 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | API client、React Query 配置、onboarding/auth/sync stores 已完成 |
 | C5 Onboarding 三路径 | DONE | feat/track-c-onboarding -> main | 4df1237 / merge 38fab3c | pnpm -r typecheck；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test .tmp/c5-onboarding.spec.js --reporter=line；main 上 api test/typecheck/build 均通过 | 三路径入口、快速/深度输入页、手动 OKR 五层流转完成；真实 AI 生成与确认写入留到 F2 |
-| C6 Energy Page | DONE | feat/track-c-energy -> main | 604d2df / merge 1c58f93 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 能量球、本周进度概览、今日能量条、确认提醒和注入反馈完成；Skia 粒子留体验增强 |
+| C6 Energy Page | DONE | feat/track-c-energy -> main | 604d2df / merge 1c58f93；2026-05-07 main 补强 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 能量球、本周进度概览、今日能量条、确认提醒和注入反馈完成；能量球已补 Skia 原生 Canvas 复刻，Web 保留回退 |
 | C7 Todo Page | DONE | feat/track-c-todo -> main | 85177ee / merge f0d0f63 | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 本周重点标签、今日清单 CRUD、本周 7 天概览完成；本轮已补左滑露出垃圾桶 |
 | C8 Plan Page | DONE | feat/track-c-plan -> main | 02d73b0 / merge 56fea2f | TDD Playwright RED/GREEN；pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；main 上 api test/typecheck/build；pnpm -r typecheck 均通过 | 月/年双视图、4 周节点、Q1-Q4 卡片、手动空层级补全入口完成 |
 | C5-C10 Prototype Primitive Parity | DONE | main | 本轮提交 | pnpm --filter @newme/mobile typecheck；pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web；npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line；npx playwright test apps/mobile/tests/prototype-visual-regression.spec.js --reporter=line 均通过 | 已纠正此前“视觉还原完成”过宽口径，新增 prototype 原语层，底栏、按钮、胶囊、modal、sheet、toast、输入框、树侧工具统一按 `prototype/index.html` 复刻；默认 Expo tabbar 已隐藏 |
@@ -591,6 +637,27 @@ git worktree list
 - 文档同步：`产品需求设计文档.md` 已更新最后更新时间与顶部还原口径，本进度日志同步记录改动范围、验证结果和当前无阻塞。
 - 验证记录：首次运行 `npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 因 `http://localhost:37300` 未启动失败；随后用 `pnpm --filter @newme/mobile exec expo start --web --port 37300 --host localhost` 启动 Expo Web，`curl -I http://localhost:37300` 返回 HTTP 200；重跑 `npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line` 8 个用例通过；`pnpm --filter @newme/mobile typecheck` 通过。
 - 阻塞与下一步：本轮无阻塞；Expo Web 当前保持在 `http://localhost:37300` 供本机实时预览。
+
+### 2026-05-07
+
+- AI fallback 超时修正：排查截图中的“服务暂时不可用”后确认，年度 OKR 确认已成功，失败发生在后续 `annual_to_quarter_okr` 生成；本机没有 4100 本地模型监听时会快速降级 GLM，但 GLM 季度 OKR 长 JSON 偶发超过原 25 秒 provider 超时。
+- 代码调整：`AiService` 新增 `AI_PROVIDER_TIMEOUT_MS` 支持，默认从 25 秒提升到 60 秒；`docker-compose.yml` 和 `apps/api/.env.example` 同步暴露该配置；移动端 `AI_REQUEST_TIMEOUT_MS` 设为 90 秒，并用于深度愿景、快速规划、手动 AI 辅助的 `/ai/generations` 请求，避免客户端默认 30 秒先 abort。
+- TDD 与验证记录：先新增 `uses the configured AI provider timeout for slower fallback models` 失败用例，确认旧实现仍传 25000；实现后 `pnpm --filter @newme/api test -- --runTestsByPath src/modules/ai/tests/ai.service.spec.ts --runInBand` 8 个用例通过，`pnpm --filter @newme/api typecheck` 通过，`pnpm --filter @newme/mobile typecheck` 通过，`docker compose config` 通过。
+- 运行态验证：已 `docker compose up -d --build api` 重建 API，随后用进程环境注入 `AI_FALLBACK_API_KEY` 和 `AI_PROVIDER_TIMEOUT_MS=60000` 重启 API；容器内确认 `AI_FALLBACK_API_KEY=set`、`AI_PROVIDER_TIMEOUT_MS=60000`，`GET /api/v1/health` 正常。真实 `annual_to_quarter_okr` smoke 在本机无 4100 本地模型情况下通过 GLM fallback 返回 HTTP 201，用时约 31.8 秒，已越过旧 25 秒超时点。
+- 预览运行态：已重启移动端 Metro dev-client 到 `http://localhost:8081`，确保移动端 90 秒 AI 请求超时进入最新 bundle。
+- 文档同步：`产品需求设计文档.md` 已补充 2026-05-07 AI 调用超时修正说明。
+- 能量球原生复刻：按用户要求将 iOS/Android `EnergyOrb` 改为 `@shopify/react-native-skia` 原生 Canvas 自绘，新增 `apps/mobile/src/features/energy/components/EnergyOrb.native.tsx`，复刻原型 242px 舞台、224px 球体、径向玻璃球芯、外层柔光、底部柔光、7 个气泡和 1.25 秒充能脉冲；`EnergyOrb.tsx` 保留为 Expo Web/Playwright 回退。
+- TDD 记录：先在 `apps/mobile/tests/prototype-parity.spec.js` 增加能量球结构锚点和原生源码防回归检查，红测分别失败于缺少 `energy-orb` 测试锚点和缺少 `EnergyOrb.native.tsx`；实现后 focused 用例 `native energy orb|energy orb exposes` 2 个测试通过。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=60000 --output=.tmp/pw-mobile-output` 11 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；首次 `expo run:ios --no-bundler` 因 CocoaPods ASCII-8BIT locale 失败，改用 `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pnpm --filter @newme/mobile exec expo run:ios --no-bundler` 后 iOS 模拟器 Dev Build 构建、安装和打开成功，Skia 仅有 iOS simulator 最低版本链接 warning；清缓存启动 `EXPO_PUBLIC_API_BASE_URL=http://127.0.0.1:37200/api/v1 pnpm --filter @newme/mobile dev-client -- --clear --host localhost` 后截图 `/tmp/newme-ios-skia-energy-orb.png`，确认能量球不再出现粗亮圆环、底部浅色硬横条或方形光块。
+- 本周进度概览哑光化：按用户提供设计稿更新 `prototype/index.html` 和移动端 `WeeklyFocusPanel`，去掉原玻璃卡片容器、边框和阴影，改为透明背景融合层；标题、badge、数值与进度线统一降饱和，进度条改为 2px 哑光青灰细线，保持能量球和今日能量条为主视觉。
+- TDD 记录：先新增 `weekly progress panel uses a matte integrated treatment without card chrome` 断言，红测失败于缺少新锚点；实现后 focused 用例通过。全量回归首次发现 `energy page keeps prototype vertical rhythm` 中确认按钮被进度区留白推低到 702.5px，已收紧哑光进度区自身内边距与行距，受影响 focused 用例 2 个通过。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=60000 --output=.tmp/pw-mobile-output` 12 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过。
+- 今日能量条去卡片化：继续按用户设计稿更新 `prototype/index.html` 和移动端 `EnergySlider`，移除 `range-card` / `energy-bar-card` 的暗金玻璃背景、边框、圆角、阴影和 142px 卡片高度；保留标题、62% 数值、金色胶囊轨道、青色 HUD 线、端点与粒子层，并通过顶部间距维持与上方进度区的呼吸感。
+- TDD 记录：先扩展 `energy bar matches the gold capsule reference composition`，要求能量条外层透明、无边框、无阴影且高度收敛到 104-124px；红测失败于旧卡片高度 150px，随后实现并修正 RN Web 透明零阴影后 focused 用例通过。去卡片后首次垂直节奏测试发现标题上移到 498px，已补透明模块顶部间距，受影响 4 个 focused 用例通过。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=60000 --output=.tmp/pw-mobile-output` 12 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`git diff --check -- apps/mobile/src/features/energy/components/EnergySlider.tsx apps/mobile/tests/prototype-parity.spec.js prototype/index.html 产品需求设计文档.md docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md` 通过。
+- 确认按钮防误触间距：按用户反馈将“确认今日能量”按钮稍微下移，`prototype/index.html` 的 `.confirm-energy` 和移动端 `ConfirmButton` 均增加 12px 顶部间距，避免与去卡片后的能量条模块贴得太近。
+- TDD 记录：新增 `energy confirm button keeps a mis-tap gap below the energy bar`，要求能量条模块底部到确认按钮顶部至少 26px；红测确认旧间距仅 14px，实现后该用例与 `energy page keeps prototype vertical rhythm` focused 用例均通过。
+- 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=60000 --output=.tmp/pw-mobile-output` 13 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`git diff --check -- apps/mobile/src/features/energy/components/ConfirmButton.tsx apps/mobile/tests/prototype-parity.spec.js prototype/index.html 产品需求设计文档.md docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md` 通过。
 
 ## 阻塞与风险
 

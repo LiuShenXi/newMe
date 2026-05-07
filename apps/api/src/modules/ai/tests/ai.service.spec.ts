@@ -99,7 +99,7 @@ describe('AiService', () => {
     });
     expect(provider.generate).toHaveBeenCalledWith(
       expect.stringContaining('quick_quarter_plan'),
-      expect.objectContaining({ model: 'mock-model', timeoutMs: 25000 }),
+      expect.objectContaining({ model: 'mock-model', timeoutMs: 60000 }),
     );
     expect(prisma.aiGeneration.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
@@ -113,6 +113,30 @@ describe('AiService', () => {
         contextVersion: 'ctx-1',
       }),
     });
+  });
+
+  it('uses the configured AI provider timeout for slower fallback models', async () => {
+    const previousTimeout = process.env.AI_PROVIDER_TIMEOUT_MS;
+    process.env.AI_PROVIDER_TIMEOUT_MS = '90000';
+    const { service, provider } = createService();
+
+    try {
+      await service.generateDraft('user-1', {
+        scenario: AiScenario.QUICK_QUARTER_PLAN,
+        input: { goal: '发布个人成长 App MVP' },
+      });
+
+      expect(provider.generate).toHaveBeenCalledWith(
+        expect.stringContaining('quick_quarter_plan'),
+        expect.objectContaining({ timeoutMs: 90000 }),
+      );
+    } finally {
+      if (previousTimeout === undefined) {
+        delete process.env.AI_PROVIDER_TIMEOUT_MS;
+      } else {
+        process.env.AI_PROVIDER_TIMEOUT_MS = previousTimeout;
+      }
+    }
   });
 
   it('rate limits the same user and scenario after three requests per minute', async () => {

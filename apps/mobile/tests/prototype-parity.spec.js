@@ -1,7 +1,10 @@
+const fs = require('fs');
+const path = require('path');
 const { test, expect } = require('@playwright/test');
 const { mockPrototypeApp } = require('./prototype-test-utils');
 
 const baseUrl = process.env.EXPO_BASE_URL || 'http://localhost:37300';
+const mobileRoot = path.resolve(__dirname, '..');
 
 test.use({
   viewport: { width: 390, height: 844 },
@@ -25,6 +28,21 @@ test('mobile screens expose prototype-level chrome and copy', async ({ page }) =
   await expect(page.getByRole('tab', { name: /能量/ })).toBeVisible();
 });
 
+test('top chrome keeps invisible status spacer without fake system text', async ({ page }) => {
+  await page.goto(`${baseUrl}/plan`, { waitUntil: 'networkidle' });
+
+  await expect(page.getByText('09:07')).toHaveCount(0);
+  await expect(page.getByText('87%')).toHaveCount(0);
+
+  const spacer = await page.getByTestId('prototype-status-spacer').boundingBox();
+  const segmented = await page.getByText('周/月计划').boundingBox();
+
+  expect(spacer).not.toBeNull();
+  expect(segmented).not.toBeNull();
+  expect(Math.round(spacer.height)).toBe(32);
+  expect(segmented.y).toBeGreaterThanOrEqual(60);
+});
+
 test('energy page keeps prototype vertical rhythm', async ({ page }) => {
   await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
 
@@ -36,12 +54,81 @@ test('energy page keeps prototype vertical rhythm', async ({ page }) => {
   expect(sliderLabel).not.toBeNull();
   expect(confirmButton).not.toBeNull();
 
-  expect(energyLabel.y).toBeGreaterThan(146);
-  expect(energyLabel.y).toBeLessThan(183);
-  expect(sliderLabel.y).toBeGreaterThan(468);
-  expect(sliderLabel.y).toBeLessThan(513);
-  expect(confirmButton.y).toBeGreaterThan(588);
-  expect(confirmButton.y).toBeLessThan(648);
+  expect(energyLabel.y).toBeGreaterThan(190);
+  expect(energyLabel.y).toBeLessThan(227);
+  expect(sliderLabel.y).toBeGreaterThan(512);
+  expect(sliderLabel.y).toBeLessThan(557);
+  expect(confirmButton.y).toBeGreaterThan(632);
+  expect(confirmButton.y).toBeLessThan(692);
+});
+
+test('energy orb exposes prototype visual structure anchors', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  await expect(page.getByTestId('energy-orb')).toBeVisible();
+  await expect(page.getByTestId('energy-orb-aura')).toBeVisible();
+  await expect(page.getByTestId('energy-orb-core')).toBeVisible();
+  await expect(page.getByTestId('energy-orb-shadow')).toBeVisible();
+  await expect(page.getByTestId('energy-orb-bubble')).toHaveCount(7);
+  await expect(page.getByTestId('energy-orb-status')).toHaveText('静默充能中');
+});
+
+test('weekly progress panel uses a matte integrated treatment without card chrome', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  const panel = page.getByTestId('weekly-progress-panel');
+  const badge = page.getByTestId('weekly-progress-badge');
+  const track = page.getByTestId('weekly-progress-track').first();
+  const fill = page.getByTestId('weekly-progress-fill').first();
+  const value = page.getByTestId('weekly-progress-value').first();
+
+  await expect(panel).toBeVisible();
+  await expect(badge).toBeVisible();
+  await expect(track).toBeVisible();
+  await expect(fill).toBeVisible();
+
+  const panelStyles = await panel.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      borderColor: style.borderColor,
+      boxShadow: style.boxShadow,
+    };
+  });
+  expect(panelStyles.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(panelStyles.borderColor).toBe('rgba(0, 0, 0, 0)');
+  expect(panelStyles.boxShadow).toBe('none');
+
+  const badgeStyles = await badge.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      borderWidth: style.borderWidth,
+    };
+  });
+  expect(badgeStyles.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(badgeStyles.borderWidth).toBe('1px');
+
+  const trackBox = await track.boundingBox();
+  expect(trackBox).not.toBeNull();
+  expect(trackBox.height).toBeLessThanOrEqual(3);
+
+  const fillColor = await fill.evaluate((element) => getComputedStyle(element).backgroundColor);
+  const valueColor = await value.evaluate((element) => getComputedStyle(element).color);
+  expect(fillColor).toBe('rgb(125, 211, 202)');
+  expect(valueColor).toBe('rgb(207, 221, 218)');
+});
+
+test('native energy orb is implemented with Skia instead of web-only CSS', async () => {
+  const nativeOrbPath = path.join(mobileRoot, 'src/features/energy/components/EnergyOrb.native.tsx');
+  const source = fs.readFileSync(nativeOrbPath, 'utf8');
+
+  expect(source).toContain("@shopify/react-native-skia");
+  expect(source).toContain("RadialGradient");
+  expect(source).toContain("BlurMask");
+  expect(source).not.toContain("backgroundImage");
+  expect(source).not.toContain("boxShadow");
+  expect(source).not.toContain("filter:");
 });
 
 test('bottom nav sits on the prototype bottom edge', async ({ page }) => {
@@ -77,12 +164,26 @@ test('energy bar matches the gold capsule reference composition', async ({ page 
   expect(card).not.toBeNull();
   expect(track).not.toBeNull();
   expect(fill).not.toBeNull();
-  expect(card.height).toBeGreaterThanOrEqual(132);
-  expect(card.height).toBeLessThanOrEqual(154);
+  expect(card.height).toBeGreaterThanOrEqual(104);
+  expect(card.height).toBeLessThanOrEqual(124);
   expect(track.height).toBeGreaterThanOrEqual(35);
   expect(track.height).toBeLessThanOrEqual(45);
   expect(fill.width / track.width).toBeGreaterThan(0.58);
   expect(fill.width / track.width).toBeLessThan(0.66);
+
+  const cardChrome = await page.getByTestId('energy-bar-card').evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      borderColor: style.borderColor,
+      borderWidth: style.borderWidth,
+      boxShadow: style.boxShadow,
+    };
+  });
+  expect(cardChrome.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  expect(cardChrome.borderColor).toBe('rgba(0, 0, 0, 0)');
+  expect(cardChrome.borderWidth).toBe('0px');
+  expect(cardChrome.boxShadow).toBe('none');
 
   const tailBackground = await page.getByTestId('energy-bar-tail').evaluate((element) => getComputedStyle(element).backgroundColor);
   expect(tailBackground).toBe('rgba(0, 0, 0, 0)');
@@ -117,6 +218,17 @@ test('energy bar follows the finger while dragging', async ({ page }) => {
 
   await expect(page.getByTestId('energy-value-label')).toHaveText(/8[0-4]%/);
   await page.mouse.up();
+});
+
+test('energy confirm button keeps a mis-tap gap below the energy bar', async ({ page }) => {
+  await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
+
+  const energyBar = await page.getByTestId('energy-bar-card').boundingBox();
+  const confirmButton = await page.getByTestId('prototype-button-primary').first().boundingBox();
+
+  expect(energyBar).not.toBeNull();
+  expect(confirmButton).not.toBeNull();
+  expect(confirmButton.y - (energyBar.y + energyBar.height)).toBeGreaterThanOrEqual(26);
 });
 
 test('growth tree is no longer a placeholder', async ({ page }) => {

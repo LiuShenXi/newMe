@@ -6,6 +6,8 @@ export const prototype = {
     phoneHeight: 812,
     contentX: 20,
     contentTop: 16,
+    statusHeight: 32,
+    mainTop: 12,
     bottomNavHeight: 88,
     bottomNavInsetWeb: 0,
   },

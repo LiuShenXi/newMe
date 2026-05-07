@@ -6,6 +6,6 @@ interface ConfirmButtonProps {
 
 export function ConfirmButton({ onPress }: ConfirmButtonProps) {
   return (
-    <PrototypeButton onPress={onPress}>确认今日能量</PrototypeButton>
+    <PrototypeButton onPress={onPress} style={{ marginTop: 12 }}>确认今日能量</PrototypeButton>
   );
 }

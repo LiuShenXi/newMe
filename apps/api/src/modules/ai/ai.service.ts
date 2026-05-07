@@ -29,6 +29,7 @@ import { RateLimiter } from './rate-limiter';
 export interface AiServiceOptions {
   now?: () => Date;
   model?: string;
+  providerTimeoutMs?: number;
 }
 
 const PRISMA_SCENARIO_BY_SHARED: Record<AiScenario, PrismaAiScenario> = {
@@ -48,6 +49,8 @@ const SHARED_SCENARIO_BY_PRISMA = Object.fromEntries(
     shared,
   ]),
 ) as Record<string, AiScenario>;
+
+const DEFAULT_AI_PROVIDER_TIMEOUT_MS = 60_000;
 
 interface QuickPlanOutput {
   goalType: 'habit' | 'project' | 'result';
@@ -105,7 +108,7 @@ export class AiService {
         model,
         maxTokens: 2000,
         temperature: 0.2,
-        timeoutMs: 25_000,
+        timeoutMs: this.resolveProviderTimeoutMs(),
       });
       const parsedOutput = JSON.parse(rawOutput);
       const outputJson = this.outputValidator.validate(
@@ -633,5 +636,17 @@ export class AiService {
 
   private now() {
     return this.options?.now?.() ?? new Date();
+  }
+
+  private resolveProviderTimeoutMs() {
+    if (this.options?.providerTimeoutMs) {
+      return this.options.providerTimeoutMs;
+    }
+
+    const fromEnv = Number(process.env.AI_PROVIDER_TIMEOUT_MS);
+
+    return Number.isFinite(fromEnv) && fromEnv > 0
+      ? fromEnv
+      : DEFAULT_AI_PROVIDER_TIMEOUT_MS;
   }
 }

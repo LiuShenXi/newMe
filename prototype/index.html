@@ -103,10 +103,14 @@
       padding: 16px 20px 0;
       color: #f1f5f9;
     }
+    .phone-status-spacer {
+      height: 32px;
+      flex: 0 0 32px;
+    }
     .phone-main {
       min-height: 0;
       flex: 1;
-      padding-top: 0;
+      padding-top: 12px;
     }
     .bottom-nav {
       height: 88px;
@@ -951,33 +955,51 @@
       color: #fffbeb;
     }
     .energy-progress {
+      position: relative;
       flex: 0 0 auto;
-      padding: 16px;
+      padding: 6px 16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+    .energy-progress::before {
+      content: "";
+      position: absolute;
+      inset: -28px -10px -12px;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 42%, rgba(94, 136, 125, .10), transparent 64%);
+    }
+    .energy-progress > * {
+      position: relative;
     }
     .card-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
     .card-head h3 {
       margin: 0;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
+      color: rgba(241, 245, 242, .88);
+      font-size: 16px;
+      font-weight: 500;
+      text-shadow: 0 0 18px rgba(190, 230, 220, .08);
     }
     .card-head .badge {
       border-radius: 999px;
-      background: rgba(167, 243, 208, .10);
+      border: 1px solid rgba(143, 179, 170, .24);
+      background: transparent;
       padding: 4px 12px;
-      color: rgba(209, 250, 229, .70);
+      color: rgba(144, 190, 178, .74);
       font-size: 11px;
     }
     .progress-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
     .empty-progress {
       border-radius: 16px;
@@ -992,42 +1014,42 @@
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 6px;
-      font-size: 12px;
+      margin-bottom: 7px;
+      font-size: 13px;
     }
     .progress-meta span:first-child {
       overflow: hidden;
-      color: #e2e8f0;
+      color: rgba(214, 224, 222, .74);
       text-overflow: ellipsis;
       white-space: nowrap;
     }
     .progress-meta span:last-child {
-      color: #cffafe;
+      color: #cfddda;
     }
     .progress-track {
-      height: 6px;
+      height: 2px;
       border-radius: 999px;
-      background: rgba(241, 245, 249, .10);
+      background: rgba(158, 178, 171, .20);
     }
     .progress-fill {
       height: 100%;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(112, 255, 190, .75), rgba(75, 229, 255, .95));
+      background: #7dd3ca;
+      opacity: .9;
+      box-shadow: 0 0 10px rgba(125, 211, 202, .16);
       transition: width .3s ease;
     }
     .range-card {
       position: relative;
       flex: 0 0 auto;
-      overflow: hidden;
-      min-height: 142px;
-      padding: 17px 16px;
-      border-color: rgba(234, 179, 8, .32);
-      border-radius: 27px;
-      background:
-        radial-gradient(circle at 18% 62%, rgba(250, 204, 21, .14), transparent 34%),
-        radial-gradient(circle at 76% 50%, rgba(103, 232, 249, .10), transparent 42%),
-        rgba(42, 40, 8, .46);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10), 0 0 36px rgba(250, 204, 21, .10), 0 20px 48px rgba(0, 0, 0, .22);
+      margin-top: 16px;
+      overflow: visible;
+      min-height: 112px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
     .range-head {
       display: flex;
@@ -1037,7 +1059,9 @@
       font-size: 14px;
     }
     .range-head span:first-child {
-      color: #fff;
+      color: rgba(246, 242, 215, .88);
+      font-size: 16px;
+      font-weight: 500;
     }
     .range-head span:last-child {
       color: #fff7ad;
@@ -1189,6 +1213,7 @@
     }
     .confirm-energy {
       flex: 0 0 auto;
+      margin-top: 12px;
       padding: 14px 18px;
       border-radius: 16px;
       border: 1px solid rgba(207, 250, 254, .20);
@@ -3324,6 +3349,7 @@
           <div class="phone-bg"></div>
           <div class="phone-grid"></div>
           <div class="phone-content">
+            <div class="phone-status-spacer" aria-hidden="true"></div>
             <main class="phone-main">${children}</main>
             ${showNav ? renderNav(activeTab) : ""}
           </div>
@@ -3547,7 +3573,7 @@
       return renderPhone(`
         <div class="screen-stack">
           ${renderEnergyOrb()}
-          <section class="glass-card energy-progress">
+          <section class="energy-progress">
             <div class="card-head"><h3>本周进度概览</h3><span class="badge">打分参照</span></div>
             <div class="progress-list">
               ${state.focusItems.length ? state.focusItems.map((item) => `
@@ -3557,7 +3583,7 @@
                 </div>`).join("") : '<div class="empty-progress">本周重点暂未设置。你仍然可以先记录今天的主观推进，之后再回计划页补上本周计划。</div>'}
             </div>
           </section>
-          <section class="glass-card range-card">
+          <section class="range-card">
             <div class="range-head"><span>今日能量条</span><span id="energy-value-label">${state.energyValue}%</span></div>
             <div id="energy-rail" class="nitro-range-wrap" style="--range-fill:${state.energyValue}%;--range-x:${Math.min(94, Math.max(6, state.energyValue))}%">
               <div class="nitro-tail"></div>
