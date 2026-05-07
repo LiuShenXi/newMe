@@ -658,6 +658,10 @@ git worktree list
 - 确认按钮防误触间距：按用户反馈将“确认今日能量”按钮稍微下移，`prototype/index.html` 的 `.confirm-energy` 和移动端 `ConfirmButton` 均增加 12px 顶部间距，避免与去卡片后的能量条模块贴得太近。
 - TDD 记录：新增 `energy confirm button keeps a mis-tap gap below the energy bar`，要求能量条模块底部到确认按钮顶部至少 26px；红测确认旧间距仅 14px，实现后该用例与 `energy page keeps prototype vertical rhythm` focused 用例均通过。
 - 验证记录：`pnpm --filter @newme/mobile typecheck` 通过；`node prototype/prototype-regression.test.cjs` 通过；`node prototype/prototype-interaction-smoke.cjs` 通过；`npx playwright test apps/mobile/tests/prototype-parity.spec.js --reporter=line --workers=1 --timeout=60000 --output=.tmp/pw-mobile-output` 13 个用例通过；`pnpm --filter @newme/mobile exec expo export --platform web --output-dir dist-web` 通过；`git diff --check -- apps/mobile/src/features/energy/components/ConfirmButton.tsx apps/mobile/tests/prototype-parity.spec.js prototype/index.html 产品需求设计文档.md docs/superpowers/progress/2026-04-29-parallel-mvp-progress.md` 通过。
+- Android 模拟器红屏收口：重启 `newme_api36` 后发现 Expo Go 红屏先后由 Skia 依赖未安装、Reanimated/Worklets 原生桥不可用触发。已补齐 `@shopify/react-native-skia` 本地安装链路，新增 `react-native-worklets@0.8.1` 与 `apps/mobile/babel.config.js`，并将 `EnergyOrb.native.tsx` 改为 Expo Go 下渲染纯 RN 兜底能量球、dev-client 下才动态加载 Skia，避免 Expo Go 执行 Skia 根入口的 Reanimated bridge。
+- 启动噪音修复：`AuthGuard` 对旧 token 的 `loadMe()` 启动请求增加 `.catch()`，401 清 session 后不再在模拟器底部弹未捕获 `ApiError: Unauthorized` toast。
+- TDD 与验证记录：先新增 `native energy orb declares Skia animation peer dependencies`、`native animation stack enables the Worklets Babel plugin`、`native energy orb avoids the Expo Go Reanimated bridge at runtime`、`auth bootstrap catches stale-token profile loads` 等红测，再实现修复；验证 `pnpm --filter @newme/mobile typecheck` 通过；focused Playwright 4 个回归用例通过；Android bundle URL 返回 HTTP 200；ADB 截图确认 Expo Go 显示验证码登录页，无红屏、无未捕获错误 toast。
+- 运行状态：当前 Metro 监听 `http://localhost:8081`，Expo Web 监听 `http://localhost:37300`，Android 模拟器维持 `1440x3120 / 560dpi` 并已打开 Expo Go；`.tmp/` 已加入 `.gitignore` 用于本地日志与截图产物。
 
 ## 阻塞与风险
 

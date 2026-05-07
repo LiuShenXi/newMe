@@ -5,6 +5,7 @@ dist/
 !.env.example
 *.tsbuildinfo
 .expo/
+.tmp/
 android/
 ios/
 .worktrees/

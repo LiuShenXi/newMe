@@ -131,6 +131,38 @@ test('native energy orb is implemented with Skia instead of web-only CSS', async
   expect(source).not.toContain("filter:");
 });
 
+test('native energy orb avoids the Expo Go Reanimated bridge at runtime', async () => {
+  const nativeOrbPath = path.join(mobileRoot, 'src/features/energy/components/EnergyOrb.native.tsx');
+  const source = fs.readFileSync(nativeOrbPath, 'utf8');
+
+  expect(source).not.toContain("from '@shopify/react-native-skia';");
+  expect(source).not.toContain("from 'react-native-reanimated';");
+});
+
+test('native energy orb declares Skia animation peer dependencies', async () => {
+  const packageJsonPath = path.join(mobileRoot, 'package.json');
+  const manifest = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+  expect(manifest.dependencies['@shopify/react-native-skia']).toBeTruthy();
+  expect(manifest.dependencies['react-native-reanimated']).toBeTruthy();
+  expect(manifest.dependencies['react-native-worklets']).toBeTruthy();
+});
+
+test('native animation stack enables the Worklets Babel plugin', async () => {
+  const babelConfigPath = path.join(mobileRoot, 'babel.config.js');
+  const source = fs.readFileSync(babelConfigPath, 'utf8');
+
+  expect(source).toContain('babel-preset-expo');
+  expect(source).toContain('react-native-worklets/plugin');
+});
+
+test('auth bootstrap catches stale-token profile loads', async () => {
+  const layoutPath = path.join(mobileRoot, 'app/_layout.tsx');
+  const source = fs.readFileSync(layoutPath, 'utf8');
+
+  expect(source).toContain('void loadMe().catch');
+});
+
 test('bottom nav sits on the prototype bottom edge', async ({ page }) => {
   await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle' });
 

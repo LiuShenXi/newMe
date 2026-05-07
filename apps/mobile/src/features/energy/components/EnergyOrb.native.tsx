@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Constants from 'expo-constants';
 import { StyleSheet, Text, View } from 'react-native';
-import { BlurMask, Canvas, Circle, Group, Oval, RadialGradient, vec } from '@shopify/react-native-skia';
-import { Easing, useDerivedValue, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
 import { fontWeights, radii, prototypeNumberFont } from '../../../shared/theme';
+
+declare const require: (name: string) => Record<string, any>;
 
 interface EnergyOrbProps {
   charging: boolean;
@@ -36,51 +37,58 @@ const bubbleSpecs: BubbleSpec[] = Array.from({ length: 7 }, (_, index) => ({
   size: 16 + index * 5,
 }));
 
-function EnergyBubble({ bottom, charging, index, left, opacity, size }: BubbleSpec & { charging: boolean }) {
-  const progress = useSharedValue(0);
-  const baseCx = CANVAS_PAD + left + size / 2;
-  const baseCy = CANVAS_PAD + ORB_SIZE - bottom - size / 2;
-  const baseRadius = size / 2;
+function easeOutCubic(value: number) {
+  return 1 - Math.pow(1 - value, 3);
+}
+
+function useChargeElapsed(charging: boolean) {
+  const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {
     if (!charging) {
-      progress.value = withTiming(0, { duration: 120 });
-      return;
+      setElapsed(0);
+      return undefined;
     }
 
-    progress.value = 0;
-    progress.value = withDelay(
-      index * 90,
-      withSequence(
-        withTiming(1, {
-          duration: CHARGE_DURATION,
-          easing: Easing.out(Easing.cubic),
-        }),
-        withTiming(0, { duration: 0 }),
-      ),
-    );
-  }, [charging, index, progress]);
+    const startedAt = Date.now();
+    let frame = requestAnimationFrame(function tick() {
+      setElapsed((Date.now() - startedAt) % CHARGE_DURATION);
+      frame = requestAnimationFrame(tick);
+    });
 
-  const animatedCy = useDerivedValue(() => baseCy + 18 - progress.value * 108);
-  const animatedRadius = useDerivedValue(() => baseRadius * (0.8 + progress.value * 0.35));
-  const animatedOpacity = useDerivedValue(() => {
-    if (progress.value <= 0) {
-      return opacity;
-    }
+    return () => cancelAnimationFrame(frame);
+  }, [charging]);
 
-    if (progress.value <= 0.35) {
-      return 0.12 + (0.7 - 0.12) * (progress.value / 0.35);
-    }
+  return elapsed;
+}
 
-    return 0.7 * (1 - (progress.value - 0.35) / 0.65);
-  });
+function EnergyBubble({
+  bottom,
+  charging,
+  elapsed,
+  index,
+  left,
+  opacity,
+  skia,
+  size,
+}: BubbleSpec & { charging: boolean; elapsed: number; skia: Record<string, any> }) {
+  const { BlurMask, Circle, Group, RadialGradient, vec } = skia;
+  const baseCx = CANVAS_PAD + left + size / 2;
+  const baseCy = CANVAS_PAD + ORB_SIZE - bottom - size / 2;
+  const baseRadius = size / 2;
+  const delayedElapsed = charging ? (elapsed - index * 90 + CHARGE_DURATION) % CHARGE_DURATION : 0;
+  const progress = charging ? easeOutCubic(delayedElapsed / CHARGE_DURATION) : 0;
+  const animatedCy = charging ? baseCy + 18 - progress * 108 : baseCy;
+  const animatedRadius = charging ? baseRadius * (0.8 + progress * 0.35) : baseRadius;
+  const animatedOpacity =
+    charging && progress > 0.35 ? 0.7 * (1 - (progress - 0.35) / 0.65) : charging ? 0.12 + progress * 0.58 : opacity;
 
   return (
-    <Group opacity={charging ? animatedOpacity : opacity}>
+    <Group opacity={animatedOpacity}>
       <Circle
         cx={baseCx}
-        cy={charging ? animatedCy : baseCy}
-        r={charging ? animatedRadius : baseRadius}
+        cy={animatedCy}
+        r={animatedRadius}
         color="rgba(165, 243, 252, 0.10)"
       >
         <RadialGradient
@@ -92,16 +100,16 @@ function EnergyBubble({ bottom, charging, index, left, opacity, size }: BubbleSp
       </Circle>
       <Circle
         cx={baseCx}
-        cy={charging ? animatedCy : baseCy}
-        r={charging ? animatedRadius : baseRadius}
+        cy={animatedCy}
+        r={animatedRadius}
         color="rgba(207, 250, 254, 0.42)"
         style="stroke"
         strokeWidth={1}
       />
       <Circle
         cx={baseCx}
-        cy={charging ? animatedCy : baseCy}
-        r={charging ? animatedRadius : baseRadius}
+        cy={animatedCy}
+        r={animatedRadius}
         color="rgba(74, 255, 224, 0.22)"
       >
         <BlurMask blur={8} style="normal" />
@@ -110,31 +118,89 @@ function EnergyBubble({ bottom, charging, index, left, opacity, size }: BubbleSp
   );
 }
 
+function EnergyText({ charging, value }: EnergyOrbProps) {
+  return (
+    <View style={styles.textWrap}>
+      <Text style={styles.value}>
+        {value}
+        <Text style={styles.percent}>%</Text>
+      </Text>
+      <Text style={styles.label}>本周能量</Text>
+      <Text style={[styles.status, charging ? styles.statusCharging : null]} testID="energy-orb-status">
+        {charging ? '能量注入中' : '静默充能中'}
+      </Text>
+    </View>
+  );
+}
+
+function FallbackEnergyBubble({
+  bottom,
+  charging,
+  elapsed,
+  index,
+  left,
+  opacity,
+  size,
+}: BubbleSpec & { charging: boolean; elapsed: number }) {
+  const delayedElapsed = charging ? (elapsed - index * 90 + CHARGE_DURATION) % CHARGE_DURATION : 0;
+  const progress = charging ? easeOutCubic(delayedElapsed / CHARGE_DURATION) : 0;
+  const translateY = charging ? 18 - progress * 108 : 0;
+  const scale = charging ? 0.8 + progress * 0.35 : 1;
+  const bubbleOpacity =
+    charging && progress > 0.35 ? 0.7 * (1 - (progress - 0.35) / 0.65) : charging ? 0.12 + progress * 0.58 : opacity;
+
+  return (
+    <View
+      style={[
+        styles.fallbackBubble,
+        {
+          bottom,
+          height: size,
+          left,
+          opacity: bubbleOpacity,
+          transform: [{ translateY }, { scale }],
+          width: size,
+        },
+      ]}
+    />
+  );
+}
+
+function FallbackEnergyOrb({ charging, elapsed, value }: EnergyOrbProps & { elapsed: number }) {
+  const phase = charging ? elapsed / CHARGE_DURATION : 0;
+  const pulse = charging ? 1 - Math.abs(phase * 2 - 1) : 0;
+
+  return (
+    <View style={styles.wrap} testID="energy-orb">
+      <View style={[styles.fallbackAura, { opacity: 0.55 + pulse * 0.35, transform: [{ scale: 1 + pulse * 0.12 }] }]} />
+      <View style={styles.fallbackShadow} />
+      <View style={[styles.fallbackCoreGlow, { opacity: 0.24 + pulse * 0.24 }]} />
+      <View style={[styles.fallbackCore, { transform: [{ scale: 1 + pulse * 0.025 }] }]} />
+      <View style={styles.fallbackCoreHighlight} />
+      {bubbleSpecs.map((bubble) => (
+        <FallbackEnergyBubble key={`${bubble.left}-${bubble.bottom}`} {...bubble} charging={charging} elapsed={elapsed} />
+      ))}
+      <EnergyText charging={charging} value={value} />
+    </View>
+  );
+}
+
 export function EnergyOrb({ charging, value }: EnergyOrbProps) {
-  const pulse = useSharedValue(0);
+  const elapsed = useChargeElapsed(charging);
+  const isExpoGo = Constants.appOwnership === 'expo';
 
-  useEffect(() => {
-    if (!charging) {
-      pulse.value = withTiming(0, { duration: 160 });
-      return;
-    }
+  if (isExpoGo) {
+    return <FallbackEnergyOrb charging={charging} elapsed={elapsed} value={value} />;
+  }
 
-    pulse.value = withSequence(
-      withTiming(1, {
-        duration: CHARGE_DURATION / 2,
-        easing: Easing.inOut(Easing.cubic),
-      }),
-      withTiming(0, {
-        duration: CHARGE_DURATION / 2,
-        easing: Easing.inOut(Easing.cubic),
-      }),
-    );
-  }, [charging, pulse]);
-
-  const auraOpacity = useDerivedValue(() => 0.55 + pulse.value * 0.35);
-  const auraRadius = useDerivedValue(() => 104 + pulse.value * 12);
-  const coreRadius = useDerivedValue(() => CORE_RADIUS * (1 + pulse.value * 0.025));
-  const coreGlowOpacity = useDerivedValue(() => 0.24 + pulse.value * 0.24);
+  const { BlurMask, Canvas, Circle, Group, Oval, RadialGradient, vec } = require('@shopify/react-native-skia');
+  const skia = require('@shopify/react-native-skia');
+  const phase = charging ? elapsed / CHARGE_DURATION : 0;
+  const pulse = charging ? 1 - Math.abs(phase * 2 - 1) : 0;
+  const auraOpacity = 0.55 + pulse * 0.35;
+  const auraRadius = 104 + pulse * 12;
+  const coreRadius = CORE_RADIUS * (1 + pulse * 0.025);
+  const coreGlowOpacity = 0.24 + pulse * 0.24;
 
   return (
     <View style={styles.wrap} testID="energy-orb">
@@ -197,20 +263,11 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
         />
 
         {bubbleSpecs.map((bubble) => (
-          <EnergyBubble key={`${bubble.left}-${bubble.bottom}`} {...bubble} charging={charging} />
+          <EnergyBubble key={`${bubble.left}-${bubble.bottom}`} {...bubble} charging={charging} elapsed={elapsed} skia={skia} />
         ))}
       </Canvas>
 
-      <View style={styles.textWrap}>
-        <Text style={styles.value}>
-          {value}
-          <Text style={styles.percent}>%</Text>
-        </Text>
-        <Text style={styles.label}>本周能量</Text>
-        <Text style={[styles.status, charging ? styles.statusCharging : null]} testID="energy-orb-status">
-          {charging ? '能量注入中' : '静默充能中'}
-        </Text>
-      </View>
+      <EnergyText charging={charging} value={value} />
     </View>
   );
 }
@@ -222,6 +279,54 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -CANVAS_PAD,
     width: CANVAS_SIZE,
+  },
+  fallbackAura: {
+    backgroundColor: 'rgba(165, 243, 252, 0.16)',
+    borderRadius: 122,
+    height: 244,
+    position: 'absolute',
+    width: 244,
+  },
+  fallbackBubble: {
+    backgroundColor: 'rgba(165, 243, 252, 0.18)',
+    borderColor: 'rgba(207, 250, 254, 0.42)',
+    borderRadius: 99,
+    borderWidth: StyleSheet.hairlineWidth,
+    position: 'absolute',
+  },
+  fallbackCore: {
+    backgroundColor: 'rgba(5, 12, 13, 0.96)',
+    borderColor: 'rgba(207, 250, 254, 0.45)',
+    borderRadius: CORE_RADIUS,
+    borderWidth: StyleSheet.hairlineWidth,
+    height: CORE_SIZE,
+    position: 'absolute',
+    width: CORE_SIZE,
+  },
+  fallbackCoreGlow: {
+    backgroundColor: 'rgba(77, 255, 230, 0.40)',
+    borderRadius: CORE_RADIUS,
+    height: CORE_SIZE,
+    position: 'absolute',
+    width: CORE_SIZE,
+  },
+  fallbackCoreHighlight: {
+    backgroundColor: 'rgba(121, 255, 234, 0.16)',
+    borderRadius: 58,
+    height: 116,
+    left: 70,
+    position: 'absolute',
+    top: 52,
+    width: 116,
+  },
+  fallbackShadow: {
+    backgroundColor: 'rgba(165, 243, 252, 0.22)',
+    borderRadius: 80,
+    bottom: 14,
+    height: 30,
+    opacity: 0.7,
+    position: 'absolute',
+    width: 160,
   },
   label: {
     color: 'rgba(253, 230, 138, 0.90)',

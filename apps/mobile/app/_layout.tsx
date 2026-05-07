@@ -30,7 +30,9 @@ function AuthGuard() {
 
   useEffect(() => {
     if (hydrated && accessToken && !user && !isLoading) {
-      void loadMe();
+      void loadMe().catch(() => {
+        // Stale tokens are cleared by the API client; avoid surfacing bootstrap noise.
+      });
     }
   }, [accessToken, hydrated, isLoading, loadMe, user]);
 
