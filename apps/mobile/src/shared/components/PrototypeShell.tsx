@@ -1,6 +1,6 @@
-import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import type { PropsWithChildren } from 'react';
-import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import {
   prototype,
@@ -9,6 +9,7 @@ import {
   prototypeGridBackground,
   prototypePhoneBackground,
 } from '../theme';
+import { PrototypeNativeBackground } from './PrototypeNativeBackground';
 import { PrototypeBottomNav, type PrototypeNavTab } from './PrototypePrimitives';
 
 interface PrototypeScreenProps extends PropsWithChildren {
@@ -29,6 +30,7 @@ export function PrototypeScreen({
 }: PrototypeScreenProps) {
   const shouldShowNav = showNav ?? Boolean(activeTab);
   const shouldScroll = contentMode ? contentMode === 'scroll' : scroll;
+  const showNativeBackdrop = Platform.OS !== 'web';
   const content = (
     <View style={styles.content}>
       <View style={styles.statusSpacer} testID="prototype-status-spacer" />
@@ -38,9 +40,10 @@ export function PrototypeScreen({
 
   return (
     <View style={styles.root}>
-      <LinearGradient colors={['#091411', '#060B0A', '#030605']} locations={[0, 0.55, 1]} style={StyleSheet.absoluteFill} />
+      <StatusBar hidden={Platform.OS !== 'web'} style="light" />
       <View style={[StyleSheet.absoluteFill, prototypePhoneBackground]} />
-      <View style={[styles.gridLayer, prototypeGridBackground]} />
+      {Platform.OS === 'web' ? <View style={[styles.gridLayer, prototypeGridBackground]} /> : null}
+      {showNativeBackdrop ? <PrototypeNativeBackground /> : null}
       {shouldScroll ? (
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           {content}

@@ -28,6 +28,16 @@
 - 原型静态回归与交互 smoke 已恢复可运行：`prototype-regression.test.cjs` 覆盖 onboarding top actions helper，`prototype-interaction-smoke.cjs` 改用项目已安装的 `@playwright/test`。
 - 根目录新增 `test:full-http-smoke`、`test:mobile:e2e`、`test:prototype` 脚本；真实 HTTP smoke 覆盖接口、AI 生成/确认、周结算和成长树时间胶囊摘要。
 
+## 2026-05-08 Android 视觉验收修正
+
+- Android 原型视觉验收基准调整为 Dev Build。Expo Go 因不能稳定承载 Skia/Reanimated 原生链路，只允许作为功能 smoke 环境；任何 Expo Go 截图都不能证明 Android 已完成 1:1 视觉复刻。
+- 能量页原生链路补强：`EnergyOrb.native.tsx` 继续负责 Skia 能量球，新增 `EnergySlider.native.tsx` 在 Android/iOS Dev Build 下用 Skia 绘制金色胶囊轨道、柔光、扫光、尾雾、粒子和喷口光效；Expo Go 仍走纯 RN fallback，避免红屏。
+- 全局壳和底栏补强：`PrototypeShell` 在原生端改为深林色柔和渐变叠层，禁止再用硬圆片或网格线伪造 CSS 径向背景；`PrototypeBottomNav` 补 Android 原生 elevation/shadow 与贴底 padding，减少原型 CSS 在 Android 上被忽略造成的廉价感。
+- 测试口径补充：`prototype-parity.spec.js` 新增 Android Dev Build 脚本、Android package、原生 EnergySlider Skia、防 Expo Go fallback 误判、原生背景层和底栏 native shadow 的源码防回归断言。
+- 设备证据补跑：2026-05-08 已在 Android 模拟器安装并启动 `com.newme.mobile` Dev Build，Metro 以 dev-client 模式清缓存重启；截图 `test-results/android-dev-build-visual-smoke/energy-dev-build-2026-05-08.png` 显示能量页进入原生渲染路径，UI 树包含 `energy-orb`、`plasma-energy-slider`、`prototype-bottom-nav`，能量球和能量条内部均为 `TextureView`。
+- 用户复核后追加修正：上一版 Android 背景、能量球和能量条仍然有硬几何感。本轮已移除原生背景网格线、横向脏带和硬圆片，改用全屏柔和环境渐变；`EnergyOrb.native.tsx` 与 `EnergySlider.native.tsx` 的 Skia Canvas 均显式透明，避免黑盘/硬底；Android Skia 能量条撤掉硬 HUD 角标、横线和实心白色扫光矩形。清单页本周重点 chip 降低饱和度、字重和边框存在感，避免变成高亮大胶囊按钮。新增源码防回归断言，最终有效 Dev Build 登录态截图为 `test-results/android-dev-build-visual-smoke/2026-05-08-clean-bg/energy-soft-sweep-auth.png` 和 `test-results/android-dev-build-visual-smoke/2026-05-08-clean-bg/todo-soft-chips-auth.png`。
+- Android 背景根因再修正：再次设备复核确认，`PrototypeShell` 原生端继续使用 `expo-linear-gradient` 是横向脏带和分层色块的真实根因，不能再按“RN 样式模拟 CSS 渐变”验收。本轮新增 `PrototypeNativeBackground.native.tsx`，Dev Build 下以 Skia Canvas 绘制全屏底色、纵向渐变和两处径向环境光，Expo Go 只保留纯色 fallback；`PrototypeShell.tsx` 不再直接导入 `expo-linear-gradient`。新截图证据为 `test-results/android-dev-build-visual-smoke/2026-05-08-skia-bg/energy-skia-bg-auth.png` 和 `test-results/android-dev-build-visual-smoke/2026-05-08-skia-bg/me-skia-bg-auth.png`。
+
 ## 严重级别
 
 - `P0`：流程、页面结构、按钮、跳转、信息层级不一致。

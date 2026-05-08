@@ -24,6 +24,7 @@
       "bundleIdentifier": "com.newme.mobile"
     },
     "android": {
+      "package": "com.newme.mobile",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

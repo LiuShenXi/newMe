@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import type { PropsWithChildren, ReactNode } from 'react';
 import {
   Pressable,
+  Platform,
   StyleProp,
   StyleSheet,
   Text,
@@ -63,7 +64,10 @@ interface PrototypeTopActionsProps {
 
 export function PrototypeBottomNav({ activeTab }: PrototypeBottomNavProps) {
   return (
-    <View style={styles.bottomNav} testID="prototype-bottom-nav">
+    <View
+      style={[styles.bottomNav, Platform.OS === 'web' ? styles.bottomNavWeb : styles.bottomNavNative]}
+      testID="prototype-bottom-nav"
+    >
       {tabs.map((tab) => {
         const active = tab.id === activeTab;
 
@@ -252,16 +256,25 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderTopWidth: StyleSheet.hairlineWidth,
     bottom: prototype.size.bottomNavInsetWeb,
-    boxShadow: '0 -1px 0 rgba(0, 0, 0, .38)',
     flexDirection: 'row',
     height: prototype.size.bottomNavHeight,
     left: 0,
-    paddingBottom: 20,
+    paddingBottom: Platform.OS === 'android' ? 18 : 20,
     paddingHorizontal: 20,
     paddingTop: 10,
     position: 'absolute',
     right: 0,
     zIndex: 40,
+  },
+  bottomNavNative: {
+    elevation: 18,
+    shadowColor: '#000000',
+    shadowOffset: { height: -1, width: 0 },
+    shadowOpacity: 0.34,
+    shadowRadius: 12,
+  },
+  bottomNavWeb: {
+    boxShadow: '0 -1px 0 rgba(0, 0, 0, .38)',
   } as ViewStyle,
   buttonBase: {
     alignItems: 'center',

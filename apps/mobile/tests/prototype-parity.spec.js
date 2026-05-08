@@ -156,6 +156,125 @@ test('native animation stack enables the Worklets Babel plugin', async () => {
   expect(source).toContain('react-native-worklets/plugin');
 });
 
+test('android visual review uses dev build instead of Expo Go fallback', async () => {
+  const packageJsonPath = path.join(mobileRoot, 'package.json');
+  const appJsonPath = path.join(mobileRoot, 'app.json');
+  const packageManifest = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  const appManifest = JSON.parse(fs.readFileSync(appJsonPath, 'utf8'));
+
+  expect(packageManifest.scripts['android:device']).toBe('expo run:android --device');
+  expect(packageManifest.scripts['android:dev-build']).toBe('expo run:android');
+  expect(appManifest.expo.android.package).toBe('com.newme.mobile');
+});
+
+test('native energy bar is implemented with Skia for Android visual parity', async () => {
+  const nativeSliderPath = path.join(mobileRoot, 'src/features/energy/components/EnergySlider.native.tsx');
+  const source = fs.readFileSync(nativeSliderPath, 'utf8');
+
+  expect(source).toContain("@shopify/react-native-skia");
+  expect(source).toContain("Constants.appOwnership === 'expo'");
+  expect(source).toContain('FallbackEnergySlider');
+  expect(source).toContain('Canvas');
+  expect(source).toContain('LinearGradient');
+  expect(source).toContain('RadialGradient');
+  expect(source).toContain('RoundedRect');
+  expect(source).not.toContain('BlurMask blur={22}');
+  expect(source).not.toContain('BlurMask blur={12}');
+  expect(source).not.toContain('BlurMask blur={10}');
+  expect(source).not.toContain("from '@shopify/react-native-skia';");
+  expect(source).not.toContain('boxShadow');
+});
+
+test('native prototype shell paints Android background without web-only CSS', async () => {
+  const shellPath = path.join(mobileRoot, 'src/shared/components/PrototypeShell.tsx');
+  const nativeBackgroundPath = path.join(mobileRoot, 'src/shared/components/PrototypeNativeBackground.native.tsx');
+  const source = fs.readFileSync(shellPath, 'utf8');
+  const backgroundSource = fs.readFileSync(nativeBackgroundPath, 'utf8');
+
+  expect(source).toContain('Platform.OS !==');
+  expect(source).toContain('PrototypeNativeBackground');
+  expect(backgroundSource).toContain('prototype-native-ambient-backdrop');
+  expect(source).not.toContain('nativeGridLines');
+  expect(source).not.toContain('prototype-native-grid-line');
+  expect(source).not.toContain('nativeRadialGlow');
+  expect(source).not.toContain('nativeDepthGradient');
+  expect(source).not.toContain('nativeLowerGradient');
+  expect(source).not.toContain('nativeTopGradient');
+  expect(source).not.toContain('nativeAmbientGradient');
+});
+
+test('native prototype background avoids Android radial gradient artifacts', async () => {
+  const shellPath = path.join(mobileRoot, 'src/shared/components/PrototypeShell.tsx');
+  const nativeBackgroundPath = path.join(mobileRoot, 'src/shared/components/PrototypeNativeBackground.native.tsx');
+  const shellSource = fs.readFileSync(shellPath, 'utf8');
+  const backgroundSource = fs.readFileSync(nativeBackgroundPath, 'utf8');
+
+  expect(shellSource).toContain('PrototypeNativeBackground');
+  expect(shellSource).not.toContain("from 'expo-linear-gradient'");
+  expect(shellSource).not.toContain('nativeAmbientGradient');
+  expect(backgroundSource).toContain("from 'expo-linear-gradient'");
+  expect(backgroundSource).toContain("Constants.appOwnership === 'expo'");
+  expect(backgroundSource).toContain('<LinearGradient');
+  expect(backgroundSource).not.toContain("@shopify/react-native-skia");
+  expect(backgroundSource).not.toContain('Canvas');
+  expect(backgroundSource).not.toContain('RadialGradient');
+  expect(backgroundSource).not.toContain('SkiaLinearGradient');
+  expect(backgroundSource).not.toContain('#020504');
+  expect(backgroundSource).not.toContain('rgba(0, 0, 0, 0.24)');
+  expect(backgroundSource).not.toContain('locations={[0, 0.36, 0.82, 1]}');
+  expect(backgroundSource).not.toContain('prototype-native-grid-line');
+  expect(backgroundSource).not.toContain('<Canvas opaque');
+  expect(backgroundSource).not.toContain('<Rect');
+});
+
+test('native Android energy visuals keep Skia canvases transparent and avoid hard HUD geometry', async () => {
+  const nativeOrbPath = path.join(mobileRoot, 'src/features/energy/components/EnergyOrb.native.tsx');
+  const nativeSliderPath = path.join(mobileRoot, 'src/features/energy/components/EnergySlider.native.tsx');
+  const orbSource = fs.readFileSync(nativeOrbPath, 'utf8');
+  const sliderSource = fs.readFileSync(nativeSliderPath, 'utf8');
+  const skiaBarSource = sliderSource.slice(
+    sliderSource.indexOf('function SkiaEnergyBar'),
+    sliderSource.indexOf('function FallbackEnergySlider'),
+  );
+
+  expect(orbSource).toContain('opaque={false}');
+  expect(skiaBarSource).toContain('opaque={false}');
+  expect(skiaBarSource).not.toContain('hudCorner');
+  expect(skiaBarSource).not.toContain('hudLine');
+  expect(skiaBarSource).not.toContain('<Rect color="rgba(255, 255, 255, 0.58)"');
+  expect(orbSource).not.toContain('BlurMask blur={48}');
+  expect(orbSource).not.toContain('BlurMask blur={38}');
+  expect(orbSource).not.toContain('BlurMask blur={24}');
+  expect(orbSource).not.toContain('color="rgba(207, 250, 254, 0.42)"');
+  expect(skiaBarSource).not.toContain('BlurMask blur={22}');
+  expect(skiaBarSource).not.toContain('BlurMask blur={12}');
+  expect(skiaBarSource).not.toContain('BlurMask blur={10}');
+});
+
+test('todo focus chips keep the prototype matte label treatment on Android', async () => {
+  const todoPath = path.join(mobileRoot, 'app/(tabs)/todo.tsx');
+  const source = fs.readFileSync(todoPath, 'utf8');
+
+  expect(source).toContain("color: 'rgba(236, 253, 245, 0.72)'");
+  expect(source).toContain("backgroundColor: 'rgba(167, 243, 208, 0.06)'");
+  expect(source).toContain("borderColor: 'rgba(167, 243, 208, 0.10)'");
+  expect(source).toContain('fontWeight: fontWeights.medium');
+  expect(source).toContain('overflow: \'hidden\'');
+  expect(source).not.toContain("backgroundColor: 'rgba(0, 229, 160, 0.10)'");
+  expect(source).not.toContain('fontWeight: fontWeights.semibold');
+});
+
+test('bottom nav has native shadow and keeps visual parity off web', async () => {
+  const primitivesPath = path.join(mobileRoot, 'src/shared/components/PrototypePrimitives.tsx');
+  const source = fs.readFileSync(primitivesPath, 'utf8');
+
+  expect(source).toContain("Platform.OS === 'web'");
+  expect(source).toContain('bottomNavNative');
+  expect(source).toContain('elevation:');
+  expect(source).toContain('shadowColor:');
+  expect(source).toContain('paddingBottom: Platform.OS ===');
+});
+
 test('auth bootstrap catches stale-token profile loads', async () => {
   const layoutPath = path.join(mobileRoot, 'app/_layout.tsx');
   const source = fs.readFileSync(layoutPath, 'utf8');

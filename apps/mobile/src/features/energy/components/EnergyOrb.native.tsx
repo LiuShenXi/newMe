@@ -102,7 +102,7 @@ function EnergyBubble({
         cx={baseCx}
         cy={animatedCy}
         r={animatedRadius}
-        color="rgba(207, 250, 254, 0.42)"
+        color="rgba(207, 250, 254, 0.22)"
         style="stroke"
         strokeWidth={1}
       />
@@ -110,7 +110,7 @@ function EnergyBubble({
         cx={baseCx}
         cy={animatedCy}
         r={animatedRadius}
-        color="rgba(74, 255, 224, 0.22)"
+        color="rgba(74, 255, 224, 0.12)"
       >
         <BlurMask blur={8} style="normal" />
       </Circle>
@@ -193,52 +193,33 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
     return <FallbackEnergyOrb charging={charging} elapsed={elapsed} value={value} />;
   }
 
-  const { BlurMask, Canvas, Circle, Group, Oval, RadialGradient, vec } = require('@shopify/react-native-skia');
+  const { Canvas, Circle, RadialGradient, vec } = require('@shopify/react-native-skia');
   const skia = require('@shopify/react-native-skia');
   const phase = charging ? elapsed / CHARGE_DURATION : 0;
   const pulse = charging ? 1 - Math.abs(phase * 2 - 1) : 0;
-  const auraOpacity = 0.55 + pulse * 0.35;
-  const auraRadius = 104 + pulse * 12;
   const coreRadius = CORE_RADIUS * (1 + pulse * 0.025);
-  const coreGlowOpacity = 0.24 + pulse * 0.24;
 
   return (
     <View style={styles.wrap} testID="energy-orb">
-      <Canvas pointerEvents="none" style={styles.canvas}>
-        <Group opacity={auraOpacity}>
-          <Circle cx={CANVAS_CENTER} cy={CANVAS_CENTER} r={auraRadius} color="rgba(165, 243, 252, 0.16)">
-            <BlurMask blur={40} style="normal" />
-          </Circle>
-        </Group>
-
-        <Oval color="rgba(165, 243, 252, 0.34)" height={32} width={160} x={CANVAS_PAD + 41} y={CANVAS_PAD + 202}>
-          <BlurMask blur={20} style="normal" />
-        </Oval>
-
-        <Group opacity={coreGlowOpacity}>
-          <Circle cx={CANVAS_CENTER} cy={CANVAS_CENTER} r={coreRadius} color="rgba(77, 255, 230, 0.40)">
-            <BlurMask blur={30} style="normal" />
-          </Circle>
-        </Group>
-
-        <Circle cx={CANVAS_CENTER} cy={CANVAS_CENTER} r={coreRadius} color="rgba(15, 32, 38, 0.70)">
+      <Canvas opaque={false} pointerEvents="none" style={styles.canvas}>
+        <Circle cx={CANVAS_CENTER} cy={CANVAS_CENTER} r={coreRadius} color="rgba(15, 32, 38, 0.54)">
           <RadialGradient
             c={vec(CANVAS_PAD + CORE_OFFSET + CORE_SIZE * 0.45, CANVAS_PAD + CORE_OFFSET + CORE_SIZE * 0.38)}
             colors={[
-              'rgba(121, 255, 234, 0.22)',
-              'rgba(15, 32, 38, 0.70)',
-              'rgba(5, 12, 13, 0.95)',
-              'rgba(5, 12, 13, 0.98)',
+              'rgba(121, 255, 234, 0.20)',
+              'rgba(15, 32, 38, 0.58)',
+              'rgba(5, 12, 13, 0.84)',
+              'rgba(5, 12, 13, 0.92)',
             ]}
             positions={[0, 0.5, 0.72, 1]}
             r={148}
           />
         </Circle>
 
-        <Circle cx={CANVAS_CENTER} cy={CANVAS_CENTER} r={coreRadius} color="rgba(95, 255, 215, 0.18)">
+        <Circle cx={CANVAS_CENTER} cy={CANVAS_CENTER} r={coreRadius} color="rgba(95, 255, 215, 0.10)">
           <RadialGradient
             c={vec(CANVAS_CENTER, CANVAS_PAD + 190)}
-            colors={['rgba(95, 255, 215, 0.28)', 'rgba(95, 255, 215, 0.08)', 'rgba(95, 255, 215, 0)']}
+            colors={['rgba(95, 255, 215, 0.16)', 'rgba(95, 255, 215, 0.05)', 'rgba(95, 255, 215, 0)']}
             positions={[0, 0.58, 1]}
             r={92}
           />
@@ -257,7 +238,7 @@ export function EnergyOrb({ charging, value }: EnergyOrbProps) {
           cx={CANVAS_CENTER}
           cy={CANVAS_CENTER}
           r={coreRadius}
-          color="rgba(207, 250, 254, 0.45)"
+          color="rgba(207, 250, 254, 0.18)"
           style="stroke"
           strokeWidth={1}
         />
