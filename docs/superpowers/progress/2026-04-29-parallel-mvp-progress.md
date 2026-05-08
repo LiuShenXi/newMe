@@ -663,6 +663,12 @@ git worktree list
 - TDD 与验证记录：先新增 `native energy orb declares Skia animation peer dependencies`、`native animation stack enables the Worklets Babel plugin`、`native energy orb avoids the Expo Go Reanimated bridge at runtime`、`auth bootstrap catches stale-token profile loads` 等红测，再实现修复；验证 `pnpm --filter @newme/mobile typecheck` 通过；focused Playwright 4 个回归用例通过；Android bundle URL 返回 HTTP 200；ADB 截图确认 Expo Go 显示验证码登录页，无红屏、无未捕获错误 toast。
 - 运行状态：当前 Metro 监听 `http://localhost:8081`，Expo Web 监听 `http://localhost:37300`，Android 模拟器维持 `1440x3120 / 560dpi` 并已打开 Expo Go；`.tmp/` 已加入 `.gitignore` 用于本地日志与截图产物。
 
+### 2026-05-08
+
+- 阿里云部署方案评审收口：按最终 review 结果更新 `阿里云部署方案.md`，明确当前 MVP 不单独购买 RDS，生产采用 ECS + Docker Compose + 容器 PostgreSQL + 宿主机 Nginx/Certbot + OSS 备份；补齐生产 Compose 不手改服务器文件、Prisma migrate deploy 已由 API 容器自动执行、生产 AI 应支持 fallback-only、App 备案/推送凭据、备案前内测、备份日志权限和 healthcheck 判断口径。
+- 架构文档同步：更新 `docs/architecture/05-部署与运维方案.md`，补充 2026-05-08 阿里云部署评审结论，统一生产端口、HTTPS、AI fallback、环境变量和 `/api/v1/health` 健康检查说明。
+- 验证记录：本轮为文档更新，未改运行代码；已用旧口径关键词残留检查和 `git diff --check` 做格式验证。
+
 ## 阻塞与风险
 
 - pnpm v10 默认忽略 build scripts 的风险已通过根 `package.json` 的 `pnpm.onlyBuiltDependencies` 收口，允许 `@nestjs/core`、`@prisma/client`、`@prisma/engines`、`bcrypt`、`prisma` 执行必要构建脚本。
